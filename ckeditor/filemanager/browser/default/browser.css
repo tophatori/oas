@@ -36,10 +36,10 @@ body, td, input, select {
 	background-color: #c7c78f;
 }
 .FolderListCurrentFolder img {
-	background-image: url(images/FolderOpened.gif);
+	background-image: url(images/folderopened.gif);
 }
 .FolderListFolder img {
-	background-image: url(images/Folder.gif);
+	background-image: url(images/folder.gif);
 }
 .fullHeight {
 	height: 100%;
