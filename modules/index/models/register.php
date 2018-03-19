@@ -72,7 +72,7 @@ class Model extends \Kotchasan\Model
           // คืนค่า
           $ret['alert'] = Language::get('Saved successfully');
           $ret['location'] = 'index.php?module=member';
-          // clear
+          // เคลียร์
           $request->removeToken();
         }
       }
@@ -107,7 +107,7 @@ class Model extends \Kotchasan\Model
       $save['salt'] = uniqid();
       $save['password'] = sha1($save['password'].$save['salt']);
     }
-    $save['permission'] = empty($permission) ? '' : implode(',', $permission);
+    $save['permission'] = empty($permission) ? '' : ','.implode(',', $permission).',';
     $save['active'] = 1;
     $save['create_date'] = date('Y-m-d H:i:s');
     // บันทึกลงฐานข้อมูล

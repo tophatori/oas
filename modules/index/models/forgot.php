@@ -33,7 +33,7 @@ class Model extends \Kotchasan\KBase
   {
     // ข้อมูลอีเมล์
     $subject = Language::get('Get new password').' '.self::$cfg->web_title;
-    $msg = Language::get('Your new password is').' : '.$password;
+    $msg = $username.' '.Language::get('Your new password is').' : '.$password;
     // send mail
     $err = Email::send($username, self::$cfg->noreply_email, $subject, $msg);
     if ($err->error()) {

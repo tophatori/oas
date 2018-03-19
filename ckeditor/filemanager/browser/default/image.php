@@ -1,6 +1,7 @@
 <?php
 // ckeditor/filemanager/browser/default/image.php
 if (isset($_GET['fid']) && isset($_GET['w']) && isset($_GET['h'])) {
+  session_start();
   // load Kotchasan
   include '../../../../load.php';
   // Initial Kotchasan Framework
@@ -13,8 +14,8 @@ if (isset($_GET['fid']) && isset($_GET['w']) && isset($_GET['h'])) {
     $idW = $_GET['w'];
     $idH = $_GET['h'];
     if (is_file($id)) {
-      $image_info = getImageSize($id);
-      if (empty($image_info['error'])) {
+      $image_info = @getImageSize($id);
+      if (isset($image_info[0]) && isset($image_info[1]) && $image_info[0] > 0 && $image_info[1] > 0) {
         // ปรับขนาดตามที่ต้องการ ถ้ารูปใหญ่กว่าปกติ
         if ($image_info[0] > $idW || $image_info[1] > $idH) {
           // คำนวณขนาดใหม่

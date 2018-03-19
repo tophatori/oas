@@ -46,7 +46,7 @@ class Login extends \Kotchasan\Login implements \Kotchasan\LoginInterface
     foreach ($query->execute() as $item) {
       if ($item['password'] == sha1($params['password'].$item['salt'])) {
         if ($item['status'] == 1 || $item['active'] == 1) {
-          $item['permission'] = empty($item['permission']) ? array() : explode(',', $item['permission']);
+          $item['permission'] = empty($item['permission']) ? array() : trim(explode(',', $item['permission']), " \t\n\r\0\x0B,");
           $login_result = $item;
           break;
         }

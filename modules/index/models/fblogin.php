@@ -80,7 +80,7 @@ class Model extends \Kotchasan\Model
         $save['password'] = sha1($password.$save['salt']);
         // อัปเดท
         $db->update($user_table, $search['id'], $save);
-        $save['permission'] = explode(',', $save['permission']);
+        $save['permission'] = trim(explode(',', $save['permission']), " \t\n\r\0\x0B,");
       } else {
         // ไม่สามารถ login ได้ เนื่องจากมี email อยู่ก่อนแล้ว
         $save = false;

@@ -175,10 +175,8 @@
         }
       }
       function doHide() {
-        $G('divthumb').fadeOut(function () {
-          last_hover = '';
-          $G('divthumb').hide();
-        });
+        last_hover = null;
+        $G('divthumb').hide();
       }
       window.onload = function () {
         window.top.IsLoadedResourcesList = true;
