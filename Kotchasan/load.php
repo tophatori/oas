@@ -152,12 +152,12 @@ if (!defined('TOKEN_LIMIT')) {
 }
 /**
  * อายุของ token (วินาที)
- * ค่าเริ่มต้นคือ 10 นาที
+ * ค่าเริ่มต้นคือ 60 นาที
  *
  * @var int
  */
 if (!defined('TOKEN_AGE')) {
-  define('TOKEN_AGE', 600);
+  define('TOKEN_AGE', 3600);
 }
 
 /**

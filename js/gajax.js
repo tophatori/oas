@@ -163,7 +163,7 @@ window.$K = (function () {
                 if (obj.type == 'email') {
                   obj.pattern = /^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/;
                 } else {
-                  obj.pattern = /^[a-z0-9\-\.:\/\#%\?\&\=]{3,100}$/i;
+                  obj.pattern = /^[a-z0-9\-\.:\/\#%\?\&\=_]{3,100}$/i;
                 }
               }
               text.addEvent('keyup', _docheck);

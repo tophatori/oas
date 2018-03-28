@@ -229,7 +229,8 @@ mark {
   background-color: transparent;
   color: #DD4B39;
 }
-[class*="term"] {
+[class^="term"],
+[class*=" term"] {
   color: #FFF;
   border-radius: 3px;
   padding: 0 0.4em;
@@ -359,28 +360,36 @@ body.responsive .gcss-wrapper {
   max-width: none;
 }
 /* box */
-[class*="margin-"][class*="-top"] {
+[class^="margin-"][class*="-top"],
+[class*=" margin-"][class*="-top"] {
   margin-top: 10px;
 }
-[class*="margin-"][class*="-bottom"] {
+[class^="margin-"][class*="-bottom"],
+[class*=" margin-"][class*="-bottom"] {
   margin-bottom: 10px;
 }
-[class*="margin-"][class*="-left"] {
+[class^="margin-"][class*="-left"],
+[class*=" margin-"][class*="-left"] {
   margin-left: 10px;
 }
-[class*="margin-"][class*="-right"] {
+[class^="margin-"][class*="-right"],
+[class*=" margin-"][class*="-right"] {
   margin-right: 10px;
 }
-[class*="padding-"][class*="-top"] {
+[class^="padding-"][class*="-top"],
+[class*=" padding-"][class*="-top"] {
   padding-top: 10px;
 }
-[class*="padding-"][class*="-bottom"] {
+[class^="padding-"][class*="-bottom"],
+[class*=" padding-"][class*="-bottom"] {
   padding-bottom: 10px;
 }
-[class*="padding-"][class*="-left"] {
+[class^="padding-"][class*="-left"],
+[class*=" padding-"][class*="-left"] {
   padding-left: 10px;
 }
-[class*="padding-"][class*="-right"] {
+[class^="padding-"][class*="-right"],
+[class*=" padding-"][class*="-right"] {
   padding-right: 10px;
 }
 /* input, select, textarea */
