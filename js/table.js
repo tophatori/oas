@@ -155,6 +155,15 @@
           }
         });
       });
+      forEach(this.table.elems('tbody'), function () {
+        forEach(this.getElementsByTagName('select'), function () {
+          if (this.id != '') {
+            $G(this).addEvent('change', function () {
+              temp._doButton(this);
+            });
+          }
+        });
+      });
       var doSearchChanged = function () {
         if (temp.input_search.value == '') {
           temp.clear_search.style.display = 'none';
