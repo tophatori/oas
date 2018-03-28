@@ -31,6 +31,7 @@ class View extends \Gcms\View
    */
   public function render($user, $login)
   {
+    // แอดมิน
     $login_admin = Login::isAdmin();
     // register form
     $form = Html::create('form', array(
@@ -47,7 +48,7 @@ class View extends \Gcms\View
         'title' => '{LNG_Login information}'
       ));
       $groups = $fieldset->add('groups');
-      // username (แอดมิน และตัวเอง สามารถแก้ไขได้)
+      // username
       $groups->add('text', array(
         'id' => 'register_username',
         'itemClass' => 'width50',

@@ -28,8 +28,8 @@ class Model extends \Kotchasan\Model
    */
   public function chklogin(Request $request)
   {
-    // session, token
-    if ($request->initSession() && $request->isSafe()) {
+    // session, referer
+    if ($request->initSession() && $request->isReferer()) {
       // สุ่มรหัสผ่านใหม่
       $password = uniqid();
       // db
@@ -88,8 +88,6 @@ class Model extends \Kotchasan\Model
         $ret['isMember'] = 0;
       }
       if (is_array($save)) {
-        // clear
-        $request->removeToken();
         // login
         $save['password'] = $password;
         $_SESSION['login'] = $save;

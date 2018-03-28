@@ -32,7 +32,8 @@ class Controller extends \Gcms\Controller
    */
   public static function parseModule($request, $default = null)
   {
-    if (preg_match('/^([a-z]+)([\/\-]([a-z]+))?$/i', $request->request('module')->toString(), $match)) {
+    $module = strtolower($request->request('module')->toString());
+    if (!empty($module) && $module != 'index' && preg_match('/^([a-z]+)([\/\-]([a-z]+))?$/', $module, $match)) {
       if (empty($match[3])) {
         if (is_file(APP_PATH.'modules/'.$match[1].'/controllers/index.php')) {
           $owner = $match[1];
@@ -45,7 +46,7 @@ class Controller extends \Gcms\Controller
         $owner = $match[1];
         $module = $match[3];
       }
-    } elseif (preg_match('/^([a-z]+)([\/\-]([a-z]+))?$/i', $default, $match)) {
+    } elseif (!empty($default) && preg_match('/^([a-z]+)([\/\-]([a-z]+))?$/i', $default, $match)) {
       // ถ้าไม่ระบุ module มาแสดงหน้า $default
       if (empty($match[3])) {
         if (is_file(APP_PATH.'modules/'.$match[1].'/controllers/index.php')) {

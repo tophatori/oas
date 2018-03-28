@@ -384,7 +384,10 @@ class Request extends AbstractRequest implements RequestInterface
   public function createToken()
   {
     $token = md5(uniqid(rand(), true));
-    $_SESSION[$token] = 0;
+    $_SESSION[$token] = array(
+      'times' => 0,
+      'expired' => time() + TOKEN_AGE
+    );
     return $token;
   }
 
@@ -411,8 +414,8 @@ class Request extends AbstractRequest implements RequestInterface
   {
     $token = $this->post('token')->toString();
     if ($token !== null) {
-      if (isset($_SESSION[$token]) && $_SESSION[$token] < TOKEN_LIMIT && $this->isReferer()) {
-        $_SESSION[$token] ++;
+      if (isset($_SESSION[$token]) && $_SESSION[$token]['times'] < TOKEN_LIMIT && $_SESSION[$token]['expired'] > time() && $this->isReferer()) {
+        $_SESSION[$token]['times'] ++;
         return true;
       } else {
         unset($_SESSION[$token]);

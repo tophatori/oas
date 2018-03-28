@@ -36,7 +36,7 @@ class Controller extends \Gcms\Controller
     // เลือกเมนู
     $this->menu = 'member';
     // แอดมิน, ไม่ใช่สมาชิกตัวอย่าง
-    if ($login = Login::notDemoMode(Login::isAdmin())) {
+    if (Login::notDemoMode(Login::isAdmin())) {
       // แสดงผล
       $section = Html::create('section', array(
           'class' => 'content_bg'

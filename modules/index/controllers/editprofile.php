@@ -32,7 +32,7 @@ class Controller extends \Gcms\Controller
   public function render(Request $request)
   {
     // ข้อความ title bar
-    $this->title = Language::get('Edit profile');
+    $this->title = Language::get('Editing your account');
     // เลือกเมนู
     $this->menu = 'member';
     // สมาชิก, ไม่ใช่สมาชิกตัวอย่าง

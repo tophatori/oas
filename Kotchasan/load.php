@@ -150,6 +150,15 @@ if (!defined('WEB_URL')) {
 if (!defined('TOKEN_LIMIT')) {
   define('TOKEN_LIMIT', 10);
 }
+/**
+ * อายุของ token (วินาที)
+ * ค่าเริ่มต้นคือ 10 นาที
+ *
+ * @var int
+ */
+if (!defined('TOKEN_AGE')) {
+  define('TOKEN_AGE', 600);
+}
 
 /**
  * ฟังก์ชั่นใช้สำหรับสร้างคลาส

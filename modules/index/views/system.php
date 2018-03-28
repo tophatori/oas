@@ -11,7 +11,7 @@ namespace Index\System;
 use \Kotchasan\Html;
 
 /**
- * ฟอร์มตั้งค่า system
+ * module=system
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -21,7 +21,7 @@ class View extends \Gcms\View
 {
 
   /**
-   * module=system
+   * ฟอร์มตั้งค่า system
    *
    * @param object $config
    * @return string

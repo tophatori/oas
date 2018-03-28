@@ -36,14 +36,18 @@ class Controller extends \Gcms\Controller
       define('MAIN_INIT', 'indexhtml');
       // ตรวจสอบการ login
       Login::create();
+      // สมาชิก
+      $login = Login::isMember();
       // template ที่กำลังใช้งานอยู่
       Template::init(self::$cfg->skin);
       // View
       self::$view = new \Gcms\View;
+      // โหลดเมนู
+      self::$menus = \Index\Menu\Controller::init($login);
       // โมดูลจาก URL ถ้าไม่มีใช้ default (home)
-      $className = \Index\Main\Controller::parseModule($request, 'home');
-      if ($className === null) {
-        // ถ้าไม่พบหน้าที่เรียก แสดงหน้า 404
+      $className = \Index\Main\Controller::parseModule($request, self::$menus->home());
+      if ($className === null || !$login) {
+        // ถ้าไม่พบหน้าที่เรียก หรือไม่ได้เข้าระบบ แสดงหน้า 404
         include APP_PATH.'modules/index/controllers/error.php';
         $className = 'Index\Error\Controller';
       }

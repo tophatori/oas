@@ -200,6 +200,14 @@ class DataTable extends \Kotchasan\KBase
    */
   public $searchColumns = array();
   /**
+   * กำหนดวิธีการค้นหาจากช่อง search
+   * true (default) ค้นหาจาก $searchColumns โดยอัตโนมัติ
+   * false กำหนดการค้นหาด้วยตัวเอง
+   *
+   * @var boolean
+   */
+  public $autoSearch = true;
+  /**
    * จำนวนรายการต่อหน้า
    * ถ้ากำหนดรายการนี้จะแสดงรายการแบ่งหน้า และตัวเลือกแสดงรายการต่อหน้า
    *
@@ -461,15 +469,17 @@ class DataTable extends \Kotchasan\KBase
     $search = self::$request->globals(array('POST', 'GET'), 'search')->text();
     if (!empty($this->searchColumns)) {
       if (!empty($search)) {
-        if (isset($this->model)) {
-          $sh = array();
-          foreach ($this->searchColumns as $key) {
-            $sh[] = array($key, 'LIKE', "%$search%");
+        if ($this->autoSearch) {
+          if (isset($this->model)) {
+            $sh = array();
+            foreach ($this->searchColumns as $key) {
+              $sh[] = array($key, 'LIKE', "%$search%");
+            }
+            $this->model->andWhere($sh, 'OR');
+          } elseif (isset($this->datas)) {
+            // filter ข้อมูลจาก array
+            $this->datas = ArrayTool::filter($this->datas, $search);
           }
-          $this->model->andWhere($sh, 'OR');
-        } elseif (isset($this->datas)) {
-          // filter ข้อมูลจาก array
-          $this->datas = ArrayTool::filter($this->datas, $search);
         }
         $this->uri = $this->uri->withParams(array('search' => $search));
       }
@@ -958,10 +968,16 @@ class DataTable extends \Kotchasan\KBase
       }
       $row = '<fieldset><label>'.$item['text'].' <input '.implode(' ', $prop).'></label></fieldset>';
     } else {
-      $row = '<fieldset><label>'.$item['text'].' <select name="'.$item['name'].'">';
+      $prop = array();
+      foreach ($item as $key => $value) {
+        if ($key != 'options' && $key != 'value') {
+          $prop[$key] = $key.'="'.$value.'"';
+        }
+      }
+      $row = '<fieldset><label>'.$item['text'].' <select '.implode(' ', $prop).'>';
       if (!empty($item['options'])) {
         foreach ($item['options'] as $key => $text) {
-          $sel = (string)$key == $item['value'] ? ' selected' : '';
+          $sel = isset($item['value']) && (string)$key == $item['value'] ? ' selected' : '';
           $row .= '<option value="'.$key.'"'.$sel.'>'.$text.'</option>';
         }
       }

@@ -31,8 +31,8 @@ class Model extends \Kotchasan\Model
   {
     $ret = array();
     // session, token, admin, ไม่ใช่สมาชิกตัวอย่าง
-    if ($request->initSession() && $request->isSafe() && $login = Login::isAdmin()) {
-      if (Login::notDemoMode($login)) {
+    if ($request->initSession() && $request->isSafe()) {
+      if (Login::notDemoMode(Login::isAdmin())) {
         // รับค่าจากการ POST
         $save = array(
           'username' => $request->post('register_username')->username(),
@@ -42,7 +42,7 @@ class Model extends \Kotchasan\Model
         );
         $permission = $request->post('register_permission', array())->topic();
         if (empty($save['username'])) {
-          $ret['ret_register_username'] = 'this';
+          $ret['ret_register_username'] = 'Please fill in';
         } else {
           // ตรวจสอบ username ซ้ำ
           $search = $this->db()->first($this->getTableName('user'), array('username', $save['username']));

@@ -25,7 +25,7 @@ class Model extends \Kotchasan\Model
   /**
    * อ่านข้อมูลสำหรับใส่ลงในตาราง
    *
-   * @return array
+   * @return \Kotchasan\Database\QueryBuilder
    */
   public static function toDataTable()
   {
@@ -58,8 +58,8 @@ class Model extends \Kotchasan\Model
   {
     $ret = array();
     // session, referer, admin, ไม่ใช่สมาชิกตัวอย่าง
-    if ($request->initSession() && $request->isReferer() && $login = Login::isAdmin()) {
-      if (Login::notDemoMode($login)) {
+    if ($request->initSession() && $request->isReferer()) {
+      if (Login::notDemoMode(Login::isAdmin())) {
         // รับค่าจากการ POST
         $action = $request->post('action')->toString();
         // id ที่ส่งมา

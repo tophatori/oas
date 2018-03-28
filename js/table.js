@@ -146,22 +146,14 @@
           });
         }
       });
-      forEach(this.table.elems('input'), function () {
-        if (this.type.toLowerCase() == 'date') {
-          var o = {
-            'type': 'hidden',
-            'name': this.name
-          };
-          var hidden = $G(this.parentNode).create('input', o);
-          var text = document.createElement('input');
-          text.setAttribute('type', 'text');
-          text.setAttribute('size', 11);
-          var src = new GCalendar(text, function () {
-            hidden.value = this.getDateFormat('y-m-d');
-          });
-          src.setDate(this.value);
-          $G(this).replace(text);
-        }
+      forEach(this.table.elems('tbody'), function () {
+        forEach(this.getElementsByTagName('select'), function () {
+          if (this.id != '') {
+            $G(this).addEvent('change', function () {
+              temp._doButton(this);
+            });
+          }
+        });
       });
       var doSearchChanged = function () {
         if (temp.input_search.value == '') {
@@ -181,6 +173,9 @@
         action = hs[1] + '&' + action;
       }
       action += '&src=' + this.table.id;
+      if (el.value) {
+        action += '&value=' + encodeURIComponent(el.value);
+      }
       var temp = this;
       if (el.hasClass('button')) {
         el.addClass('wait');
