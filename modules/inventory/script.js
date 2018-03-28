@@ -35,7 +35,7 @@ function initInventoryWrite() {
 function initInventoryOverview(id) {
   new GGraphs('year_graph', {type: 'line'});
   $G('year').addEvent('change', function () {
-    loaddoc(WEB_URL + 'index.php?module=inventory-write&tab=overview&to=year_graph&id=' + id + '&y=' + this.value);
+    loader.location(WEB_URL + 'index.php?module=inventory-write&tab=overview&to=year_graph&id=' + id + '&y=' + this.value);
   });
 }
 function initInventoryInOut(vat_percent, typ) {
@@ -144,9 +144,6 @@ function initInventoryInOut(vat_percent, typ) {
       }
     }
   }
-  var priceOnly = function (e) {
-    return _doCheckKey(this, e, /[0-9\.\-]/);
-  };
   var doCurrency = function () {
     this.value = this.value.currFormat();
   };
@@ -215,15 +212,21 @@ function initInventoryInOut(vat_percent, typ) {
       forEach($G(this).elems('input'), function () {
         $G(this).id = this.name.replace(/([\[\]_]+)/g, '_') + row;
         if (this.className == 'num') {
-          this.addEvent('keypress', numberOnly);
+          new GMask(this, function () {
+            return  /^[0-9]+$/.test(this.value);
+          });
           this.addEvent('change', doChanged);
         } else if (this.className == 'price') {
-          this.addEvent('keypress', priceOnly);
+          new GMask(this, function () {
+            return  /^[0-9\.\-]+$/.test(this.value);
+          });
           this.addEvent('change', doChanged);
           this.addEvent('blur', doCurrency);
           doCurrency.call(this);
         } else if (this.className == 'amount') {
-          this.addEvent('keypress', currencyOnly);
+          new GMask(this, function () {
+            return  /^[0-9\.]+$/.test(this.value);
+          });
           this.addEvent('change', doChanged);
           this.addEvent('blur', doCurrency);
           doCurrency.call(this);

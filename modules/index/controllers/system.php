@@ -33,7 +33,7 @@ class Controller extends \Gcms\Controller
   public function render(Request $request)
   {
     // ข้อความ title bar
-    $this->title = Language::get('General Site Settings');
+    $this->title = Language::get('General site settings');
     // เลือกเมนู
     $this->menu = 'settings';
     // สามารถตั้งค่าระบบได้

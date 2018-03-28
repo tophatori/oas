@@ -11,7 +11,7 @@ namespace Index\Welcome;
 use \Kotchasan\Http\Request;
 use \Kotchasan\Language;
 use \Kotchasan\Template;
-use \Kotchasan\Login;
+use \Gcms\Login;
 
 /**
  * Login, Forgot

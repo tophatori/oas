@@ -12,7 +12,7 @@ use \Kotchasan\Http\Request;
 use \Kotchasan\Html;
 
 /**
- * ลงทะเบียนสมาชิกใหม่
+ * module=register
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -22,7 +22,7 @@ class View extends \Gcms\View
 {
 
   /**
-   * module=register
+   * ลงทะเบียนสมาชิกใหม่
    *
    * @param Request $request
    * @return string

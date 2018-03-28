@@ -121,13 +121,12 @@ class View extends \Gcms\View
       'value' => isset(self::$cfg->province) ? self::$cfg->province : ''
     ));
     // zipcode
-    $groups->add('text', array(
+    $groups->add('number', array(
       'id' => 'company_zipcode',
       'labelClass' => 'g-input icon-location',
       'itemClass' => 'width33',
       'label' => '{LNG_Zipcode}',
-      'pattern' => '[0-9]+',
-      'maxlength' => 10,
+      'maxlength' => 5,
       'value' => isset(self::$cfg->zipcode) ? self::$cfg->zipcode : 10000
     ));
     // country

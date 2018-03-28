@@ -163,6 +163,15 @@
           $G(this).replace(text);
         }
       });
+      forEach(this.table.elems('tbody'), function () {
+        forEach(this.getElementsByTagName('select'), function () {
+          if (this.id != '') {
+            $G(this).addEvent('change', function () {
+              temp._doButton(this);
+            });
+          }
+        });
+      });
       var doSearchChanged = function () {
         if (temp.input_search.value == '') {
           temp.clear_search.style.display = 'none';
@@ -181,6 +190,9 @@
         action = hs[1] + '&' + action;
       }
       action += '&src=' + this.table.id;
+      if (el.value) {
+        action += '&value=' + encodeURIComponent(el.value);
+      }
       var temp = this;
       if (el.hasClass('button')) {
         el.addClass('wait');

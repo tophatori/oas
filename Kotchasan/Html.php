@@ -155,6 +155,9 @@ class Html extends \Kotchasan\KBase
     if (!empty($attributes['multiline'])) {
       $c[] = 'multiline';
     }
+    if (!empty($attributes['scroll'])) {
+      $c[] = 'hscroll';
+    }
     if (isset($attributes['label']) && isset($attributes['id'])) {
       $obj->add('label', array(
         'innerHTML' => $attributes['label'],

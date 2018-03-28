@@ -47,8 +47,7 @@ class Model extends \Kotchasan\Model
         // id ที่ส่งมา
         if ($request->post('action')->toString() === 'delete' && preg_match_all('/,?([0-9]+),?/', $request->post('id')->toString(), $match)) {
           // ลบลูกค้ายังไม่เคยทำรายการสั่งซื้อสินค้า
-          $model = new \Kotchasan\Model;
-          $model->db()->createQuery()
+          self::createQuery()
             ->delete('customer', array(
               array('id', $match[1]),
             ))
