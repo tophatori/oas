@@ -28,6 +28,13 @@ api.php/products/<category_id>/<page> รายการสินค้าตา
 api.php/product/<id> ข้อมูลสินค้ารายการที่เลือก (id)
 api.php/search/<q>/<page> ค้นหาสินค้าจาก q แสดงหน้าที่เลือก (page) (ถ้าไม่ระบุหน้าจะแสดงหน้าแรก)
 
+ในการใช้งาน API หากเป็นการเรียกใช้งานจากนอก Server อาจต้องเปิดการใช้งาน Access-Control-Allow-Origin ด้วย ให้แก้ไขไฟล์ .htaccess ลบ # หน้าบรรทัดเหล่านี้ออก
+```
+#Header add Access-Control-Allow-Origin "*"
+#Header add Access-Control-Allow-Headers "origin, x-requested-with, content-type"
+#Header add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
+```
+
 ## ข้อตกลงการนำไปใช้งาน
 * สามารถนำไปใช้งานส่วนตัวได้
 * สามารถพัฒนาต่อยอดได้
