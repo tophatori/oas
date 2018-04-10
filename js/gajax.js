@@ -19,245 +19,251 @@ window.$K = (function () {
     },
     init: function (element) {
       forEach(element.querySelectorAll('input,textarea'), function (elem) {
-        var obj = new Object;
-        obj.tagName = $G(elem).tagName.toLowerCase();
-        obj.title = elem.title;
-        obj.required = elem.get('required');
-        obj.disabled = elem.get('disabled') !== null;
-        obj.maxlength = floatval(elem.get('maxlength'));
-        if (elem.type) {
-          obj.type = elem.type.toLowerCase();
-        }
-        obj.pattern = elem.get('pattern');
-        if (obj.pattern !== null) {
-          obj.pattern = new RegExp('^(?:' + obj.pattern + ')$');
-          elem.setAttribute('pattern', '(.*){0,}');
-        }
-        obj.dataset = elem.dataset;
-        if (typeof obj.dataset == 'undefined') {
-          obj.dataset = {};
-          forEach(elem.attributes, function () {
-            var hs = this.name.match(/^data\-(.+)/);
-            if (hs) {
-              obj.dataset[hs[0]] = this.value;
-            }
-          });
-        }
-        if (obj.tagName == 'textarea') {
-          if (obj.maxlength > 0 || obj.required || obj.pattern) {
-            var _docheck = function () {
-              if (this.value == '' && obj.required !== null) {
-                this.addClass('required');
-                this.invalid(obj.title !== '' ? obj.title : trans('Please fill in') + (this.placeholder == '' ? '' : ' ' + this.placeholder));
-              } else if (this.value != '' && obj.pattern && !obj.pattern.test(this.value)) {
-                this.invalid(obj.title !== '' ? obj.title : trans('Invalid data'));
-              } else if (obj.required !== null || obj.pattern) {
-                this.reset();
+        var tagName = $G(elem).tagName.toLowerCase(),
+          type = elem.type ? elem.type.toLowerCase() : '';
+        if (elem.initObj !== true && (tagName == 'textarea' || (type !== 'hidden' && type !== 'radio' && type !== 'checkbox' && type !== 'button' && type !== 'submit'))) {
+          var obj = new Object;
+          obj.tagName = tagName;
+          obj.type = type;
+          elem.initObj = true;
+          obj.title = elem.title;
+          obj.required = elem.get('required');
+          obj.disabled = elem.get('disabled') !== null;
+          obj.maxlength = floatval(elem.get('maxlength'));
+          obj.pattern = elem.get('pattern');
+          if (obj.pattern !== null) {
+            obj.pattern = new RegExp('^(?:' + obj.pattern + ')$');
+            elem.setAttribute('pattern', '(.*){0,}');
+          }
+          obj.dataset = elem.dataset;
+          if (typeof obj.dataset == 'undefined') {
+            obj.dataset = {};
+            forEach(elem.attributes, function () {
+              var hs = this.name.match(/^data\-(.+)/);
+              if (hs) {
+                obj.dataset[hs[0]] = this.value;
               }
-            };
-            elem.srcObj = obj;
-            elem.addEvent('keyup', _docheck);
-            elem.addEvent('change', _docheck);
-          }
-        } else if (obj.tagName == 'input') {
-          var c = elem.hasClass('currency number integer color');
-          if (c !== false) {
-            obj.type = c;
-          }
-          if (elem.min) {
-            obj.min = elem.min;
-          }
-          if (elem.max) {
-            obj.max = elem.max;
-          }
-          var autofocus = elem.get('autofocus');
-          var text = elem;
-          if (obj.type == 'date') {
-            var o = {
-              'type': 'hidden',
-              'name': elem.name,
-              'id': elem.id
-            };
-            var hidden = $G(text.parentNode).create('input', o);
-            text = document.createElement('input');
-            text.setAttribute('type', 'text');
-            if (obj.title != '') {
-              text.title = obj.title;
-            }
-            text.className = elem.className;
-            var src = new GCalendar(text, function () {
-              hidden.value = this.getDateFormat('y-m-d');
-              hidden.calendar = this;
-              hidden.callEvent('change');
             });
-            if (obj.min) {
-              src.minDate(obj.min);
-            }
-            if (obj.max) {
-              src.maxDate(obj.max);
-            }
-            if (elem.placeholder) {
-              text.placeholder = elem.placeholder;
-            }
-            hidden.value = elem.get('value');
-            hidden.timer = window.setInterval(function () {
-              if ($E(hidden)) {
-                if (hidden.value != src.old) {
-                  src.old = hidden.value;
-                  src.setDate(hidden.value);
+          }
+          if (obj.tagName == 'textarea') {
+            if (obj.maxlength > 0 || obj.required || obj.pattern) {
+              var _docheck = function () {
+                if (this.value == '' && obj.required !== null) {
+                  this.addClass('required');
+                  this.invalid(obj.title !== '' ? obj.title : trans('Please fill in') + (this.placeholder == '' ? '' : ' ' + this.placeholder));
+                } else if (this.value != '' && obj.pattern && !obj.pattern.test(this.value)) {
+                  this.invalid(obj.title !== '' ? obj.title : trans('Invalid data'));
+                } else if (obj.required !== null || obj.pattern) {
+                  this.reset();
                 }
-                if (hidden.disabled != text.disabled) {
-                  text.disabled = hidden.disabled ? true : false;
-                }
-                if (hidden.readOnly != text.readOnly) {
-                  text.readOnly = hidden.readOnly ? true : false;
-                }
-              } else {
-                window.clearInterval(hidden.timer);
+              };
+              elem.srcObj = obj;
+              elem.addEvent('keyup', _docheck);
+              elem.addEvent('change', _docheck);
+            }
+          } else if (obj.tagName == 'input') {
+            var c = elem.hasClass('currency number integer color');
+            if (c !== false) {
+              obj.type = c;
+            }
+            if (elem.min) {
+              obj.min = elem.min;
+            }
+            if (elem.max) {
+              obj.max = elem.max;
+            }
+            var autofocus = elem.get('autofocus');
+            var text = elem;
+            if (obj.type == 'date') {
+              var o = {
+                'type': 'hidden',
+                'name': elem.name,
+                'id': elem.id
+              };
+              var hidden = $G(text.parentNode).create('input', o);
+              text = document.createElement('input');
+              text.setAttribute('type', 'text');
+              if (obj.title != '') {
+                text.title = obj.title;
               }
-            }, 100);
-            hidden.display = text;
-            text.calendar = src;
-            elem.replace(text);
-          } else if (obj.type == 'number' || obj.type == 'integer' || obj.type == 'tel' || obj.type == 'email' || obj.type == 'url' || obj.type == 'color' || obj.type == 'currency' || obj.type == 'time') {
-            var o = {
-              'type': 'text',
-              'name': elem.name,
-              'disabled': obj.disabled
-            };
-            if (elem.id != '') {
-              o.id = elem.id;
-            }
-            text = $G().create('input', o);
-            if (elem.value != '') {
-              text.value = elem.value;
-            }
-            if (obj.title != '') {
-              text.title = obj.title;
-            }
-            if (elem.size) {
-              text.size = elem.size;
-            }
-            if (elem.placeholder) {
-              text.placeholder = elem.placeholder;
-            }
-            if (obj.maxlength > 0) {
-              text.maxlength = obj.maxlength;
-            }
-            if (elem.readOnly) {
-              text.readOnly = true;
-            }
-            text.className = elem.className;
-            elem.replace(text);
-            if (obj.type == 'color') {
-              new GDDColor(text, function (c) {
-                this.input.style.backgroundColor = c;
-                this.input.style.color = this.invertColor(c);
-                this.input.value = c;
-                this.input.callEvent('change');
+              text.className = elem.className;
+              var src = new GCalendar(text, function () {
+                hidden.value = this.getDateFormat('y-m-d');
+                hidden.calendar = this;
+                hidden.callEvent('change');
               });
-            } else if (obj.type == 'time') {
-              new GTime(text);
-            } else if (obj.type == 'email' || obj.type == 'url') {
-              if (obj.pattern == null) {
-                if (obj.type == 'email') {
-                  obj.pattern = /^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/;
+              if (obj.min) {
+                src.minDate(obj.min);
+              }
+              if (obj.max) {
+                src.maxDate(obj.max);
+              }
+              if (elem.placeholder) {
+                text.placeholder = elem.placeholder;
+              }
+              hidden.value = elem.get('value');
+              hidden.timer = window.setInterval(function () {
+                if ($E(hidden)) {
+                  if (hidden.value != src.old) {
+                    src.old = hidden.value;
+                    src.setDate(hidden.value);
+                  }
+                  if (hidden.disabled != text.disabled) {
+                    text.disabled = hidden.disabled ? true : false;
+                  }
+                  if (hidden.readOnly != text.readOnly) {
+                    text.readOnly = hidden.readOnly ? true : false;
+                  }
                 } else {
-                  obj.pattern = /^[a-z0-9\-\.:\/\#%\?\&\=_]{3,100}$/i;
+                  window.clearInterval(hidden.timer);
                 }
+              }, 100);
+              hidden.display = text;
+              text.calendar = src;
+              text.initObj = true;
+              elem.replace(text);
+            } else if (obj.type == 'number' || obj.type == 'integer' || obj.type == 'tel' || obj.type == 'email' || obj.type == 'url' || obj.type == 'color' || obj.type == 'currency' || obj.type == 'time') {
+              var o = {
+                'type': 'text',
+                'name': elem.name,
+                'disabled': obj.disabled
+              };
+              if (elem.id != '') {
+                o.id = elem.id;
               }
-              text.addEvent('keyup', _docheck);
-              text.addEvent('change', _docheck);
-            } else {
-              if (!obj.dataset['keyboard']) {
-                if (obj.type == 'integer') {
-                  obj.dataset['keyboard'] = '1234567890-';
-                } else if (obj.type == 'currency') {
-                  obj.dataset['keyboard'] = '1234567890-.';
-                } else if (obj.type == 'number' || obj.type == 'tel' || obj.type == 'currency') {
-                  obj.dataset['keyboard'] = '1234567890';
-                }
+              text = $G().create('input', o);
+              if (elem.value != '') {
+                text.value = elem.value;
               }
-              if (obj.dataset['keyboard']) {
-                obj.pattern = new RegExp('^(?:[' + obj.dataset['keyboard'].preg_quote() + ']+)$');
-                if (obj.type == 'currency') {
-                  new GInput(text, obj.dataset['keyboard'], function () {
-                    var val = floatval(this.value);
-                    if (obj.min) {
-                      val = Math.max(obj.min, val);
-                    }
-                    if (obj.max) {
-                      val = Math.min(obj.max, val);
-                    }
-                    this.value = val.toFixed(2);
-                  });
-                } else {
-                  new GInput(text, obj.dataset['keyboard']);
-                }
+              if (obj.title != '') {
+                text.title = obj.title;
               }
-            }
-          } else if (obj.type == 'file') {
-            if (elem.hasClass('g-file')) {
-              var p = elem.parentNode;
-              elem.setStyle('opacity', 0);
-              elem.style.cursor = 'pointer';
-              elem.style.position = 'absolute';
-              elem.style.left = 0;
-              elem.style.top = 1;
-              p.style.position = 'relative';
-              var display = document.createElement('input');
-              display.setAttribute('type', 'text');
-              display.disabled = true;
-              display.placeholder = elem.placeholder;
-              p.appendChild(display);
-              elem.style.zIndex = text.style.zIndex + 1;
-              elem.style.height = '100%';
-              elem.style.width = '100%';
-              elem.addEvent('change', function () {
-                display.value = this.value;
-                if (this.files) {
-                  var preview = $E(this.get('data-preview'));
-                  if (preview) {
-                    var input = this;
-                    var max = floatval(this.get('data-max'));
-                    forEach(this.files, function () {
-                      if (max > 0 && this.size > max) {
-                        input.invalid(input.title);
-                      } else if (window.FileReader) {
-                        var r = new FileReader();
-                        r.onload = function (evt) {
-                          preview.src = evt.target.result;
-                          input.valid();
-                        };
-                        r.readAsDataURL(this);
-                      }
-                    });
+              if (elem.size) {
+                text.size = elem.size;
+              }
+              if (elem.placeholder) {
+                text.placeholder = elem.placeholder;
+              }
+              if (obj.maxlength > 0) {
+                text.maxlength = obj.maxlength;
+              }
+              if (elem.readOnly) {
+                text.readOnly = true;
+              }
+              text.className = elem.className;
+              text.initObj = true;
+              elem.replace(text);
+              if (obj.type == 'color') {
+                new GDDColor(text, function (c) {
+                  this.input.style.backgroundColor = c;
+                  this.input.style.color = this.invertColor(c);
+                  this.input.value = c;
+                  this.input.callEvent('change');
+                });
+              } else if (obj.type == 'time') {
+                new GTime(text);
+              } else if (obj.type == 'email' || obj.type == 'url') {
+                if (obj.pattern == null) {
+                  if (obj.type == 'email') {
+                    obj.pattern = /^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/;
+                  } else {
+                    obj.pattern = /^[a-z0-9\-\.:\/\#%\?\&\=_]{3,100}$/i;
                   }
                 }
+                text.addEvent('keyup', _docheck);
+                text.addEvent('change', _docheck);
+              } else {
+                if (!obj.dataset['keyboard']) {
+                  if (obj.type == 'integer') {
+                    obj.dataset['keyboard'] = '1234567890-';
+                  } else if (obj.type == 'currency') {
+                    obj.dataset['keyboard'] = '1234567890-.';
+                  } else if (obj.type == 'number' || obj.type == 'tel' || obj.type == 'currency') {
+                    obj.dataset['keyboard'] = '1234567890';
+                  }
+                }
+                if (obj.dataset['keyboard']) {
+                  obj.pattern = new RegExp('^(?:[' + obj.dataset['keyboard'].preg_quote() + ']+)$');
+                  if (obj.type == 'currency') {
+                    new GInput(text, obj.dataset['keyboard'], function () {
+                      var val = floatval(this.value);
+                      if (obj.min) {
+                        val = Math.max(obj.min, val);
+                      }
+                      if (obj.max) {
+                        val = Math.min(obj.max, val);
+                      }
+                      this.value = val.toFixed(2);
+                    });
+                  } else {
+                    new GInput(text, obj.dataset['keyboard']);
+                  }
+                }
+              }
+            } else if (obj.type == 'file') {
+              if (elem.hasClass('g-file')) {
+                var p = elem.parentNode;
+                elem.setStyle('opacity', 0);
+                elem.style.cursor = 'pointer';
+                elem.style.position = 'absolute';
+                elem.style.left = 0;
+                elem.style.top = 1;
+                p.style.position = 'relative';
+                var display = document.createElement('input');
+                display.setAttribute('type', 'text');
+                display.disabled = true;
+                display.placeholder = elem.placeholder;
+                p.appendChild(display);
+                elem.style.zIndex = text.style.zIndex + 1;
+                elem.style.height = '100%';
+                elem.style.width = '100%';
+                elem.addEvent('change', function () {
+                  display.value = this.value;
+                  if (this.files) {
+                    var preview = $E(this.get('data-preview'));
+                    if (preview) {
+                      var input = this;
+                      var max = floatval(this.get('data-max'));
+                      forEach(this.files, function () {
+                        if (max > 0 && this.size > max) {
+                          input.invalid(input.title);
+                        } else if (window.FileReader) {
+                          var r = new FileReader();
+                          r.onload = function (evt) {
+                            preview.src = evt.target.result;
+                            input.valid();
+                          };
+                          r.readAsDataURL(this);
+                        }
+                      });
+                    }
+                  }
+                });
+                elem.initObj = true;
+              }
+            } else if (obj.type == 'range') {
+              new GRange(elem);
+            } else if (obj.pattern) {
+              new GMask(text, function () {
+                return obj.pattern.test(this.value);
               });
             }
-          } else if (obj.type == 'range') {
-            new GRange(elem);
-          } else if (obj.pattern) {
-            new GMask(text, function () {
-              return obj.pattern.test(this.value);
-            });
-          }
-          if (typeof obj.dataset !== 'undefined') {
-            for (var prop in obj.dataset) {
-              if (obj.dataset[prop] !== null) {
-                text.setAttribute('data-' + prop, obj.dataset[prop]);
+            if (typeof obj.dataset !== 'undefined') {
+              for (var prop in obj.dataset) {
+                if (obj.dataset[prop] !== null) {
+                  text.setAttribute('data-' + prop, obj.dataset[prop]);
+                }
               }
             }
-          }
-          if (autofocus !== null) {
-            text.focus();
-            if (obj.type == 'text') {
-              text.select();
+            if (autofocus !== null) {
+              text.focus();
+              if (obj.type == 'text') {
+                text.select();
+              }
             }
-          }
-          if (obj.pattern || obj.required) {
-            text.srcObj = obj;
+            if (obj.pattern || obj.required) {
+              text.srcObj = obj;
+            }
           }
         }
       });
@@ -1791,6 +1797,7 @@ window.$K = (function () {
       };
       frm.GForm = this;
       this.form = frm;
+      $K.init(frm);
     },
     onsubmit: function (callback) {
       this.callback = callback;
@@ -1924,6 +1931,9 @@ window.$K = (function () {
       this.div = $G(container_div);
       this.body = $G(this.div.firstChild);
       this.body.style.overflow = 'auto';
+    },
+    content: function () {
+      return this.body;
     },
     show: function (value) {
       this.body.style.height = 'auto';

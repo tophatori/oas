@@ -235,7 +235,7 @@ return array(
   'Forgot' => 'ลืมรหัสผ่าน',
   'From' => 'จาก',
   'General' => 'ทั่วไป',
-  'General Site Settings' => 'ตั้งค่าพื้นฐานของเว็บไซต์',
+  'General site settings' => 'ตั้งค่าพื้นฐานของเว็บไซต์',
   'Get new password' => 'ขอรหัสผ่าน',
   'Go to Homepage' => 'ไปหน้าหลักเว็บไซต์',
   'go to page' => 'ไปหน้าที่',

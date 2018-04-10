@@ -112,15 +112,18 @@ class Province
    * อ่านชื่อจังหวัดจาก ISO ตามภาษา (ถ้าไม่มีใช้ภาษาอังกฤษ)
    *
    * @param int $iso
+   * @param string $lang
    * @return string คืนค่าว่างถ้าไม่พบ
    * @assert (102) [==] 'กรุงเทพมหานคร'
    */
-  public static function get($iso)
+  public static function get($iso, $lang = '')
   {
     $datas = self::init();
-    $language = Language::name();
-    $language = in_array($language, array_keys(reset($datas))) ? $language : 'en';
-    return isset($datas[$iso]) ? $datas[$iso][$language] : '';
+    if (empty($lang)) {
+      $lang = Language::name();
+    }
+    $lang = in_array($lang, array_keys(reset($datas))) ? $lang : 'en';
+    return isset($datas[$iso]) ? $datas[$iso][$lang] : '';
   }
 
   /**

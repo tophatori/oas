@@ -114,13 +114,12 @@ class View extends \Gcms\View
       'value' => $customer['province']
     ));
     // zipcode
-    $groups->add('text', array(
+    $groups->add('number', array(
       'id' => 'register_zipcode',
       'labelClass' => 'g-input icon-location',
       'itemClass' => 'width33',
       'label' => '{LNG_Zipcode}',
-      'pattern' => '[0-9]+',
-      'maxlength' => 10,
+      'maxlength' => 5,
       'value' => $customer['zipcode']
     ));
     // country

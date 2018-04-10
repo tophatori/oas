@@ -146,15 +146,21 @@
           });
         }
       });
-      forEach(this.table.elems('tbody'), function () {
-        forEach(this.getElementsByTagName('select'), function () {
-          if (this.id != '') {
-            $G(this).addEvent('change', function () {
-              temp._doButton(this);
+      if (this.options.action) {
+        window.setTimeout(function () {
+          if ($E(temp.table)) {
+            forEach(temp.table.elems('tbody'), function () {
+              forEach(this.querySelectorAll('select,input,textarea'), function () {
+                if (this.id != '') {
+                  $G(this).addEvent('change', function () {
+                    temp._doButton(this);
+                  });
+                }
+              });
             });
           }
-        });
-      });
+        }, 1000);
+      }
       var doSearchChanged = function () {
         if (temp.input_search.value == '') {
           temp.clear_search.style.display = 'none';

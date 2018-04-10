@@ -664,8 +664,8 @@ td > .wlabel {
   width: 100%;
   float: left;
 }
-.g-input[class*=" icon-"].g-input:before,
-.g-input[class^="icon-"].g-input:before,
+.g-input[class*=" icon-"]:before,
+.g-input[class^="icon-"]:before,
 .g-input.antispam > span {
   position: absolute;
   height: 101%;
@@ -1263,22 +1263,22 @@ form .comment {
 .radiogroups,
 .checkboxgroups {
   display: block;
-  overflow-x: hidden;
-  overflow-y: auto;
 }
 .radiogroups.multiline.hscroll,
 .checkboxgroups.multiline.hscroll {
   max-height: 10.7em;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .radiogroups > label,
 .checkboxgroups > label {
-  padding: 0.25em 1em 0.25em 0;
+  padding: 0.24em 1em 0.24em 0;
   cursor: pointer;
   float: left;
 }
 .radiogroups.g-input > label,
 .checkboxgroups.g-input > label {
-  padding-left: 0.25em;
+  padding-left: 0.24em;
 }
 .wicon > .radiogroups.g-input > label,
 .wicon > .checkboxgroups.g-input > label {
@@ -2439,18 +2439,20 @@ input.gddcolor.invalid {
 .input-groups > :first-child {
   padding-left: 0;
 }
+.input-groups > .row > [class*="width"] > span,
+.input-groups-table > .row > [class*="width"] > span,
 .input-groups > .rowgroup > [class*="width"] > label,
 .input-groups-table > .rowgroup > [class*="width"] > label,
-.input-groups > .row > label,
-.input-groups-table > .row > label,
+.input-groups > .row label,
+.input-groups-table > .row label,
 .input-groups > .row > span,
 .input-groups-table > .row > span {
   display: table-cell;
 }
-.input-groups > .rowgroup > [class*="width"] > label,
-.input-groups-table > .rowgroup > [class*="width"] > label,
-.input-groups > .row > label,
-.input-groups-table > .row > label {
+.input-groups > .rowgroup > [class*="width"] label,
+.input-groups-table > .rowgroup > [class*="width"] label,
+.input-groups > .row label,
+.input-groups-table > .row label {
   padding-right: 5px;
 }
 .width5 {
