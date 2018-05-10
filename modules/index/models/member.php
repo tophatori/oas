@@ -64,11 +64,9 @@ class Model extends \Kotchasan\Model
         $action = $request->post('action')->toString();
         // id ที่ส่งมา
         if (preg_match_all('/,?([0-9]+),?/', $request->post('id')->toString(), $match)) {
-          // ตาราง user
-          $user_table = $this->getTableName('user');
           if ($action === 'delete') {
             // ลบสมาชิก
-            $this->db()->delete($user_table, array(
+            $this->db()->delete($this->getTableName('user'), array(
               array('id', $match[1]),
               array('id', '!=', 1)
               ), 0);
@@ -90,7 +88,7 @@ class Model extends \Kotchasan\Model
             foreach ($query->execute() as $item) {
               // สุ่มรหัสผ่านใหม่
               $password = \Kotchasan\Text::rndname(6);
-              // ส่งอีเมล์ขอรหัสผ่านใหม่
+              // ส่งอีเมลขอรหัสผ่านใหม่
               $err = \Index\Forgot\Model::execute($item['id'], $password, $item['username']);
               if ($err != '') {
                 $msgs[] = $err;
@@ -98,7 +96,7 @@ class Model extends \Kotchasan\Model
             }
             if (isset($password)) {
               if (empty($msgs)) {
-                // ส่งอีเมล์ สำเร็จ
+                // ส่งอีเมล สำเร็จ
                 $ret['alert'] = Language::get('Your message was sent successfully');
               } else {
                 // มีข้อผิดพลาด
@@ -107,7 +105,7 @@ class Model extends \Kotchasan\Model
             }
           } elseif (preg_match('/active_([01])/', $action, $match2)) {
             // สถานะการเข้าระบบ
-            $model->db()->update($user_table, array(
+            $this->db()->update($this->getTableName('user'), array(
               array('id', $match[1]),
               array('id', '!=', '1')
               ), array(

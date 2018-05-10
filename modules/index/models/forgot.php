@@ -22,7 +22,7 @@ class Model extends \Kotchasan\KBase
 {
 
   /**
-   * ฟังก์ชั่นส่งอีเมล์ขอรหัสผ่านใหม่
+   * ฟังก์ชั่นส่งอีเมลขอรหัสผ่านใหม่
    *
    * @param int $id
    * @param string $password
@@ -31,7 +31,7 @@ class Model extends \Kotchasan\KBase
    */
   public static function execute($id, $password, $username)
   {
-    // ข้อมูลอีเมล์
+    // ข้อมูลอีเมล
     $subject = Language::get('Get new password').' '.self::$cfg->web_title;
     $msg = $username.' '.Language::get('Your new password is').' : '.$password;
     // send mail

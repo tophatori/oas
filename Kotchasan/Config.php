@@ -62,19 +62,19 @@ class Config
    */
   public $cache_expire = 0;
   /**
-   * ทีอยู่อีเมล์ใช้เป็นผู้ส่งจดหมาย สำหรับจดหมายที่ไม่ต้องการตอบกลับ เช่น no-reply@domain.tld
+   * ทีอยู่อีเมลใช้เป็นผู้ส่งจดหมาย สำหรับจดหมายที่ไม่ต้องการตอบกลับ เช่น no-reply@domain.tld
    *
    * @var string
    */
   public $noreply_email = 'no-reply@locahost';
   /**
-   * ระบุรหัสภาษาของอีเมล์ที่ส่ง เช่น tis-620
+   * ระบุรหัสภาษาของอีเมลที่ส่ง เช่น tis-620
    *
    * @var string
    */
   public $email_charset = 'utf-8';
   /**
-   * เลือกโปรแกรมที่ใช้ในการส่งอีเมล์เป็น PHPMailer
+   * เลือกโปรแกรมที่ใช้ในการส่งอีเมลเป็น PHPMailer
    *
    * @var bool
    */
@@ -99,7 +99,7 @@ class Config
    */
   public $email_SMTPAuth = false;
   /**
-   * โปรโตคอลการเข้ารหัส SSL สำหรับการส่งอีเมล์ เช่น ssl
+   * โปรโตคอลการเข้ารหัส SSL สำหรับการส่งอีเมล เช่น ssl
    *
    * @var string
    */

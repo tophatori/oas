@@ -19,10 +19,10 @@ class Validator extends \Kotchasan\KBase
 {
 
   /**
-   * ตรวจสอบความถูกของอีเมล์
+   * ตรวจสอบความถูกของอีเมล
    *
    * @param string $email
-   * @return boolean คืนค่า true ถ้ารูปแบบอีเมล์ถูกต้อง
+   * @return boolean คืนค่า true ถ้ารูปแบบอีเมลถูกต้อง
    *
    * @assert ('admin@localhost.com') [==] true
    * @assert ('admin@localhost') [==] true

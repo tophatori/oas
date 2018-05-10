@@ -142,7 +142,7 @@ class Login extends \Kotchasan\Login implements \Kotchasan\LoginInterface
   }
 
   /**
-   * ฟังก์ชั่นส่งอีเมล์ลืมรหัสผ่าน
+   * ฟังก์ชั่นส่งอีเมลลืมรหัสผ่าน
    */
   public function forgot(Request $request)
   {
@@ -154,20 +154,20 @@ class Login extends \Kotchasan\Login implements \Kotchasan\LoginInterface
       }
     } else {
       self::$login_params['username'] = $username;
-      // ชื่อฟิลด์สำหรับตรวจสอบอีเมล์ ใช้ฟิลด์แรกจาก config
+      // ชื่อฟิลด์สำหรับตรวจสอบอีเมล ใช้ฟิลด์แรกจาก config
       $field = reset(self::$cfg->login_fields);
       // Model
       $model = new \Kotchasan\Model;
       // ตาราง user
       $table = $model->getTableName('user');
-      // ค้นหาอีเมล์
+      // ค้นหาอีเมล
       $search = $model->db()->first($table, array(array($field, $username), array('fb', '0')));
       if ($search === false) {
         self::$login_message = Language::get('not a registered user');
       } else {
         // สุ่มรหัสผ่านใหม่
         $password = \Kotchasan\Text::rndname(6);
-        // ส่งอีเมล์ขอรหัสผ่านใหม่
+        // ส่งอีเมลขอรหัสผ่านใหม่
         $err = \Index\Forgot\Model::execute($search->id, $password, $search->$field);
         // คืนค่า
         if ($err == '') {

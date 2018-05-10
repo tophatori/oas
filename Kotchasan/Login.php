@@ -191,7 +191,7 @@ class Login extends \Kotchasan\KBase implements LoginInterface
   }
 
   /**
-   * ฟังก์ชั่นส่งอีเมล์ลืมรหัสผ่าน
+   * ฟังก์ชั่นส่งอีเมลลืมรหัสผ่าน
    */
   public function forgot(Request $request)
   {

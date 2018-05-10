@@ -12,7 +12,7 @@ use \Kotchasan\Html;
 use \Kotchasan\Language;
 
 /**
- * ตั้งค่าระบบอีเมล์
+ * ตั้งค่าระบบอีเมล
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *

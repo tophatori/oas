@@ -106,7 +106,7 @@
         ret = new Array();
       if (locs.length > 1) {
         forEach(locs[1].split('&'), function () {
-          if (/([^0-9]+)/.test(this)) {
+          if (!/time=[0-9]+/.test(this)) {
             ret.push(this);
           }
         });

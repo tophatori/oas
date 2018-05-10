@@ -24,8 +24,8 @@ class Email extends \Kotchasan\KBase
   /**
    * ฟังก์ชั่นส่งเมล์แบบกำหนดรายละเอียดเอง
    *
-   * @param string $mailto ที่อยู่อีเมล์ผู้รับ  คั่นแต่ละรายชื่อด้วย ,
-   * @param string $replyto ที่อยู่อีเมล์สำหรับการตอบกลับจดหมาย ถ้าระบุเป็นค่าว่างจะใช้ที่อยู่อีเมล์จาก noreply_email
+   * @param string $mailto ที่อยู่อีเมลผู้รับ  คั่นแต่ละรายชื่อด้วย ,
+   * @param string $replyto ที่อยู่อีเมลสำหรับการตอบกลับจดหมาย ถ้าระบุเป็นค่าว่างจะใช้ที่อยู่อีเมลจาก noreply_email
    * @param string $subject หัวข้อจดหมาย
    * @param string $msg รายละเอียดของจดหมาย (รองรับ HTML)
    * @return \static
@@ -51,7 +51,7 @@ class Email extends \Kotchasan\KBase
     }
     $msg = preg_replace(array('/<\?/', '/\?>/'), array('&lt;?', '?&gt;'), $msg);
     if (empty(self::$cfg->email_use_phpMailer)) {
-      // ส่งอีเมล์ด้วยฟังก์ชั่นของ PHP
+      // ส่งอีเมลด้วยฟังก์ชั่นของ PHP
       foreach (explode(',', $mailto) as $email) {
         $headers = "MIME-Version: 1.0\r\n";
         $headers .= "Content-type: text/html; charset=".strtoupper($charset)."\r\n";
@@ -62,7 +62,7 @@ class Email extends \Kotchasan\KBase
         }
       }
     } else {
-      // ส่งอีเมล์ด้วย PHPMailer
+      // ส่งอีเมลด้วย PHPMailer
       include_once VENDOR_DIR.'PHPMailer/class.phpmailer.php';
       // Create a new PHPMailer instance
       $mail = new \PHPMailer;
@@ -120,9 +120,9 @@ class Email extends \Kotchasan\KBase
   }
 
   /**
-   * ตรวจสอบว่ามีข้อผิดพลาดในการส่งอีเมล์หรือไม่
+   * ตรวจสอบว่ามีข้อผิดพลาดในการส่งอีเมลหรือไม่
    *
-   * @return boolean คืนค่า true ถ้ามี error, false ถ้าส่งอีเมล์สำเร็จ
+   * @return boolean คืนค่า true ถ้ามี error, false ถ้าส่งอีเมลสำเร็จ
    */
   public function error()
   {
@@ -130,7 +130,7 @@ class Email extends \Kotchasan\KBase
   }
 
   /**
-   * คืนค่าข้อผิดพลาดการส่งอีเมล์
+   * คืนค่าข้อผิดพลาดการส่งอีเมล
    *
    * @return string ถ้าไม่มีข้อผิดพลาดคืนค่าข้อความว่าง
    */
