@@ -40,15 +40,15 @@ a:hover {
 #login_div a {
   color: inherit;
 }
+#login_div aside {
+  margin: 10px 20px 0;
+}
 #login_div .warning,
 #login_div form {
   width: 320px;
   max-width: 95%;
   margin: 0 auto;
   overflow: hidden;
-}
-#login_div aside {
-  margin: 10px 20px 0 !important;
 }
 #login_div .warning {
   margin: 20px auto 0;

@@ -35,6 +35,7 @@ class View extends \Gcms\View
      */
     public function render(Request $request, $owner)
     {
+        // ปี พศ.
         $year_offset = Language::get('YEAR_OFFSET');
         // ปี เริ่มต้น 2017
         $years = array(0 => '{LNG_all items}');
@@ -135,8 +136,8 @@ class View extends \Gcms\View
             ),
         ));
         // save cookie
-        setcookie('outward_perPage', $table->perPage, time() + 3600 * 24 * 365, '/');
-        setcookie('outward_sort', $table->sort, time() + 3600 * 24 * 365, '/');
+        setcookie('outward_perPage', $table->perPage, time() + 2592000, '/', null, null, true);
+        setcookie('outward_sort', $table->sort, time() + 2592000, '/', null, null, true);
 
         return $table->render();
     }

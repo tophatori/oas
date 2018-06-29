@@ -118,8 +118,8 @@ class View extends \Gcms\View
             ),
         ));
         // save cookie
-        setcookie('inventory_perPage', $table->perPage, time() + 3600 * 24 * 365, '/');
-        setcookie('inventory_sort', $table->sort, time() + 3600 * 24 * 365, '/');
+        setcookie('inventory_perPage', $table->perPage, time() + 2592000, '/', null, null, true);
+        setcookie('inventory_sort', $table->sort, time() + 2592000, '/', null, null, true);
         $table->script('initModal("inventory_table");');
         // คืนค่า section
         return Html::create('section', array(
