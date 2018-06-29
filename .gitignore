@@ -1,5 +1,7 @@
 # Kotchasan
 
 .htaccess
+.vscode
 robots.txt
-/nbproject/private/
+/datas/*
+/settings/*

@@ -7,14 +7,14 @@
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
  */
-(function () {
-  'use strict';
+(function() {
+  "use strict";
   window.GSortTable = GClass.create();
   GSortTable.prototype = {
-    initialize: function (id, options) {
+    initialize: function(id, options) {
       this.options = {
-        sortClass: 'icon-move',
-        itemClass: 'sort',
+        sortClass: "icon-move",
+        itemClass: "sort",
         endDrag: $K.emptyFunction
       };
       for (var property in options) {
@@ -29,7 +29,11 @@
         var elemPos = item.viewportOffset();
         var elemSize = item.getDimensions();
         var mouseover = mousePos.x > elemPos.left && mousePos.y > elemPos.top;
-        return mouseover && mousePos.x < elemPos.left + elemSize.width && mousePos.y < elemPos.top + elemSize.height;
+        return (
+          mouseover &&
+          mousePos.x < elemPos.left + elemSize.width &&
+          mousePos.y < elemPos.top + elemSize.height
+        );
       }
       function doBeginDrag() {
         self.changed = false;
@@ -39,7 +43,7 @@
       }
       function doMoveDrag() {
         var temp = this;
-        forEach(dropitems, function () {
+        forEach(dropitems, function() {
           if (checkMouseOver(this, temp.mousePos)) {
             if (this != hoverItem) {
               self.changed = true;
@@ -64,7 +68,7 @@
         if (tr.hasClass(self.options.sortClass)) {
           return tr;
         } else {
-          var els = $E(tr).getElementsByTagName('*');
+          var els = $E(tr).getElementsByTagName("*");
           for (var i = 0; i < els.length; i++) {
             if ($G(els[i]).hasClass(self.options.sortClass)) {
               return els[i];
@@ -77,7 +81,7 @@
         moveDrag: doMoveDrag,
         endDrag: doEndDrag
       };
-      forEach($E(id).getElementsByTagName('*'), function () {
+      forEach($E(id).getElementsByTagName("*"), function() {
         if ($G(this).hasClass(self.options.itemClass)) {
           new GDrag(_find(this), this, o);
           dropitems.push(this);
@@ -85,4 +89,4 @@
       });
     }
   };
-}());
+})();

@@ -172,7 +172,13 @@ ul.list-style-none {
 }
 .border {
   border-width: 1px;
+}
+.border:not(table) {
   border-style: solid;
+}
+table.border {
+  border-top-style: solid;
+  border-right-style: solid;
 }
 /* Font Style */
 del {
@@ -235,6 +241,7 @@ mark {
   border-radius: 3px;
   padding: 0 0.4em;
   text-shadow: none;
+  white-space: nowrap;
 }
 .term0 {
   background-color: #4A5DB9;
@@ -256,6 +263,18 @@ mark {
 }
 .term6 {
   background-color: #4CAF50;
+}
+.term7 {
+  background-color: #B71C1C;
+}
+.term8 {
+  background-color: #1F618D;
+}
+.term9 {
+  background-color: #76448A;
+}
+.term10 {
+  background-color: #117864;
 }
 /* layout */
 .gcss-wrapper {
@@ -473,9 +492,9 @@ input[type="color"] {
 input:focus,
 select:focus,
 textarea:focus {
-  box-shadow: 0 0 3px rgba(82,168,236,0.8) inset;
-  -moz-box-shadow: 0 0 3px rgba(82,168,236,0.8) inset;
-  -webkit-box-shadow: 0 0 3px rgba(82,168,236,0.8) inset;
+  box-shadow: 0 0 3px rgba(82,168,236,0.8);
+  -moz-box-shadow: 0 0 3px rgba(82,168,236,0.8);
+  -webkit-box-shadow: 0 0 3px rgba(82,168,236,0.8);
   outline: none;
 }
 input[type="file"]:focus,
@@ -686,16 +705,15 @@ td > .wlabel {
   margin-left: 1px;
   line-height: 1.9em;
 }
-input[readonly],
-select[readonly],
-textarea[readonly] {
+input[readonly]:not([data-keyboard]),
+select[readonly]:not([data-keyboard]),
+textarea[readonly]:not([data-keyboard]) {
   background-color: #F5F5F5;
   cursor: default;
 }
 input:disabled,
 select:disabled,
-textarea:disabled,
-input.gcalendar[type="text"]:disabled:disabled {
+textarea:disabled {
   color: #BBB;
   background-color: #F5F5F5;
   cursor: default;
@@ -721,6 +739,7 @@ textarea.valid,
 .install li.valid {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAK8AAACvABQqw0mAAAABh0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzT7MfTgAAAcRJREFUOI2lk7trlFEQxX9zv+vuohFRFC3sDIJCYvCBzdooNgEhCIIa0ylsQBG1sbaJFqZIEcGsgpjCRgnW/gUR90V8EAtRNBBZNm50H9/jfmORBytZZWWnnJlzOHNmRlSVbsJ0hQbs/zQ/KaRnQHds8vZkLvY9fwcgnY7wKJee9qMvw6oR1tuJanwgc2zuQ0cKpt6cvl4PF4dd7AAP35WL1pjvGxRkc0MHgejy4Zn5tdzj/Lm+H835UhAtIWIBPinJgdvp98vQYmI2f+FE1S+Xlv1yaSp//shqWpaaC89qQY1QUwTOBmGcHFwDryuYfD2SqtQ/1hphxQD0JHfXdvX0Hq82Fs5Um9/GYo0AwYi5cufk22zreBbgc2XWDyOZhMRVUOp+eUszMIXQNWwjdAgWEV7dH5z7A7zBg9EX/ROqXBMBxQGCYFDwBdv74Gzu6z8JAEam+ydcvEICgIIx5tbTS4XxdhtqewdDDw+NO8cNVcUYKb7MFAfagdc9sCJbgW1AIgZP4d7Rm/v3JrcnTi3OVu7KqOzzIAE4IAICoBqp/hRVxYokgdQqoedAgF9gN0MUeSs1BeIWkmak6nd8yn+Lrr/xN4yjzwehHQW9AAAAAElFTkSuQmCC) !important;
 }
+.show[type="submit"],
 input.wait,
 select.wait,
 textarea.wait,
@@ -1019,6 +1038,18 @@ html .button:before,
   background-color: #DDD;
   color: #999;
 }
+.wait[class^="icon-"]:before,
+.wait[class*=" icon-"]:before {
+  content: "\e612";
+}
+.wait:not(.button) {
+  -moz-animation: highlight 1s infinite alternate linear;
+  -ms-animation: highlight 1s infinite alternate linear;
+  -o-animation: highlight 1s infinite alternate linear;
+  -webkit-animation: highlight 1s infinite alternate linear;
+  animation: highlight 1s infinite alternate linear;
+}
+.show[type="submit"],
 .button.wait {
   color: transparent;
   text-shadow: none;
@@ -1076,6 +1107,26 @@ html .button:before,
   color: #FFF;
 }
 /* Loading */
+@keyframes highlight {
+  0% {color: #F00}
+  50% {color: #00F}
+  100% {color: #0F0}
+}
+@-moz-keyframes highlight {
+  0% {color: #F00}
+  50% {color: #00F}
+  100% {color: #0F0}
+}
+@-ms-keyframes highlight {
+  0% {color: #F00}
+  50% {color: #00F}
+  100% {color: #0F0}
+}
+@-webkit-keyframes highlight {
+  0% {color: #F00}
+  50% {color: #00F}
+  100% {color: #0F0}
+}
 @keyframes rainbow {
   0% {background-color: #F00}
   50% {background-color: #00F}
@@ -1275,6 +1326,7 @@ form .comment {
   padding: 0.24em 1em 0.24em 0;
   cursor: pointer;
   float: left;
+  color: initial;
 }
 .radiogroups.g-input > label,
 .checkboxgroups.g-input > label {
@@ -1326,33 +1378,63 @@ form .comment {
   color: inherit;
   margin-right: 5px;
 }
+/* inputgroups */
+ul.inputgroups.g-input {
+  padding: 0 0 0 2.5em;
+  color: #000;
+  cursor: text;
+}
+ul.inputgroups > li {
+  white-space: nowrap;
+  float: left;
+  line-height: inherit;
+  margin: 0.2em 0.2em 0.2em 0;
+}
+ul.inputgroups input[type="text"],
+ul.inputgroups > li > button {
+  border-style: none;
+  height: 2.23em;
+  color: inherit;
+}
+ul.inputgroups > li {
+  background-color: rgba(0,0,0,0.03);
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+ul.inputgroups > li > span {
+  padding-left: 10px;
+}
+ul.inputgroups > li > button {
+  outline: none;
+  padding: 0 10px;
+  border-style: none;
+  margin-left: 10px;
+  background-color: rgba(0,0,0,0.03);
+  border-radius: 0 5px 5px 0;
+  -moz-border-radius: 0 5px 5px 0;
+  -webkit-border-radius: 0 5px 5px 0;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+ul.inputgroups > li > button:hover,
+ul.inputgroups > li > button:focus {
+  background-color: rgba(0,0,0,0.05);
+}
+ul.inputgroups button:focus,
+ul.inputgroups input[type="text"]:focus {
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+}
 /* dropdown panel */
 .gdpanel {
-  right: 0;
   min-width: 15em;
-  line-height: 1.8em;
-  visibility: hidden;
-  opacity: 0;
   margin-top: 2px;
-  list-style-type: none;
-  padding: 0 !important;
-  z-index: 1;
-  position: absolute;
-  text-align: left;
-  color: #333;
-  background-color: #FFF;
-  border: 1px solid rgba(0,0,0,0.2);
-  -moz-border-radius: 1px;
-  -webkit-border-radius: 1px;
-  border-radius: 1px;
-  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  -webkit-transition: opacity 0.2s ease-out;
-  -moz-transition: opacity 0.2s ease-out;
-  -ms-transition: opacity 0.2s ease-out;
-  -o-transition: opacity 0.2s ease-out;
-  transition: opacity 0.2s ease-out;
+  right: 0;
 }
 html[dir="rtl"] .gdpanel {
   left: 0;
@@ -1395,6 +1477,65 @@ html[dir="rtl"] .gdpanel-arrow {
   padding-left: 25px;
   padding-right: 0;
 }
+/* menu button */
+.menubutton {
+  overflow: visible;
+  position: relative;
+  padding-right: 1.7em;
+}
+.gdpanel,
+.menubutton > ul {
+  text-align: initial;
+  line-height: 1.8em;
+  list-style-type: none;
+  padding: 0 !important;
+  position: absolute;
+  z-index: 2;
+  color: #666;
+  background-color: #FFF;
+  border: 1px solid rgba(0,0,0,0.2);
+  -moz-border-radius: 1px;
+  -webkit-border-radius: 1px;
+  border-radius: 1px;
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  visibility: hidden;
+  opacity: 0;
+  -webkit-transition: opacity 0.2s ease-out;
+  -moz-transition: opacity 0.2s ease-out;
+  -ms-transition: opacity 0.2s ease-out;
+  -o-transition: opacity 0.2s ease-out;
+  transition: opacity 0.2s ease-out;
+}
+.menubutton > ul {
+  right: -2px;
+}
+.menubutton:focus > ul,
+.menubutton:hover > ul {
+  visibility: visible;
+  opacity: 1;
+}
+.menubutton > ul > li > a,
+.menubutton > ul {
+  -webkit-transition: 0.2s ease-out;
+  -moz-transition: 0.2s ease-out;
+  -ms-transition: 0.2s ease-out;
+  -o-transition: 0.2s ease-out;
+  transition: 0.2s ease-out;
+}
+.menubutton > ul > li > a {
+  display: block;
+  padding: 5px;
+}
+.menubutton:after {
+  content: "\25BC";
+  position: absolute;
+  right: 0;
+  width: 1em;
+  text-align: center;
+  border-left: 1px solid rgba(255,255,255,0.1);
+}
 /* top menu, side menu, group-button */
 .topmenu {
   position: relative;
@@ -1404,6 +1545,7 @@ html[dir="rtl"] .gdpanel-arrow {
   display: table;
   zoom: 1;
 }
+.menubutton li,
 .topmenu li,
 .sidemenu li,
 .group-button li {
@@ -1444,6 +1586,7 @@ html .sidemenu ul,
   line-height: inherit;
   overflow: visible;
 }
+.menubutton > ul > li > a,
 .topmenu li > a > span,
 .topmenu li > a,
 .sidemenu li > a > span,
@@ -1457,10 +1600,12 @@ html .sidemenu ul,
 .sidemenu > ul ul {
   color: #000;
 }
+.menubutton > ul > li:hover,
 .topmenu > ul ul > li:hover,
 .sidemenu ul > li:hover {
   color: #FFF;
 }
+.menubutton > ul > li:hover > a,
 .topmenu > ul ul > li:hover > a,
 .sidemenu ul > li:hover > a {
   background-color: #333;
@@ -1469,6 +1614,7 @@ html .sidemenu ul,
 .sidemenu ul > li:hover:before {
   color: inherit;
 }
+.menubutton > ul > li > a > span,
 .topmenu li > a > span,
 .sidemenu li > a > span,
 .group-button li > a > span {
@@ -1789,7 +1935,7 @@ html[dir="rtl"] .tab > ul > li:first-child > a {
 }
 /* gtab */
 .gtab > label {
-  display: inline-block;
+  display: block;
   float: left;
   overflow: hidden;
   padding: 5px 1em;
@@ -2037,6 +2183,7 @@ html[dir="rtl"] .tab > ul > li:first-child > a {
 }
 /* GInput */
 div.ginput {
+  font-size: 16px;
   display: table;
   margin: 0 auto;
   background-color: #FFF;
@@ -2044,16 +2191,16 @@ div.ginput {
   -webkit-box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
   text-align: center;
-  width: 17.5em;
+  width: 15em;
 }
 div.ginput a {
   font-size: 1em;
   cursor: pointer;
   color: #333;
   float: left;
-  width: 2.5em;
-  height: 2.5em;
-  line-height: 2.5em;
+  width: 2em;
+  height: 2em;
+  line-height: 2em;
   margin: 0.5em;
   border-width: 1px;
   border-style: solid;
@@ -2187,11 +2334,15 @@ input.gcalendar {
   cursor: pointer;
   background-position: 95% 50%;
 }
+input[type="text"].gcalendar:not(:disabled),
+input[type="text"].gcalendar:not(:disabled) {
+  background-color: #FFF;
+}
 [class*=" icon-"] input[type="text"].gcalendar,
 [class^="icon-"] input[type="text"].gcalendar {
   background-image: url();
   max-width: none;
-  background-color: #FFF;
+
 }
 /* widget calendar */
 div.calendar div {
@@ -2640,7 +2791,7 @@ input.gddcolor.invalid {
 .document-list .col10,
 .document-list .col11,
 .document-list .col12 {
-  display: inline-block;
+  display: block;
   float: left;
   margin: 0 0 1% 1%;
   border-width: 2px;
@@ -2802,9 +2953,12 @@ aside.tip {
   color: white;
   font-weight: bold;
   float: right;
+  width: 1em;
+  height: 1em;
+  line-height: 1em;
+  text-align: center;
   margin-left: 15px;
   font-size: 22px;
-  line-height: 20px;
   cursor: pointer;
   -webkit-transition: 0.3s;
   -moz-transition: 0.3s;
@@ -2990,8 +3144,7 @@ body .tooltip-bottom-right {
 /* table */
 .table, table {
   display: table;
-  border-color: #EFEFEF;
-  border-color: rgba(0,0,0,0.1);
+  border-color: #CCC;
   border-spacing: 0;
   border-collapse: collapse;
 }
@@ -3026,15 +3179,18 @@ table.collapse > tfoot > tr > td,
   padding: 0;
 }
 .border > caption,
+.table.border .td,
+.table.border .th {
+  border-style: solid;
+}
 .border > thead > tr > th,
 .border > tbody > tr > th,
 .border > tfoot > tr > th,
 .border > thead > tr > td,
 .border > tbody > tr > td,
-.border > tfoot > tr > td,
-.table.border .td,
-.table.border .th {
-  border-style: solid;
+.border > tfoot > tr > td {
+  border-bottom-style: solid;
+  border-left-style: solid;
 }
 caption,
 thead > tr,
@@ -3046,25 +3202,25 @@ th[scope="rowgroup"],
 tbody tr:not(.thead):not(.tfoot):hover, tbody tr.highlight, tbody tr.select, .data tfoot tr {
   background-color: rgba(0,0,0,0.02);
 }
-.border.horiz-table > thead > tr > td,
-.border.horiz-table > tbody > tr > td,
-.border.horiz-table > tfoot > tr > td,
-.border.horiz-table > thead > tr > th,
-.border.horiz-table > tbody > tr > th,
-.border.horiz-table > tfoot > tr > th,
-.border.horiz-table .td,
-.border.horiz-table .th {
+.border.horiz-table > thead > tr > td:not(:first-child),
+.border.horiz-table > tbody > tr > td:not(:first-child),
+.border.horiz-table > tfoot > tr > td:not(:first-child),
+.border.horiz-table > thead > tr > th:not(:first-child),
+.border.horiz-table > tbody > tr > th:not(:first-child),
+.border.horiz-table > tfoot > tr > th:not(:first-child),
+.border.horiz-table .td:not(:first-child),
+.border.horiz-table .th:not(:first-child) {
   border-left-style: none;
   border-right-style: none;
 }
-.border.vert-table > thead > tr > td,
-.border.vert-table > tbody > tr > td,
-.border.vert-table > tfoot > tr > td,
-.border.vert-table > thead > tr > th,
-.border.vert-table > tbody > tr > th,
-.border.vert-table > tfoot > tr > th,
-.border.vert-table .td,
-.border.vert-table .th {
+.border.vert-table > thead > tr:not(:last-child) > td,
+.border.vert-table > tbody > tr:not(:last-child) > td,
+.border.vert-table > tfoot > tr:not(:last-child) > td,
+.border.vert-table > thead > tr:not(:last-child) > th,
+.border.vert-table > tbody > tr:not(:last-child) > th,
+.border.vert-table > tfoot > tr:not(:last-child) > th,
+.border.vert-table :not(:last-child) .td,
+.border.vert-table :not(:last-child) .th {
   border-top-style: none;
   border-bottom-style: none;
 }
@@ -3234,9 +3390,8 @@ td.buttons .button:last-child {
 .document-list .figure {
   float: left;
   margin: 5px 5px 5px 0;
-  display: inline-block;
+  display: block;
   max-width: 60px;
-  vertical-align: top;
 }
 .thumbview .figure {
   display: table;
@@ -3247,7 +3402,7 @@ td.buttons .button:last-child {
 .listview .figure {
   width: 16px;
   max-width: 100%;
-  display: inline;
+  display: inline-block;
   margin: 0 5px 0 0;
 }
 /* scroller */
@@ -3482,7 +3637,7 @@ td.buttons .button:last-child {
     float: none;
     display: block;
   }
-  body.responsive .menu {
+  body.responsive .menu_bg {
     padding: 0;
     width: 100%;
     border-style: none;
@@ -3667,7 +3822,7 @@ td.buttons .button:last-child {
     margin: 0 !important;
     max-width: 100%;
   }
-  body.responsive input.toggle-menu:checked ~ #slidemenu_content .menu {
+  body.responsive input.toggle-menu:checked ~ #slidemenu_content .menu_bg {
     position: absolute;
     top: 0;
     left: 0;
@@ -3888,6 +4043,10 @@ td.buttons .button:last-child {
   body.responsive table.responsive > tbody > tr > :first-child {
     display: block;
     background-color: #EEE;
+    border-style: solid none;
+  }
+  body.responsive table.responsive > tbody > tr:not(:first-child) > :first-child {
+    border-top-color: inherit;
   }
   body.responsive table.responsive [data-text]:after {
     content: attr(data-text);
@@ -3895,13 +4054,15 @@ td.buttons .button:last-child {
     margin-left: 5px;
   }
   /* responsive table.responsive-v */
+  body.responsive table.responsive-v {
+    border-style: none none none solid;
+  }
   body.responsive table.responsive-v > thead {
     display: none;
   }
   body.responsive table.responsive-v > tbody {
     display: table;
     width: 100%;
-    border-color: rgba(0,0,0,0.1);
     border-width: 1px;
     border-style: solid solid none none;
   }
@@ -3933,10 +4094,16 @@ td.buttons .button:last-child {
     display: table-cell;
     padding: 5px 10px;
     background-color: #EEE;
-    border-color: rgba(255,255,255,0.5);
+    border-color: inherit;
     border-style: solid solid none;
     border-width: 1px;
     white-space: nowrap;
+  }
+  body.responsive table.responsive-v > tbody > tr > th,
+  body.responsive table.responsive-v > tbody > tr > th:before {
+    background-color: #DDD;
+    border-style: solid none;
+    border-color: inherit;
   }
   body.responsive table.data.responsive-v > tbody > tr > :before {
     background-color: #f4f9fe;

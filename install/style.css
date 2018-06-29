@@ -2,17 +2,18 @@ body {
   background-color: #333;
   font-size: 14px;
   color: #333333;
-  font-family: 'Athiti', Tahoma, Loma;
+  font-family: "Athiti", Tahoma, Loma;
 }
-body, li {
+body,
+li {
   line-height: 2;
 }
 main {
   -moz-border-radius: 11px;
   -webkit-border-radius: 11px;
   border-radius: 11px;
-  background-color: #FFFFFF;
-  border: 1px solid #DFDFDF;
+  background-color: #ffffff;
+  border: 1px solid #dfdfdf;
   margin: 2em auto;
   padding: 1em 2em;
   width: 800px;
@@ -25,7 +26,7 @@ h1 {
 h2 {
   color: #999;
   display: block;
-  border-bottom: 1px solid #BBBBBB;
+  border-bottom: 1px solid #bbbbbb;
   padding-bottom: 5px;
 }
 ul {
@@ -33,7 +34,7 @@ ul {
   padding: 0;
 }
 li {
-  border-bottom: 1px dashed #DDD;
+  border-bottom: 1px dashed #ddd;
 }
 .correct {
   background: transparent url(img/valid.png) 0 50% no-repeat;
@@ -42,7 +43,7 @@ li {
 }
 .incorrect {
   background: transparent url(img/invalid.png) 0 50% no-repeat;
-  color: #F00;
+  color: #f00;
   padding-left: 20px;
 }
 .footer {
@@ -50,7 +51,7 @@ li {
   color: #999;
   margin-top: 10px;
   padding: 1em 2em 0 2em;
-  border-top: solid 1px #DDD;
+  border-top: solid 1px #ddd;
 }
 a.icon-help {
   color: red;

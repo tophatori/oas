@@ -20,6 +20,10 @@ CKEDITOR.editorConfig = function (config) {
   /* Simplify the dialog windows. */
   config.removeDialogTabs = 'image:advanced;link:advanced';
 
+  /* remove status bar */
+  config.removePlugins = 'elementspath';
+  config.resize_enabled = false;
+
   /* Prevent filler nodes in all empty blocks */
   config.fillEmptyBlocks = false;
 

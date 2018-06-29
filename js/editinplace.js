@@ -7,25 +7,29 @@
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
  */
-(function () {
-  'use strict';
+(function() {
+  "use strict";
   window.EditInPlace = GClass.create();
   EditInPlace.prototype = {
-    initialize: function (e, o) {
-      this.className = 'editinplace';
-      this.editing = function () {
-        return '<input type="text" value="' + (this.value ? this.value : this.innerHTML) + '" />';
+    initialize: function(e, o) {
+      this.className = "editinplace";
+      this.editing = function() {
+        return (
+          '<input type="text" value="' +
+          (this.value ? this.value : this.innerHTML) +
+          '" />'
+        );
       };
       for (var p in o) {
         this[p] = o[p];
       }
       this.src = $G(e);
-      this.src.style.cursor = 'pointer';
+      this.src.style.cursor = "pointer";
       this.src.tabIndex = 0;
       this.src.addClass(this.className);
-      this.src.addEvent('click', this.Edit.bind(this));
+      this.src.addEvent("click", this.Edit.bind(this));
       var self = this;
-      this.src.addEvent('keydown', function (e) {
+      this.src.addEvent("keydown", function(e) {
         var key = GEvent.keyCode(e);
         if (key == 13 || key == 32) {
           self.Edit.call(self);
@@ -35,17 +39,17 @@
         return true;
       });
     },
-    Edit: function () {
+    Edit: function() {
       var e = this.editing.call(this.src);
-      if (e !== '' && e !== null) {
+      if (e !== "" && e !== null) {
         e = e.toDOM().firstChild;
         this.src.parentNode.insertBefore(e, this.src);
         this.editor = $G(e);
-        this.editor.addEvent('blur', this._saveEdit.bind(this));
-        this.editor.addEvent('keypress', this._checkKey.bind(this));
-        this.editor.addEvent('keydown', this._checkKey.bind(this));
+        this.editor.addEvent("blur", this._saveEdit.bind(this));
+        this.editor.addEvent("keypress", this._checkKey.bind(this));
+        this.editor.addEvent("keydown", this._checkKey.bind(this));
         this.oldDisplay = this.src.style.display;
-        this.src.style.display = 'none';
+        this.src.style.display = "none";
         this.editor.focus();
         if (this.editor.select) {
           this.editor.select();
@@ -53,19 +57,19 @@
       }
       return this;
     },
-    select: function () {
+    select: function() {
       this.editor.select();
     },
-    cancleEdit: function () {
+    cancleEdit: function() {
       this.src.style.display = this.oldDisplay;
-      this.editor.removeEvent('blur', this._saveEdit.bind(this));
-      this.editor.removeEvent('keypress', this._checkKey.bind(this));
-      this.editor.removeEvent('keydown', this._checkKey.bind(this));
+      this.editor.removeEvent("blur", this._saveEdit.bind(this));
+      this.editor.removeEvent("keypress", this._checkKey.bind(this));
+      this.editor.removeEvent("keydown", this._checkKey.bind(this));
       this.editor.remove();
       this.src.focus();
       return this;
     },
-    _saveEdit: function () {
+    _saveEdit: function() {
       var ret = true,
         v = this.editor.value ? this.editor.value : this.editor.innerHTML;
       if (Object.isFunction(this.onSave)) {
@@ -77,14 +81,14 @@
         this.cancleEdit();
       }
     },
-    _checkKey: function (e) {
+    _checkKey: function(e) {
       var key = GEvent.keyCode(e);
       if (key == 27) {
         this.cancleEdit();
         GEvent.stop(e);
         return false;
       } else if (key == 13) {
-        if (this.editor.tagName.toLowerCase() != 'textarea') {
+        if (this.editor.tagName.toLowerCase() != "textarea") {
           this._saveEdit();
         }
         GEvent.stop(e);
@@ -93,4 +97,4 @@
       return true;
     }
   };
-}());
+})();

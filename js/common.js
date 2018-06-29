@@ -6,25 +6,26 @@
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
  */
-var loader, modal = null;
+var loader,
+  modal = null;
 function send(target, query, callback, wait, c) {
   var req = new GAjax();
-  req.initLoading(wait || 'wait', false, c);
-  req.send(target, query, function (xhr) {
+  req.initLoading(wait || "wait", false, c);
+  req.send(target, query, function(xhr) {
     if (callback) {
       callback.call(this, xhr);
     }
   });
 }
-var hideModal = function () {
+var hideModal = function() {
   if (modal != null) {
     modal.hide();
   }
 };
 function showModal(src, qstr, doClose) {
-  send(src, qstr, function (xhr) {
+  send(src, qstr, function(xhr) {
     var ds = xhr.responseText.toJSON();
-    var detail = '';
+    var detail = "";
     if (ds) {
       if (ds.alert) {
         alert(ds.alert);
@@ -34,7 +35,7 @@ function showModal(src, qstr, doClose) {
     } else {
       detail = xhr.responseText;
     }
-    if (detail != '') {
+    if (detail != "") {
       modal = new GModal({
         onclose: doClose
       }).show(detail);
@@ -43,82 +44,102 @@ function showModal(src, qstr, doClose) {
   });
 }
 function defaultSubmit(ds) {
-  var _alert = '',
+  var _alert = "",
     _input = false,
     _url = false,
     _location = false,
-    t, el,
+    t,
+    el,
     remove = /remove([0-9]{0,})/;
   for (var prop in ds) {
     var val = ds[prop];
-    if (prop == 'error') {
+    if (prop == "error") {
       _alert = eval(val);
-    } else if (prop == 'alert') {
+    } else if (prop == "alert") {
       _alert = val;
-    } else if (prop == 'modal') {
-      if (modal && val == 'close') {
+    } else if (prop == "modal") {
+      if (modal && val == "close") {
         modal.hide();
       }
-    } else if (prop == 'showmodal') {
+    } else if (prop == "showmodal") {
       if (!modal) {
         modal = new GModal();
       }
       modal.show(val);
       val.evalScript();
-    } else if (prop == 'location') {
+    } else if (prop == "elem") {
+      el = $E(val);
+      if (el) {
+        el.className = ds.class;
+        el.title = ds.title;
+      }
+    } else if (prop == "location") {
       _location = val;
-    } else if (prop == 'url') {
+    } else if (prop == "url") {
       _url = val;
       _location = val;
-    } else if (prop == 'open') {
-      window.setTimeout(function () {
-        window.open(val);
+    } else if (prop == "open") {
+      window.setTimeout(function() {
+        window.open(val.replace(/&amp;/g, "&"));
       }, 1);
-    } else if (prop == 'tab') {
+    } else if (prop == "tab") {
       initWriteTab("accordient_menu", val);
     } else if (remove.test(prop)) {
       if ($E(val)) {
-        $G(val).fadeOut(function () {
+        $G(val).fadeOut(function() {
           $G(val).remove();
         });
       }
-    } else if (prop == 'input') {
+    } else if (prop == "input") {
       el = $G(val);
-      t = el.title ? el.title.strip_tags() : '';
-      if (t == '' && el.placeholder) {
+      t = el.title ? el.title.strip_tags() : "";
+      if (t == "" && el.placeholder) {
         t = el.placeholder.strip_tags();
       }
       if (_input != el) {
         el.invalid(t);
       }
-      if (t != '' && _alert == '') {
+      if (t != "" && _alert == "") {
         _alert = t;
         _input = el;
       }
     } else if ($E(prop)) {
-      $G(prop).setValue(decodeURIComponent(val).replace(/\%/g, '&#37;'));
-    } else if ($E(prop.replace('ret_', ''))) {
-      el = $G(prop.replace('ret_', ''));
+      $G(prop).setValue(decodeURIComponent(val).replace(/\%/g, "&#37;"));
+    } else if ($E(prop.replace("ret_", ""))) {
+      el = $G(prop.replace("ret_", ""));
       if (el.display) {
         el = el.display;
       }
-      if (val == '') {
+      if (val == "") {
         el.valid();
       } else {
-        if (val == 'Please fill in' || val == 'Please select' || val == 'Please browse file') {
+        if (
+          val == "Please fill in" ||
+          val == "Please select" ||
+          val == "Please browse file"
+        ) {
           val = trans(val);
           var label = el.findLabel();
           if (label) {
             t = label.innerHTML.strip_tags();
-            if (t != '') {
-              val += ' ' + t;
+          } else {
+            if (typeof el.placeholder != "undefined") {
+              t = el.placeholder.strip_tags();
+            }
+            if (t == "") {
+              t = el.title.strip_tags();
             }
           }
-        } else if (val == 'this') {
-          if (typeof el.placeholder != 'undefined') {
+          if (t != "") {
+            val += " " + t;
+          }
+        } else if (val == "Please select at least one item") {
+          val = trans(val);
+        } else if (val == "this") {
+          if (typeof el.placeholder != "undefined") {
             t = el.placeholder.strip_tags();
           }
-          if (t == '') {
+          if (t == "") {
             t = el.title.strip_tags();
           }
           val = t;
@@ -126,37 +147,37 @@ function defaultSubmit(ds) {
         if (_input != el) {
           el.invalid(val);
         }
-        if (_alert == '') {
+        if (_alert == "") {
           _alert = val;
           _input = el;
         }
       }
     }
   }
-  if (_alert != '') {
+  if (_alert != "") {
     alert(_alert);
   }
   if (_input) {
     _input.focus();
     var tag = _input.tagName.toLowerCase();
-    if (tag != 'select') {
+    if (tag != "select") {
       _input.highlight();
     }
-    if (tag == 'input') {
-      var type = _input.get('type').toLowerCase();
-      if (type == 'text' || type == 'password') {
+    if (tag == "input") {
+      var type = _input.get("type").toLowerCase();
+      if (type == "text" || type == "password") {
         _input.select();
       }
     }
   }
   if (_location) {
-    if (_location == 'reload') {
+    if (_location == "reload") {
       if (loader) {
         loader.reload();
       } else {
         window.location.reload();
       }
-    } else if (_location == 'back') {
+    } else if (_location == "back") {
       if (loader) {
         loader.back();
       } else {
@@ -165,7 +186,7 @@ function defaultSubmit(ds) {
     } else if (loader && _location != _url) {
       loader.location(_location);
     } else {
-      window.location = _location.replace(/&amp;/g, '&');
+      window.location = _location.replace(/&amp;/g, "&");
     }
   }
 }
@@ -173,32 +194,32 @@ function doFormSubmit(xhr) {
   var datas = xhr.responseText.toJSON();
   if (datas) {
     defaultSubmit(datas);
-  } else if (xhr.responseText != '') {
+  } else if (xhr.responseText != "") {
     alert(xhr.responseText);
   }
 }
 function initWriteTab(id, sel) {
   function _doclick(sel) {
-    forEach($E(id).getElementsByTagName('a'), function () {
-      var a = this.id.replace('tab_', '');
+    forEach($E(id).getElementsByTagName("a"), function() {
+      var a = this.id.replace("tab_", "");
       if ($E(a)) {
-        this.className = a == sel ? 'select' : '';
-        $E(a).style.display = a == sel ? 'block' : 'none';
+        this.className = a == sel ? "select" : "";
+        $E(a).style.display = a == sel ? "block" : "none";
       }
     });
-    $E('tab').value = sel;
+    $E("tab").value = sel;
   }
-  forEach($G(id).elems('a'), function () {
-    if ($E(this.id.replace('tab_', ''))) {
-      callClick(this, function () {
-        _doclick(this.id.replace('tab_', ''));
+  forEach($G(id).elems("a"), function() {
+    if ($E(this.id.replace("tab_", ""))) {
+      callClick(this, function() {
+        _doclick(this.id.replace("tab_", ""));
         return false;
       });
     }
   });
   _doclick(sel);
 }
-var dataTableActionCallback = function (xhr) {
+var dataTableActionCallback = function(xhr) {
   var el,
     prop,
     val,
@@ -206,8 +227,8 @@ var dataTableActionCallback = function (xhr) {
   if (ds) {
     for (prop in ds) {
       val = ds[prop];
-      if (prop == 'location') {
-        if (val == 'reload') {
+      if (prop == "location") {
+        if (val == "reload") {
           if (loader) {
             loader.reload();
           } else {
@@ -216,24 +237,24 @@ var dataTableActionCallback = function (xhr) {
         } else {
           window.location = val;
         }
-      } else if (prop == 'open') {
-        window.setTimeout(function () {
-          window.open(val);
+      } else if (prop == "open") {
+        window.setTimeout(function() {
+          window.open(val.replace(/&amp;/g, "&"));
         }, 1);
-      } else if (prop == 'remove') {
+      } else if (prop == "remove") {
         if ($E(val)) {
           $G(val).remove();
         }
-      } else if (prop == 'alert') {
+      } else if (prop == "alert") {
         alert(val);
-      } else if (prop == 'elem') {
+      } else if (prop == "elem") {
         el = $E(val);
         if (el) {
           el.className = ds.class;
           el.title = ds.title;
         }
-      } else if (prop == 'modal') {
-        if (val == 'close') {
+      } else if (prop == "modal") {
+        if (val == "close") {
           if (modal) {
             modal.hide();
           }
@@ -245,29 +266,29 @@ var dataTableActionCallback = function (xhr) {
         $G(prop).setValue(val);
       }
     }
-  } else if (xhr.responseText != '') {
+  } else if (xhr.responseText != "") {
     alert(xhr.responseText);
   }
 };
 function checkUsername() {
   var patt = /[a-zA-Z0-9@\.\-_]+/;
   var value = this.value;
-  var ids = this.id.split('_');
-  var id = '&id=' + floatval($E(ids[0] + '_id').value);
-  if (value == '') {
+  var ids = this.id.split("_");
+  var id = "&id=" + floatval($E(ids[0] + "_id").value);
+  if (value == "") {
     this.invalid(this.title);
   } else if (patt.test(value)) {
-    return 'value=' + encodeURIComponent(value) + id;
+    return "value=" + encodeURIComponent(value) + id;
   } else {
     this.invalid(this.title);
   }
 }
 function checkPassword() {
-  var ids = this.id.split('_');
-  var id = '&id=' + floatval($E(ids[0] + '_id').value);
-  var Password = $E(ids[0] + '_password');
-  var Repassword = $E(ids[0] + '_repassword');
-  if (Password.value == '' && Repassword.value == '') {
+  var ids = this.id.split("_");
+  var id = "&id=" + floatval($E(ids[0] + "_id").value);
+  var Password = $E(ids[0] + "_password");
+  var Repassword = $E(ids[0] + "_repassword");
+  if (Password.value == "" && Repassword.value == "") {
     if (id == 0) {
       this.Validator.invalid(this.Validator.title);
     } else {
@@ -283,8 +304,8 @@ function checkPassword() {
 }
 function checkIdcard() {
   var value = this.value;
-  var ids = this.id.split('_');
-  var id = '&id=' + floatval($E(ids[0] + '_id').value);
+  var ids = this.id.split("_");
+  var id = "&id=" + floatval($E(ids[0] + "_id").value);
   var i, sum;
   if (value.length == 0) {
     this.reset();
@@ -294,35 +315,39 @@ function checkIdcard() {
     for (i = 0, sum = 0; i < 12; i++) {
       sum += parseFloat(value.charAt(i)) * (13 - i);
     }
-    if ((11 - sum % 11) % 10 != parseFloat(value.charAt(12))) {
+    if ((11 - (sum % 11)) % 10 != parseFloat(value.charAt(12))) {
       this.invalid(this.title);
     } else {
-      return 'value=' + encodeURIComponent(value) + '&id=' + id;
+      return "value=" + encodeURIComponent(value) + "&id=" + id;
     }
   }
 }
 function initMailserver() {
-  var doChanged = function () {
+  var doChanged = function() {
     var a = this.value.toInt();
-    $E('email_SMTPSecure').disabled = (a == 0);
-    $E('email_Username').disabled = (a == 0);
-    $E('email_Password').disabled = (a == 0);
+    $E("email_SMTPSecure").disabled = a == 0;
+    $E("email_Username").disabled = a == 0;
+    $E("email_Password").disabled = a == 0;
   };
-  var el = $G('email_SMTPAuth');
-  el.addEvent('change', doChanged);
+  var el = $G("email_SMTPAuth");
+  el.addEvent("change", doChanged);
   doChanged.call(el);
 }
 function replaceURL(key, value) {
   var q,
     prop,
-    urls = window.location.toString().replace(/\#/g, '&').replace(/\?/g, '&').split('&'),
+    urls = window.location
+      .toString()
+      .replace(/\#/g, "&")
+      .replace(/\?/g, "&")
+      .split("&"),
     new_url = new Object(),
     qs = Array(),
     l = urls.length;
   if (l > 1) {
     for (var n = 1; n < l; n++) {
-      if (urls[n] != 'action=login' && urls[n] != 'action=logout') {
-        q = urls[n].split('=');
+      if (urls[n] != "action=login" && urls[n] != "action=logout") {
+        q = urls[n].split("=");
         if (q.length == 2) {
           new_url[q[0]] = q[1];
         }
@@ -332,39 +357,40 @@ function replaceURL(key, value) {
   new_url[key] = value;
   for (prop in new_url) {
     if (new_url[prop]) {
-      qs.push(prop + '=' + new_url[prop]);
+      qs.push(prop + "=" + new_url[prop]);
     } else {
       qs.push(prop);
     }
   }
-  return urls[0] + '?' + qs.join('&');
+  return urls[0] + "?" + qs.join("&");
 }
 function initSystem() {
-  new Clock('local_time');
-  new Clock('server_time');
+  new Clock("local_time");
+  new Clock("server_time");
 }
 function selectMenu(module) {
-  forEach(document.querySelectorAll('#topmenu > ul > li'), function () {
+  forEach(document.querySelectorAll("#topmenu > ul > li"), function() {
     if ($G(this).hasClass(module)) {
-      this.addClass('select');
+      this.addClass("select");
     } else {
-      this.removeClass('select');
+      this.removeClass("select");
     }
   });
-  forEach(document.querySelectorAll('.sidemenu > ul > li'), function () {
+  forEach(document.querySelectorAll(".sidemenu > ul > li"), function() {
     if ($G(this).hasClass(module)) {
-      this.addClass('select');
+      this.addClass("select");
     } else {
-      this.removeClass('select');
+      this.removeClass("select");
     }
   });
 }
 function loadJavascript(id, src) {
-  var js, fjs = document.getElementsByTagName('script')[0];
+  var js,
+    fjs = document.getElementsByTagName("script")[0];
   if (document.getElementById(id)) {
     return;
   }
-  js = document.createElement('script');
+  js = document.createElement("script");
   js.id = id;
   js.src = src;
   fjs.parentNode.insertBefore(js, fjs);
@@ -372,12 +398,15 @@ function loadJavascript(id, src) {
 function initEditInplace(id, model, addbtn) {
   var patt = /list_([a-z]+)_([0-9]+)(_([0-9]+))?/;
   var o = {
-    onSave: function (v, editor) {
+    onSave: function(v, editor) {
       var req = new GAjax({
         asynchronous: false
       });
       req.initLoading(editor, false);
-      req.send('index.php/' + model, 'action=' + this.id + '&value=' + encodeURIComponent(v));
+      req.send(
+        "index.php/" + model,
+        "action=" + this.id + "&value=" + encodeURIComponent(v)
+      );
       ds = req.responseText.toJSON();
       if (ds) {
         if (ds.alert) {
@@ -387,67 +416,84 @@ function initEditInplace(id, model, addbtn) {
           $E(ds.editId).innerHTML = ds.edit;
         }
         return true;
-      } else if (req.responseText != '') {
+      } else if (req.responseText != "") {
         alert(req.responseText);
       }
       return false;
     }
   };
   function _doAction(c) {
-    var q = '',
+    var q = "",
       hs = patt.exec(this.id);
-    if (hs[1] == 'add') {
-      q = 'action=' + this.id;
-    } else if (hs[1] == 'delete' && confirm(trans('You want to XXX ?').replace(/XXX/, trans('delete')))) {
-      q = 'action=' + this.id;
-    } else if (hs[1] == 'color') {
-      q = 'action=' + this.id + '&value=' + encodeURIComponent(c);
-    } else if (hs[1] == 'published') {
-      q = 'action=' + this.id + '&value=' + this.className.replace('icon-published', '');
-    } else if (hs[1] == 'status') {
-      q = 'action=' + this.id + '&value=' + this.value;
+    if (hs[1] == "add") {
+      q = "action=" + this.id;
+    } else if (
+      hs[1] == "delete" &&
+      confirm(trans("You want to XXX ?").replace(/XXX/, trans("delete")))
+    ) {
+      q = "action=" + this.id;
+    } else if (hs[1] == "color") {
+      q = "action=" + this.id + "&value=" + encodeURIComponent(c);
+    } else if (hs[1] == "published") {
+      q =
+        "action=" +
+        this.id +
+        "&value=" +
+        this.className.replace("icon-published", "");
+    } else if (hs[1] == "status") {
+      q = "action=" + this.id + "&value=" + this.value;
     }
-    if (q != '') {
-      send('index.php/' + model, q, function (xhr) {
-        var ds = xhr.responseText.toJSON();
-        if (ds) {
-          if (ds.data) {
-            $G(id).appendChild(ds.data.toDOM());
-            _doInitEditInplaceMethod(ds.newId);
-            $E(ds.newId.replace('list_', 'list_name_')).focus();
-          } else if (ds.del) {
-            $G(ds.del).remove();
-          } else if (ds.editId) {
-            hs = patt.exec(ds.editId);
-            if (hs[1] == 'color') {
-              $E(ds.editId).title = trans('change color') + ' (' + ds.edit + ')';
-              $E(ds.editId).style.color = ds.edit;
-            } else if (hs[1] == 'published') {
-              $E(ds.editId).className = 'icon-published' + ds.edit;
-              $E(ds.editId).title = ds.edit == 1 ? DISABLE : ENABLE;
+    if (q != "") {
+      send(
+        "index.php/" + model,
+        q,
+        function(xhr) {
+          var ds = xhr.responseText.toJSON();
+          if (ds) {
+            if (ds.data) {
+              $G(id).appendChild(ds.data.toDOM());
+              _doInitEditInplaceMethod(ds.newId);
+              $E(ds.newId.replace("list_", "list_name_")).focus();
+            } else if (ds.del) {
+              $G(ds.del).remove();
+            } else if (ds.editId) {
+              hs = patt.exec(ds.editId);
+              if (hs[1] == "color") {
+                $E(ds.editId).title =
+                  trans("change color") + " (" + ds.edit + ")";
+                $E(ds.editId).style.color = ds.edit;
+              } else if (hs[1] == "published") {
+                $E(ds.editId).className = "icon-published" + ds.edit;
+                $E(ds.editId).title = ds.edit == 1 ? DISABLE : ENABLE;
+              }
             }
+            if (ds.alert) {
+              alert(ds.alert);
+            }
+          } else if (xhr.responseText != "") {
+            alert(xhr.responseText);
           }
-          if (ds.alert) {
-            alert(ds.alert);
-          }
-        } else if (xhr.responseText != '') {
-          alert(xhr.responseText);
-        }
-      }, this);
+        },
+        this
+      );
     }
   }
   function _initOrder() {
     new GSortTable(id, {
-      'tag': 'li',
-      'endDrag': function () {
+      tag: "li",
+      endDrag: function() {
         var trs = new Array();
-        forEach($G(id).elems('li'), function () {
+        forEach($G(id).elems("li"), function() {
           if (this.id) {
             trs.push(this.id);
           }
         });
         if (trs.length > 1) {
-          send('index.php/' + model, 'action=move&value=' + trs.join(',').replace(/list_/g, ''), doFormSubmit);
+          send(
+            "index.php/" + model,
+            "action=move&value=" + trs.join(",").replace(/list_/g, ""),
+            doFormSubmit
+          );
         }
       }
     });
@@ -455,24 +501,24 @@ function initEditInplace(id, model, addbtn) {
   function _doInitEditInplaceMethod(src) {
     var loading = true,
       move = false;
-    forEach($G(src).elems('*'), function () {
+    forEach($G(src).elems("*"), function() {
       var hs = patt.exec(this.id);
       if (hs) {
-        if ($G(this).hasClass('editinplace')) {
+        if ($G(this).hasClass("editinplace")) {
           new EditInPlace(this, o);
-        } else if (hs[1] == 'published') {
+        } else if (hs[1] == "published") {
           callClick(this, _doAction);
-          this.title = this.className == 'icon-published1' ? DISABLE : ENABLE;
-        } else if (hs[1] == 'color') {
+          this.title = this.className == "icon-published1" ? DISABLE : ENABLE;
+        } else if (hs[1] == "color") {
           var t = this.title;
-          this.title = trans('change color') + ' (' + t + ')';
-          new GDDColor(this, function (c) {
+          this.title = trans("change color") + " (" + t + ")";
+          new GDDColor(this, function(c) {
             $E(this.input.id).style.color = c;
             if (!loading) {
               _doAction.call(this.input, c);
             }
           }).setColor(t);
-        } else if (hs[1] == 'order') {
+        } else if (hs[1] == "order") {
           move = true;
         } else {
           callClick(this, _doAction);
@@ -488,20 +534,20 @@ function initEditInplace(id, model, addbtn) {
   _doInitEditInplaceMethod(id);
 }
 function initLanguageTable(id) {
-  forEach($G(id).elems('a'), function () {
-    if ($G(this).hasClass('icon-copy')) {
-      callClick(this, function () {
+  forEach($G(id).elems("a"), function() {
+    if ($G(this).hasClass("icon-copy")) {
+      callClick(this, function() {
         copyToClipboard(this.title);
-        document.body.msgBox(trans('successfully copied to clipboard'));
+        document.body.msgBox(trans("successfully copied to clipboard"));
         return false;
       });
     }
   });
 }
 function initFirstRowNumberOnly(tr) {
-  forEach($G(tr).elems('input'), function (item, index) {
+  forEach($G(tr).elems("input"), function(item, index) {
     if (index == 0) {
-      new GMask(item, function () {
+      new GMask(item, function() {
         return /^[0-9]+$/.test(this.value);
       });
     }
@@ -509,167 +555,183 @@ function initFirstRowNumberOnly(tr) {
 }
 var createLikeButton;
 function initWeb(module) {
-  module = module ? module + '/' : '';
+  module = module ? module + "/" : "";
   if (navigator.userAgent.indexOf("MSIE") > -1) {
     document.body.addClass("ie");
   }
-  forEach(document.body.elems('nav'), function () {
-    if ($G(this).hasClass('topmenu sidemenu slidemenu gddmenu')) {
+  forEach(document.body.elems("nav"), function() {
+    if ($G(this).hasClass("topmenu sidemenu slidemenu gddmenu")) {
       new GDDMenu(this);
     }
   });
   var _scrolltop = 0;
   var toTop = 100;
-  if ($E('toTop')) {
-    if ($G('toTop').hasClass('fixed_top')) {
-      document.addEvent('toTopChange', function () {
-        if (document.body.hasClass('toTop')) {
-          var _toTop = $G('toTop').copy();
+  if ($E("toTop")) {
+    if ($G("toTop").hasClass("fixed_top")) {
+      document.addEvent("toTopChange", function() {
+        if (document.body.hasClass("toTop")) {
+          var _toTop = $G("toTop").copy();
           _toTop.zIndex = -1;
-          _toTop.id = 'toTop_temp';
-          _toTop.setStyle('opacity', 0);
-          _toTop.removeClass('fixed_top');
-          $G('toTop').after(_toTop);
-        } else if ($E('toTop_temp')) {
-          $G('toTop_temp').remove();
+          _toTop.id = "toTop_temp";
+          _toTop.setStyle("opacity", 0);
+          _toTop.removeClass("fixed_top");
+          $G("toTop").after(_toTop);
+        } else if ($E("toTop_temp")) {
+          $G("toTop_temp").remove();
         }
       });
     }
-    toTop = $E('toTop').getTop();
-    document.addEvent('scroll', function () {
+    toTop = $E("toTop").getTop();
+    document.addEvent("scroll", function() {
       var c = this.viewport.getscrollTop() > toTop;
       if (_scrolltop != c) {
         _scrolltop = c;
         if (c) {
-          document.body.addClass('toTop');
-          document.callEvent('toTopChange');
+          document.body.addClass("toTop");
+          document.callEvent("toTopChange");
         } else {
-          document.body.removeClass('toTop');
-          document.callEvent('toTopChange');
+          document.body.removeClass("toTop");
+          document.callEvent("toTopChange");
         }
       }
     });
   }
-  var fontSize = floatval(Cookie.get(module + 'fontSize'));
-  document.body.set('data-fontSize', floatval(document.body.getStyle('fontSize')));
+  var fontSize = floatval(Cookie.get(module + "fontSize"));
+  document.body.set(
+    "data-fontSize",
+    floatval(document.body.getStyle("fontSize"))
+  );
   if (fontSize > 5) {
-    document.body.setStyle('fontSize', fontSize + 'px');
+    document.body.setStyle("fontSize", fontSize + "px");
   }
-  forEach(document.body.elems("a"), function () {
+  forEach(document.body.elems("a"), function() {
     if (/^lang_([a-z]{2,2})$/.test(this.id)) {
-      callClick(this, function (e) {
+      callClick(this, function(e) {
         var hs = /^lang_([a-z]{2,2})$/.exec(this.id);
-        window.location = replaceURL('lang', hs[1]);
+        window.location = replaceURL("lang", hs[1]);
         GEvent.stop(e);
       });
     } else if (/font_size\s(small|normal|large)/.test(this.className)) {
-      callClick(this, function (e) {
-        fontSize = floatval(document.body.getStyle('fontSize'));
+      callClick(this, function(e) {
+        fontSize = floatval(document.body.getStyle("fontSize"));
         var hs = /font_size\s(small|normal|large)/.exec(this.className);
-        if (hs[1] == 'small') {
+        if (hs[1] == "small") {
           fontSize = Math.max(6, fontSize - 2);
-        } else if (hs[1] == 'large') {
+        } else if (hs[1] == "large") {
           fontSize = Math.min(24, fontSize + 2);
         } else {
-          fontSize = document.body.get('data-fontSize');
+          fontSize = document.body.get("data-fontSize");
         }
-        document.body.setStyle('fontSize', fontSize + 'px');
-        Cookie.set(module + 'fontSize', fontSize);
+        document.body.setStyle("fontSize", fontSize + "px");
+        Cookie.set(module + "fontSize", fontSize);
         GEvent.stop(e);
       });
     }
   });
-  loader = new GLoader(WEB_URL + module + 'loader.php/index/controller/loader/index', function (xhr) {
-    var scroll_to = 'scroll-to';
-    var content = $G('content');
-    var datas = xhr.responseText.toJSON();
-    if (datas) {
-      for (var prop in datas) {
-        var value = datas[prop];
-        if (prop == 'detail') {
-          content.setHTML(value);
-          loader.init(content);
-          content.replaceClass('loading', 'animation');
-          content.Ready(function () {
-            $K.init(content);
-            value.evalScript();
-          });
-        } else if (prop == 'topic') {
-          document.title = value.unentityify();
-        } else if (prop == 'menu') {
-          selectMenu(value);
-        } else if (prop == 'to') {
-          scroll_to = value;
-        } else if ($E(prop)) {
-          $E(prop).innerHTML = value;
+  loader = new GLoader(
+    WEB_URL + module + "loader.php/index/controller/loader/index",
+    function(xhr) {
+      var scroll_to = "scroll-to";
+      var content = $G("content");
+      var datas = xhr.responseText.toJSON();
+      if (datas) {
+        for (var prop in datas) {
+          var value = datas[prop];
+          if (prop == "detail") {
+            content.setHTML(value);
+            loader.init(content);
+            content.replaceClass("loading", "animation");
+            content.Ready(function() {
+              $K.init(content);
+              value.evalScript();
+            });
+          } else if (prop == "topic") {
+            document.title = value.unentityify();
+          } else if (prop == "menu") {
+            selectMenu(value);
+          } else if (prop == "to") {
+            scroll_to = value;
+          } else if ($E(prop)) {
+            $E(prop).innerHTML = value;
+          }
         }
+        if (Object.isFunction(createLikeButton)) {
+          createLikeButton();
+        }
+        if ($E(scroll_to)) {
+          window.scrollTo(0, $G(scroll_to).getTop() - 10);
+        }
+      } else {
+        content.setHTML(xhr.responseText);
       }
-      if (Object.isFunction(createLikeButton)) {
-        createLikeButton();
-      }
-      if ($E(scroll_to)) {
-        window.scrollTo(0, $G(scroll_to).getTop() - 10);
-      }
-    } else {
-      content.setHTML(xhr.responseText);
+    },
+    null,
+    function() {
+      $G("content").replaceClass("animation", "loading");
+      return true;
     }
-  }, null, function () {
-    $G('content').replaceClass('animation', 'loading');
-    return true;
-  });
-  loader.initLoading('wait', false);
+  );
+  loader.initLoading("wait", false);
   loader.init(document);
   $K.init(document.body);
 }
 if (navigator.userAgent.match(/(iPhone|iPod|iPad)/i)) {
-  document.addEventListener("touchstart", function () {}, false);
+  document.addEventListener("touchstart", function() {}, false);
 }
 function initModal(id, callback) {
   var patt = /^modal_([a-z\/]+)_(.*)$/;
-  forEach($G(id).elems('a'), function () {
+  forEach($G(id).elems("a"), function() {
     if (patt.test(this.id)) {
-      callClick(this, function () {
-        showModal('index.php/index/controller/modal', 'data=' + this.id, (callback || $K.emptyFunction));
+      callClick(this, function() {
+        showModal(
+          "index.php/index/controller/modal",
+          "data=" + this.id,
+          callback || $K.emptyFunction
+        );
       });
     }
   });
 }
 function checkEmail() {
   var value = this.value;
-  var ids = this.id.split('_');
-  var id = '&id=' + floatval($E(ids[0] + '_id').value);
-  if (value == '') {
+  var ids = this.id.split("_");
+  var id = "&id=" + floatval($E(ids[0] + "_id").value);
+  if (value == "") {
     this.invalid(this.title);
-  } else if (/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/.test(value)) {
-    return 'value=' + encodeURIComponent(value) + id;
+  } else if (
+    /^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/.test(value)
+  ) {
+    return "value=" + encodeURIComponent(value) + id;
   } else {
     this.invalid(this.title);
   }
 }
 function countryChanged(prefix) {
-  var _contryChanged = function () {
-    if (this.value != 'TH') {
-      $G($E(prefix + '_provinceID').parentNode.parentNode).addClass('hidden');
-      $G($E(prefix + '_province').parentNode.parentNode).removeClass('hidden');
+  var _contryChanged = function() {
+    if (this.value != "TH") {
+      $G($E(prefix + "_provinceID").parentNode.parentNode).addClass("hidden");
+      $G($E(prefix + "_province").parentNode.parentNode).removeClass("hidden");
     } else {
-      $G($E(prefix + '_provinceID').parentNode.parentNode).removeClass('hidden');
-      $G($E(prefix + '_province').parentNode.parentNode).addClass('hidden');
+      $G($E(prefix + "_provinceID").parentNode.parentNode).removeClass(
+        "hidden"
+      );
+      $G($E(prefix + "_province").parentNode.parentNode).addClass("hidden");
     }
   };
-  if ($E(prefix + '_country')) {
-    $G(prefix + '_country').addEvent('change', _contryChanged);
-    _contryChanged.call($E(prefix + '_country'));
+  if ($E(prefix + "_country")) {
+    $G(prefix + "_country").addEvent("change", _contryChanged);
+    _contryChanged.call($E(prefix + "_country"));
   }
 }
 function initCompany() {
-  var doChanged = function () {
-    var t = $E('company_type').value;
-    $E('tax_id').disabled = t == 0;
-    $E('idcard').disabled = t == 1;
-    $E('tax_id').parentNode.parentNode.className = t == 0 ? 'hidden' : 'item';
-    $E('idcard').parentNode.parentNode.className = t == 1 ? 'hidden' : 'item';
+  var doChanged = function() {
+    var t = $E("company_type").value;
+    $E("tax_id").disabled = t == 0;
+    $E("idcard").disabled = t == 1;
+    $E("tax_id").parentNode.parentNode.className = t == 0 ? "hidden" : "item";
+    $E("idcard").parentNode.parentNode.className = t == 1 ? "hidden" : "item";
   };
-  countryChanged('company');
-  $G('company_type').addEvent('change', doChanged);
+  countryChanged("company");
+  $G("company_type").addEvent("change", doChanged);
   doChanged();
 }

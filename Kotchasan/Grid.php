@@ -1,7 +1,9 @@
 <?php
 /**
  * @filesource Kotchasan/Grid.php
- * @link http://www.kotchasan.com/
+ *
+ * @see http://www.kotchasan.com/
+ *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
  */
@@ -9,7 +11,7 @@
 namespace Kotchasan;
 
 /**
- * Grid System
+ * Grid System.
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -17,35 +19,36 @@ namespace Kotchasan;
  */
 class Grid extends \Kotchasan\Template
 {
+    /**
+     * Construct.
+     */
+    public function __construct()
+    {
+        $this->cols = 1;
+    }
 
-  /**
-   * Construct
-   */
-  public function __construct()
-  {
-    $this->cols = 1;
-  }
+    /**
+     * กำหนดจำนวนกอลัมน์ของกริด.
+     *
+     * @param int $cols จำนวนคอลัมน์ มากกว่า 0
+     *
+     * @return \static
+     */
+    public function setCols($cols)
+    {
+        $this->cols = max(1, (int) $cols);
+        $this->num = $this->cols;
 
-  /**
-   * กำหนดจำนวนกอลัมน์ของกริด
-   *
-   * @param int $cols จำนวนคอลัมน์ มากกว่า 0
-   * @return \static
-   */
-  public function setCols($cols)
-  {
-    $this->cols = max(1, (int)$cols);
-    $this->num = $this->cols;
-    return $this;
-  }
+        return $this;
+    }
 
-  /**
-   * คืนค่าจำนวนคอลัมน์ของกริด
-   *
-   * @return int
-   */
-  public function getCols()
-  {
-    return $this->cols;
-  }
+    /**
+     * คืนค่าจำนวนคอลัมน์ของกริด.
+     *
+     * @return int
+     */
+    public function getCols()
+    {
+        return $this->cols;
+    }
 }

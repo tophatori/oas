@@ -1,7 +1,9 @@
 <?php
 /**
  * @filesource Kotchasan/Database/Exception.php
- * @link http://www.kotchasan.com/
+ *
+ * @see http://www.kotchasan.com/
+ *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
  */
@@ -9,7 +11,7 @@
 namespace Kotchasan\Database;
 
 /**
- * คลาสสำหรับจัดการข้อผิดพลาดของ Database
+ * คลาสสำหรับจัดการข้อผิดพลาดของ Database.
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -17,5 +19,4 @@ namespace Kotchasan\Database;
  */
 class Exception extends \Exception
 {
-
 }
