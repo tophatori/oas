@@ -52,6 +52,7 @@
           step: step
         };
         this.slider = $G(document.createElement("div"));
+        this.width = this.slider.getDimensions().width;
         this.slider.className = "grange_div";
         this.input.parentNode.appendChild(this.slider);
         if (this.input.get("range") !== null) {
@@ -63,7 +64,6 @@
         this.pointerL.className = "grange_button btnleft";
         this.pointerL.tabIndex = 0;
         this.slider.appendChild(this.pointerL);
-        this.buttonWidth = this.pointerL.getDimensions().width;
         var HInstant = this;
         this.slider.addEvent("mousedown", function(e) {
           var elem = GEvent.element(e);
@@ -71,7 +71,7 @@
             var pos =
                 GEvent.pointerX(e) -
                 this.viewportOffset().left -
-                HInstant.buttonWidth / 2,
+                HInstant.pointerL.getDimensions().width / 2,
               oldvalue = HInstant.getValue(),
               onchange = false,
               value,
@@ -172,19 +172,22 @@
           this.pointerR = null;
           this.setValue(values[0], null);
         }
-        $G(window).addEvent("resize", function() {
-          HInstant.setValue(HInstant.getValue(), null);
-        });
         this.timer = window.setInterval(function() {
           if (!$E(HInstant.input)) {
             window.clearInterval(HInstant.timer);
-          } else if (
-            HInstant.oldvalue.value != HInstant.input.value ||
-            HInstant.oldvalue.minValue != HInstant.input.min ||
-            HInstant.oldvalue.maxValue != HInstant.input.max ||
-            HInstant.oldvalue.step != HInstant.input.step
-          ) {
-            HInstant.setValue(HInstant.getValue(), null);
+          } else {
+            var w = HInstant.slider.getDimensions().width;
+            if (w != HInstant.width) {
+              HInstant.width = w;
+              HInstant.setValue(HInstant.getValue(), null);
+            } else if (
+              HInstant.oldvalue.value != HInstant.input.value ||
+              HInstant.oldvalue.minValue != HInstant.input.min ||
+              HInstant.oldvalue.maxValue != HInstant.input.max ||
+              HInstant.oldvalue.step != HInstant.input.step
+            ) {
+              HInstant.setValue(HInstant.getValue(), null);
+            }
           }
         }, 100);
       }
@@ -217,7 +220,9 @@
       return values;
     },
     getWidth: function() {
-      return this.slider.getDimensions().width - this.buttonWidth;
+      return (
+        this.slider.getDimensions().width - this.pointerL.getDimensions().width
+      );
     },
     getRange: function() {
       return floatval(this.input.max) - floatval(this.input.min);
@@ -248,7 +253,8 @@
         cw = this.getWidth(),
         range = this.getRange(),
         min = floatval(this.input.min),
-        oninput = false;
+        oninput = false,
+        bw = this.pointerL.getDimensions().width;
       if (this.pointerR) {
         value[0] = this.calcValue(value[0]);
         value[1] = this.calcValue(value[1]);
@@ -262,7 +268,7 @@
         var l = value[0] - min,
           r = value[1] - min;
         this.pointerR.style.left = (cw * r) / range + "px";
-        this.range.style.left = this.buttonWidth / 2 + (cw * l) / range + "px";
+        this.range.style.left = bw / 2 + (cw * l) / range + "px";
         this.range.style.width = (cw * (r - l)) / range + "px";
         this.input.value = value.join(",");
         if (oldvalue[0] != value[0] || oldvalue[1] != value[1]) {

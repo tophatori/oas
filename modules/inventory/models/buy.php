@@ -89,7 +89,7 @@ class Model extends \Kotchasan\Model
                     }
                     if (empty($stock)) {
                         // ไม่ได้เลือกสินค้า
-                        $ret['ret_topic_'.$key] = 'Please fill in';
+                        $ret['ret_topic_' . $key] = 'Please fill in';
                     }
                     if (empty($ret)) {
                         // save order

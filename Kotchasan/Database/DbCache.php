@@ -10,8 +10,8 @@
 
 namespace Kotchasan\Database;
 
-use Kotchasan\Cache\FileCache as Cache;
 use Kotchasan\Cache\CacheItem as Item;
+use Kotchasan\Cache\FileCache as Cache;
 use Kotchasan\Text;
 
 /**

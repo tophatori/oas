@@ -34,7 +34,7 @@
       var Second = d.getSeconds();
       var Minute = d.getMinutes();
       var Hour = d.getHours();
-      Hour += parseFloat(val);
+      Hour += floatval(val);
       if (Hour >= 24) {
         Hour = 0;
       }
@@ -52,9 +52,9 @@
     },
     _updateTime: function() {
       var ds = this._getDisplay().split(":");
-      var Hour = parseFloat(ds[0]);
-      var Minute = parseFloat(ds[1]);
-      var Second = parseFloat(ds[2]);
+      var Hour = floatval(ds[0]);
+      var Minute = floatval(ds[1]);
+      var Second = floatval(ds[2]);
       if (this.options.reverse) {
         Second--;
         if (Hour == 0 && Minute == 0 && Second == 0) {

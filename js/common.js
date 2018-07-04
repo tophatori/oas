@@ -55,6 +55,8 @@ function defaultSubmit(ds) {
     var val = ds[prop];
     if (prop == "error") {
       _alert = eval(val);
+    } else if (prop == "debug") {
+      console.log(val);
     } else if (prop == "alert") {
       _alert = val;
     } else if (prop == "modal") {
@@ -195,7 +197,7 @@ function doFormSubmit(xhr) {
   if (datas) {
     defaultSubmit(datas);
   } else if (xhr.responseText != "") {
-    alert(xhr.responseText);
+    console.log(xhr.responseText);
   }
 }
 function initWriteTab(id, sel) {
@@ -267,7 +269,7 @@ var dataTableActionCallback = function(xhr) {
       }
     }
   } else if (xhr.responseText != "") {
-    alert(xhr.responseText);
+    console.log(xhr.responseText);
   }
 };
 function checkUsername() {
@@ -313,9 +315,9 @@ function checkIdcard() {
     this.invalid(this.title);
   } else {
     for (i = 0, sum = 0; i < 12; i++) {
-      sum += parseFloat(value.charAt(i)) * (13 - i);
+      sum += floatval(value.charAt(i)) * (13 - i);
     }
-    if ((11 - (sum % 11)) % 10 != parseFloat(value.charAt(12))) {
+    if ((11 - (sum % 11)) % 10 != floatval(value.charAt(12))) {
       this.invalid(this.title);
     } else {
       return "value=" + encodeURIComponent(value) + "&id=" + id;
@@ -417,7 +419,7 @@ function initEditInplace(id, model, addbtn) {
         }
         return true;
       } else if (req.responseText != "") {
-        alert(req.responseText);
+        console.log(req.responseText);
       }
       return false;
     }
@@ -471,7 +473,7 @@ function initEditInplace(id, model, addbtn) {
               alert(ds.alert);
             }
           } else if (xhr.responseText != "") {
-            alert(xhr.responseText);
+            console.log(xhr.responseText);
           }
         },
         this

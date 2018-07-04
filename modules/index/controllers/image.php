@@ -52,7 +52,7 @@ class Controller extends \Gcms\Controller
             $ul->appendChild('<li><span>{LNG_Settings}</span></li>');
             $ul->appendChild('<li><span>{LNG_Image}</span></li>');
             $section->add('header', array(
-                'innerHTML' => '<h2 class="icon-config">'.$this->title.'</h2>',
+                'innerHTML' => '<h2 class="icon-config">' . $this->title . '</h2>',
             ));
             // แสดงฟอร์ม
             $section->appendChild(createClass('Index\Image\View')->render());

@@ -36,11 +36,11 @@ class Model extends \Kotchasan\KBase
         if ($request->initSession() && $request->isSafe() && $login = Login::isMember()) {
             if (Login::checkPermission($login, 'can_config') && Login::notDemoMode($login)) {
                 // โหลด config
-                $config = Config::load(ROOT_PATH.'settings/config.php');
+                $config = Config::load(ROOT_PATH . 'settings/config.php');
                 foreach (array('web_title', 'web_description') as $key) {
                     $value = $request->post($key)->quote();
                     if (empty($value)) {
-                        $ret['ret_'.$key] = 'Please fill in';
+                        $ret['ret_' . $key] = 'Please fill in';
                     } else {
                         $config->$key = $value;
                     }
@@ -48,7 +48,7 @@ class Model extends \Kotchasan\KBase
                 $config->timezone = $request->post('timezone')->text();
                 if (empty($ret)) {
                     // save config
-                    if (Config::save($config, ROOT_PATH.'settings/config.php')) {
+                    if (Config::save($config, ROOT_PATH . 'settings/config.php')) {
                         $ret['alert'] = Language::get('Saved successfully');
                         $ret['location'] = 'reload';
                         // เคลียร์

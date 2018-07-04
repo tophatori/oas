@@ -104,8 +104,6 @@ class Kotchasan extends Kotchasan\KBase
      */
     public static function debug($expression)
     {
-        echo '<pre>';
-        var_export($expression);
-        echo '</pre>';
+        echo '<pre>'.stripslashes(var_export($expression, true)).'</pre>';
     }
 }

@@ -90,7 +90,7 @@ class Model extends \Kotchasan\Model
                     'quantity' => $request->post('write_quantity')->toInt(),
                     'vat' => $request->post('write_buy_vat')->toInt(),
                     'member_id' => $login['id'],
-                    'create_date' => $request->post('write_create_date')->date().date(' H:i:s'),
+                    'create_date' => $request->post('write_create_date')->date() . date(' H:i:s'),
                 );
                 // database connection
                 $db = $this->db();

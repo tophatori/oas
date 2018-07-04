@@ -43,7 +43,7 @@ class View extends \Gcms\View
             'ajax' => true,
         ));
         $fieldset = $form->add('fieldset', array(
-            'title' => '{LNG_Details of} '.$type,
+            'title' => '{LNG_Details of} ' . $type,
         ));
         $groups = $fieldset->add('groups');
         // company

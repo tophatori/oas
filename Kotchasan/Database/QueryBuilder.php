@@ -58,9 +58,9 @@ class QueryBuilder extends \Kotchasan\Database\Query
     public function assignment($src)
     {
         $this->sqls = array(
-      'function' => 'customQuery',
-      'select' => '*',
-    );
+            'function' => 'customQuery',
+            'select' => '*',
+        );
         if ($src instanceof \Kotchasan\Orm\Recordset) {
             $this->sqls['from'] = $src->getField()->getTableWithAlias();
         }
@@ -290,7 +290,7 @@ class QueryBuilder extends \Kotchasan\Database\Query
         } else {
             $this->sqls['where'] = ' AND';
         }
-        $this->sqls['where'] .= ' EXISTS (SELECT * FROM '.$this->quoteTableName($table).' WHERE '.$ret.')';
+        $this->sqls['where'] .= ' EXISTS (SELECT * FROM ' . $this->quoteTableName($table) . ' WHERE ' . $ret . ')';
 
         return $this;
     }
@@ -310,7 +310,7 @@ class QueryBuilder extends \Kotchasan\Database\Query
             $this->values = ArrayTool::replace($this->values, $ret[1]);
             $ret = $ret[0];
         }
-        $this->sqls['where'] .= (empty($this->sqls['where']) ? ' ' : ' AND ').'NOT EXISTS (SELECT * FROM '.$this->quoteTableName($table).' WHERE '.$ret.')';
+        $this->sqls['where'] .= (empty($this->sqls['where']) ? ' ' : ' AND ') . 'NOT EXISTS (SELECT * FROM ' . $this->quoteTableName($table) . ' WHERE ' . $ret . ')';
 
         return $this;
     }
@@ -334,8 +334,8 @@ class QueryBuilder extends \Kotchasan\Database\Query
             if ($value[0] == '(' && $value[strlen($value) - 1] == ')') {
                 $this->sqls['keys'][$key] = $value;
             } else {
-                $this->sqls['keys'][$key] = ':'.$key;
-                $this->values[':'.$key] = $value;
+                $this->sqls['keys'][$key] = ':' . $key;
+                $this->values[':' . $key] = $value;
             }
         }
 
@@ -498,14 +498,13 @@ class QueryBuilder extends \Kotchasan\Database\Query
         $sqls = array();
         foreach ($args as $item) {
             if (preg_match('/^([a-z0-9_\*]+)([\s]+([a-z0-9_]+))?$/', trim($item), $match)) {
-                $sqls[] = 'COUNT('.($match[1] == '*' ? '*' : '`'.$match[1].'`').')'.(isset($match[3]) ? ' AS `'.$match[3].'`' : '');
+                $sqls[] = 'COUNT(' . ($match[1] == '*' ? '*' : '`' . $match[1] . '`') . ')' . (isset($match[3]) ? ' AS `' . $match[3] . '`' : '');
             }
         }
         if (sizeof($sqls) > 0) {
             $this->sqls['function'] = 'customQuery';
             $this->sqls['select'] = implode(', ', $sqls);
         }
-
         return $this;
     }
 
@@ -521,7 +520,7 @@ class QueryBuilder extends \Kotchasan\Database\Query
     public function selectDistinct($fields = '*')
     {
         call_user_func(array($this, 'select'), func_get_args());
-        $this->sqls['select'] = 'DISTINCT '.$this->sqls['select'];
+        $this->sqls['select'] = 'DISTINCT ' . $this->sqls['select'];
 
         return $this;
     }
@@ -551,11 +550,11 @@ class QueryBuilder extends \Kotchasan\Database\Query
                     $field = $this->fieldName($key);
                     $key = $this->aliasName($key, 'S');
                     if ($value instanceof self) {
-                        $this->sqls['set'][$key] = $field.'=('.$value->text().')';
+                        $this->sqls['set'][$key] = $field . '=(' . $value->text() . ')';
                     } elseif (strlen($value) > 2 && $value[0] === '(' && $value[strlen($value) - 1] === ')') {
-                        $this->sqls['set'][$key] = $field.'='.$value;
+                        $this->sqls['set'][$key] = $field . '=' . $value;
                     } else {
-                        $this->sqls['set'][$key] = $field.'='.$key;
+                        $this->sqls['set'][$key] = $field . '=' . $key;
                         $this->sqls['values'][$key] = $value;
                     }
                 }
@@ -576,6 +575,18 @@ class QueryBuilder extends \Kotchasan\Database\Query
     public function toArray()
     {
         $this->toArray = true;
+
+        return $this;
+    }
+
+    /**
+     * คำสั่งสำหรับดูรายละเอียดการ Query.
+     *
+     * @return \static
+     */
+    public function explain()
+    {
+        $this->sqls['explain'] = true;
 
         return $this;
     }
@@ -700,10 +711,10 @@ class QueryBuilder extends \Kotchasan\Database\Query
     {
         $ret = $this->buildWhere($condition, $oprator, $id);
         if (is_array($ret)) {
-            $this->sqls['where'] = empty($this->sqls['where']) ? $ret[0] : '('.$this->sqls['where'].') OR ('.$ret[0].')';
+            $this->sqls['where'] = empty($this->sqls['where']) ? $ret[0] : '(' . $this->sqls['where'] . ') OR (' . $ret[0] . ')';
             $this->values = ArrayTool::replace($this->values, $ret[1]);
         } else {
-            $this->sqls['where'] = empty($this->sqls['where']) ? $ret : '('.$this->sqls['where'].') OR ('.$ret.')';
+            $this->sqls['where'] = empty($this->sqls['where']) ? $ret : '(' . $this->sqls['where'] . ') OR (' . $ret . ')';
         }
 
         return $this;
@@ -724,10 +735,10 @@ class QueryBuilder extends \Kotchasan\Database\Query
     {
         $ret = $this->buildWhere($condition, $oprator, $id);
         if (is_array($ret)) {
-            $this->sqls['where'] = empty($this->sqls['where']) ? $ret[0] : '('.$this->sqls['where'].') AND ('.$ret[0].')';
+            $this->sqls['where'] = empty($this->sqls['where']) ? $ret[0] : '(' . $this->sqls['where'] . ') AND (' . $ret[0] . ')';
             $this->values = ArrayTool::replace($this->values, $ret[1]);
         } else {
-            $this->sqls['where'] = empty($this->sqls['where']) ? $ret : '('.$this->sqls['where'].') AND ('.$ret.')';
+            $this->sqls['where'] = empty($this->sqls['where']) ? $ret : '(' . $this->sqls['where'] . ') AND (' . $ret . ')';
         }
 
         return $this;

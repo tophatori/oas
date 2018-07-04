@@ -33,9 +33,7 @@ class Model extends \Kotchasan\Model
      */
     public static function toDataTable($owner)
     {
-        $model = new static();
-
-        return $model->db()->createQuery()
+        return static::createQuery()
             ->select('O.order_date', 'O.order_no', 'C.company', Sql::create('(O.`total`+O.`vat`-O.`tax`) AS `total`'), 'O.id', 'O.customer_id')
             ->from('orders O')
             ->join('customer C', 'LEFT', array(

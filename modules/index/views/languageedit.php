@@ -44,7 +44,7 @@ class View extends \Gcms\View
         ));
         // fieldset
         $fieldset = $form->add('fieldset', array(
-            'title' => '{LNG_'.($language->id > 0 ? 'Edit' : 'Create').'} '.htmlspecialchars($language->key),
+            'title' => '{LNG_' . ($language->id > 0 ? 'Edit' : 'Create') . '} ' . htmlspecialchars($language->key),
         ));
         // js
         $fieldset->add('select', array(
@@ -140,7 +140,7 @@ class View extends \Gcms\View
         ))->render();
         foreach (Language::installedLanguage() as $key) {
             $item[$key] = Form::textarea(array(
-                'name' => 'datas['.$key.'][]',
+                'name' => 'datas[' . $key . '][]',
                 'labelClass' => 'g-input',
                 'value' => isset($item[$key]) ? $item[$key] : '',
             ))->render();

@@ -10,10 +10,10 @@
 
 namespace Kotchasan\Database;
 
-use Kotchasan\Database\DbCache as Cache;
-use Kotchasan\Cache\Cacheitem as Item;
-use Kotchasan\Log\Logger;
 use Kotchasan\ArrayTool;
+use Kotchasan\Cache\Cacheitem as Item;
+use Kotchasan\Database\DbCache as Cache;
+use Kotchasan\Log\Logger;
 use Kotchasan\Text;
 
 /**
@@ -202,9 +202,9 @@ abstract class Driver extends Query
         } else {
             $values = array();
         }
-        $sql = 'DELETE FROM '.$table_name.' WHERE '.$condition;
+        $sql = 'DELETE FROM ' . $table_name . ' WHERE ' . $condition;
         if (is_int($limit) && $limit > 0) {
-            $sql .= ' LIMIT '.$limit;
+            $sql .= ' LIMIT ' . $limit;
         }
 
         return $this->doQuery($sql, $values);
@@ -304,11 +304,11 @@ abstract class Driver extends Query
     protected function log($type, $sql, $values = array())
     {
         if (DB_LOG == true) {
-            $datas = array('<b>'.$type.' :</b> '.Text::replace($sql, $values));
+            $datas = array('<b>' . $type . ' :</b> ' . Text::replace($sql, $values));
             foreach (debug_backtrace() as $a => $item) {
                 if (isset($item['file']) && isset($item['line'])) {
                     if ($item['function'] == 'all' || $item['function'] == 'first' || $item['function'] == 'count' || $item['function'] == 'save' || $item['function'] == 'find' || $item['function'] == 'execute') {
-                        $datas[] = '<br>['.$a.'] <b>'.$item['function'].'</b> in <b>'.$item['file'].'</b> line <b>'.$item['line'].'</b>';
+                        $datas[] = '<br>[' . $a . '] <b>' . $item['function'] . '</b> in <b>' . $item['file'] . '</b> line <b>' . $item['line'] . '</b>';
                         break;
                     }
                 }

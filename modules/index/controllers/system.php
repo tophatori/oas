@@ -52,10 +52,10 @@ class Controller extends \Gcms\Controller
             $ul->appendChild('<li><span class="icon-settings">{LNG_Settings}</span></li>');
             $ul->appendChild('<li><span>{LNG_Site settings}</span></li>');
             $section->add('header', array(
-                'innerHTML' => '<h2 class="icon-index">'.$this->title.'</h2>',
+                'innerHTML' => '<h2 class="icon-index">' . $this->title . '</h2>',
             ));
             // โหลด config
-            $config = Config::load(ROOT_PATH.'settings/config.php');
+            $config = Config::load(ROOT_PATH . 'settings/config.php');
             // แสดงฟอร์ม
             $section->appendChild(createClass('Index\System\View')->render($config));
 

@@ -35,10 +35,10 @@ class View extends \Gcms\View
         // สถานะสมาชิก
         $member_status = array(-1 => '{LNG_all items}');
         foreach (self::$cfg->member_status as $key => $value) {
-            $member_status[$key] = '{LNG_'.$value.'}';
+            $member_status[$key] = '{LNG_' . $value . '}';
         }
         // URL สำหรับส่งให้ตาราง
-        $uri = $request->createUriWithGlobals(WEB_URL.'index.php');
+        $uri = $request->createUriWithGlobals(WEB_URL . 'index.php');
         // ตาราง
         $table = new DataTable(array(
             /* Uri */
@@ -165,13 +165,13 @@ class View extends \Gcms\View
         $item['create_date'] = Date::format($item['create_date'], 'd M Y');
         if ($item['active'] == 1) {
             $item['active'] = '<span class="icon-valid access" title="{LNG_Can login}"></span>';
-            $item['lastvisited'] = empty($item['lastvisited']) ? '-' : Date::format($item['lastvisited'], 'd M Y H:i').' ('.number_format($item['visited']).')';
+            $item['lastvisited'] = empty($item['lastvisited']) ? '-' : Date::format($item['lastvisited'], 'd M Y H:i') . ' (' . number_format($item['visited']) . ')';
         } else {
             $item['active'] = '<span class="icon-valid disabled" title="{LNG_Unable to login}"></span>';
             $item['lastvisited'] = '-';
         }
-        $item['fb'] = $item['fb'] == 1 ? '<a href="//'.$item['website'].'" target=_blank class="icon-facebook notext"></a>' : '';
-        $item['status'] = isset(self::$cfg->member_status[$item['status']]) ? '<span class=status'.$item['status'].'>{LNG_'.self::$cfg->member_status[$item['status']].'}</span>' : '';
+        $item['fb'] = $item['fb'] == 1 ? '<a href="//' . $item['website'] . '" target=_blank class="icon-facebook notext"></a>' : '';
+        $item['status'] = isset(self::$cfg->member_status[$item['status']]) ? '<span class=status' . $item['status'] . '>{LNG_' . self::$cfg->member_status[$item['status']] . '}</span>' : '';
         $item['phone'] = self::showPhone($item['phone']);
 
         return $item;

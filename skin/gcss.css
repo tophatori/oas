@@ -1383,17 +1383,18 @@ ul.inputgroups.g-input {
   padding: 0 0 0 2.5em;
   color: #000;
   cursor: text;
+  list-style: none;
 }
 ul.inputgroups > li {
   white-space: nowrap;
   float: left;
-  line-height: inherit;
   margin: 0.2em 0.2em 0.2em 0;
 }
 ul.inputgroups input[type="text"],
 ul.inputgroups > li > button {
   border-style: none;
-  height: 2.23em;
+  height: 1.899em;
+  line-height: 1.9em;
   color: inherit;
 }
 ul.inputgroups > li {
@@ -1401,6 +1402,7 @@ ul.inputgroups > li {
   border-radius: 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
+  line-height: 1;
 }
 ul.inputgroups > li > span {
   padding-left: 10px;
@@ -1456,8 +1458,8 @@ html[dir="rtl"] .gdpanel {
   top: -6px;
 }
 .gdpanel:after {
-  border-top-color: #FFF;
-  border-bottom-color: #FFF;
+  border-top-color: #ccc;
+  border-bottom-color: #ccc;
 }
 .gdpanel-arrow:after {
   border-style: solid solid none solid;
@@ -1493,7 +1495,7 @@ html[dir="rtl"] .gdpanel-arrow {
   z-index: 2;
   color: #666;
   background-color: #FFF;
-  border: 1px solid rgba(0,0,0,0.2);
+  border: 1px solid #ccc;
   -moz-border-radius: 1px;
   -webkit-border-radius: 1px;
   border-radius: 1px;
@@ -3410,7 +3412,7 @@ td.buttons .button:last-child {
   z-index: 7;
   display: inline-block;
   position: fixed;
-  bottom: -10%;
+  bottom: -2em;
   right: 2%;
   font-size: 2em;
   font-family: Tahoma, Loma, Arial;
@@ -3425,11 +3427,11 @@ td.buttons .button:last-child {
   border-radius: 50em;
   -moz-border-radius: 50em;
   -webkit-border-radius: 50em;
-  -webkit-transition: all .2s ease-in-out;
-  -moz-transition: all .2s ease-in-out;
-  -ms-transition: all .2s ease-in-out;
-  -o-transition: all .2s ease-in-out;
-  transition: all .2s ease-in-out;
+  -webkit-transition: bottom .5s ease-in-out;
+  -moz-transition: bottom .5s ease-in-out;
+  -ms-transition: bottom .5s ease-in-out;
+  -o-transition: bottom .5s ease-in-out;
+  transition: bottom .5s ease-in-out;
 }
 .toTop .scroller {
   bottom: 10px;

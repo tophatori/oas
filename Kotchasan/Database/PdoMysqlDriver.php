@@ -31,21 +31,21 @@ class PdoMysqlDriver extends Driver
     public function connect($param)
     {
         $this->options = array(
-      \PDO::ATTR_STRINGIFY_FETCHES => 0,
-      \PDO::ATTR_EMULATE_PREPARES => 0,
-      \PDO::ATTR_PERSISTENT => 1,
-      \PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    );
+            \PDO::ATTR_STRINGIFY_FETCHES => 0,
+            \PDO::ATTR_EMULATE_PREPARES => 0,
+            \PDO::ATTR_PERSISTENT => 1,
+            \PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        );
         foreach ($param as $key => $value) {
             $this->{$key} = $value;
         }
         if ($this->settings->dbdriver == 'mysql') {
-            $this->options[\PDO::MYSQL_ATTR_INIT_COMMAND] = 'SET NAMES '.$this->settings->char_set;
+            $this->options[\PDO::MYSQL_ATTR_INIT_COMMAND] = 'SET NAMES ' . $this->settings->char_set;
             $this->options[\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY] = 1;
         }
-        $sql = $this->settings->dbdriver.':host='.$this->settings->hostname;
-        $sql .= empty($this->settings->port) ? '' : ';port='.$this->settings->port;
-        $sql .= empty($this->settings->dbname) ? '' : ';dbname='.$this->settings->dbname;
+        $sql = $this->settings->dbdriver . ':host=' . $this->settings->hostname;
+        $sql .= empty($this->settings->port) ? '' : ';port=' . $this->settings->port;
+        $sql .= empty($this->settings->dbname) ? '' : ';dbname=' . $this->settings->dbname;
         if (isset($this->settings->username) && isset($this->settings->password)) {
             try {
                 $this->connection = new \PDO($sql, $this->settings->username, $this->settings->password, $this->options);
@@ -178,19 +178,19 @@ class PdoMysqlDriver extends Driver
         foreach ($save as $key => $value) {
             if ($value instanceof QueryBuilder) {
                 $keys[] = $key;
-                $values[] = '('.$value->text().')';
+                $values[] = '(' . $value->text() . ')';
             } elseif ($value instanceof Sql) {
                 $keys[] = $key;
                 $values[] = $value->text();
                 $params = $value->getValues($params);
             } else {
                 $keys[] = $key;
-                $values[] = ':'.$key;
-                $params[':'.$key] = $value;
+                $values[] = ':' . $key;
+                $params[':' . $key] = $value;
             }
         }
 
-        return 'INSERT INTO '.$table_name.' (`'.implode('`,`', $keys).'`) VALUES ('.implode(',', $values).')';
+        return 'INSERT INTO ' . $table_name . ' (`' . implode('`,`', $keys) . '`) VALUES (' . implode(',', $values) . ')';
     }
 
     /**
@@ -232,11 +232,11 @@ class PdoMysqlDriver extends Driver
         $updates = array();
         $params = array();
         foreach ($save as $key => $value) {
-            $updates[] = '`'.$key.'`=:U'.$key;
-            $params[':U'.$key] = $value;
+            $updates[] = '`' . $key . '`=:U' . $key;
+            $params[':U' . $key] = $value;
         }
         $sql = $this->makeInsert($table_name, $save, $params);
-        $sql .= ' ON DUPLICATE KEY UPDATE '.implode(', ', $updates);
+        $sql .= ' ON DUPLICATE KEY UPDATE ' . implode(', ', $updates);
         try {
             $query = $this->connection->prepare($sql);
             $query->execute($params);
@@ -266,28 +266,31 @@ class PdoMysqlDriver extends Driver
     public function makeQuery($sqls)
     {
         $sql = '';
+        if (!empty($sqls['explain'])) {
+            $sql = 'EXPLAIN ';
+        }
         if (isset($sqls['insert'])) {
             $keys = array_keys($sqls['keys']);
-            $sql = 'INSERT INTO '.$sqls['insert'].' (`'.implode('`, `', $keys);
-            $sql .= '`) VALUES ('.implode(', ', $sqls['keys']).')';
+            $sql .= 'INSERT INTO ' . $sqls['insert'] . ' (`' . implode('`, `', $keys);
+            $sql .= '`) VALUES (' . implode(', ', $sqls['keys']) . ')';
             if (isset($sqls['orupdate'])) {
-                $sql .= ' ON DUPLICATE KEY UPDATE '.implode(', ', $sqls['orupdate']);
+                $sql .= ' ON DUPLICATE KEY UPDATE ' . implode(', ', $sqls['orupdate']);
             }
         } elseif (isset($sqls['union'])) {
-            $sql = '('.implode(') UNION (', $sqls['union']).')';
+            $sql .= '(' . implode(') UNION (', $sqls['union']) . ')';
         } elseif (isset($sqls['unionAll'])) {
-            $sql = '('.implode(') UNION ALL (', $sqls['unionAll']).')';
+            $sql .= '(' . implode(') UNION ALL (', $sqls['unionAll']) . ')';
         } else {
             if (isset($sqls['select'])) {
-                $sql = 'SELECT '.$sqls['select'];
+                $sql .= 'SELECT ' . $sqls['select'];
                 if (isset($sqls['from'])) {
-                    $sql .= ' FROM '.$sqls['from'];
+                    $sql .= ' FROM ' . $sqls['from'];
                 }
             }
             if (isset($sqls['update'])) {
-                $sql = 'UPDATE '.$sqls['update'];
+                $sql .= 'UPDATE ' . $sqls['update'];
             } elseif (isset($sqls['delete'])) {
-                $sql = 'DELETE FROM '.$sqls['delete'];
+                $sql .= 'DELETE FROM ' . $sqls['delete'];
             }
             if (isset($sqls['join'])) {
                 foreach ($sqls['join'] as $join) {
@@ -295,22 +298,22 @@ class PdoMysqlDriver extends Driver
                 }
             }
             if (isset($sqls['set'])) {
-                $sql .= ' SET '.implode(', ', $sqls['set']);
+                $sql .= ' SET ' . implode(', ', $sqls['set']);
             }
             if (isset($sqls['where'])) {
-                $sql .= ' WHERE '.$sqls['where'];
+                $sql .= ' WHERE ' . $sqls['where'];
             }
             if (isset($sqls['group'])) {
-                $sql .= ' GROUP BY '.$sqls['group'];
+                $sql .= ' GROUP BY ' . $sqls['group'];
             }
             if (isset($sqls['having'])) {
-                $sql .= ' HAVING '.$sqls['having'];
+                $sql .= ' HAVING ' . $sqls['having'];
             }
             if (isset($sqls['order'])) {
-                $sql .= ' ORDER BY '.$sqls['order'];
+                $sql .= ' ORDER BY ' . $sqls['order'];
             }
             if (isset($sqls['limit'])) {
-                $sql .= ' LIMIT '.(empty($sqls['start']) ? '' : $sqls['start'].',').$sqls['limit'];
+                $sql .= ' LIMIT ' . (empty($sqls['start']) ? '' : $sqls['start'] . ',') . $sqls['limit'];
             }
         }
 
@@ -335,20 +338,20 @@ class PdoMysqlDriver extends Driver
             $values = $condition[1];
             $condition = $condition[0];
         }
-        $sql = 'SELECT * FROM '.$table_name.' WHERE '.$condition;
+        $sql = 'SELECT * FROM ' . $table_name . ' WHERE ' . $condition;
         if (!empty($sort)) {
             $qs = array();
             foreach ($sort as $item) {
                 if (preg_match('/^([a-z0-9_]+)\s(asc|desc)$/i', trim($item), $match)) {
-                    $qs[] = '`'.$match[1].'`'.(empty($match[2]) ? '' : ' '.$match[2]);
+                    $qs[] = '`' . $match[1] . '`' . (empty($match[2]) ? '' : ' ' . $match[2]);
                 }
             }
             if (sizeof($qs) > 0) {
-                $sql .= ' ORDER BY '.implode(', ', $qs);
+                $sql .= ' ORDER BY ' . implode(', ', $qs);
             }
         }
         if (is_int($limit) && $limit > 0) {
-            $sql .= ' LIMIT '.$limit;
+            $sql .= ' LIMIT ' . $limit;
         }
 
         return $this->doCustomQuery($sql, $values);
@@ -385,18 +388,18 @@ class PdoMysqlDriver extends Driver
         $values = array();
         foreach ($save as $key => $value) {
             if ($value instanceof QueryBuilder) {
-                $sets[] = '`'.$key.'` = ('.$value->text().')';
+                $sets[] = '`' . $key . '` = (' . $value->text() . ')';
             } elseif ($value instanceof Sql) {
-                $sets[] = '`'.$key.'` = '.$value->text();
+                $sets[] = '`' . $key . '` = ' . $value->text();
                 $values = $value->getValues($values);
             } else {
-                $k = ':'.$key.sizeof($values);
-                $sets[] = '`'.$key.'` = '.$k;
+                $k = ':' . $key . sizeof($values);
+                $sets[] = '`' . $key . '` = ' . $k;
                 $values[$k] = $value;
             }
         }
         $q = Sql::WHERE($condition);
-        $sql = 'UPDATE '.$table_name.' SET '.implode(', ', $sets).' WHERE '.$q->text();
+        $sql = 'UPDATE ' . $table_name . ' SET ' . implode(', ', $sets) . ' WHERE ' . $q->text();
         $values = $q->getValues($values);
         try {
             $query = $this->connection->prepare($sql);

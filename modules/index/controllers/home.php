@@ -49,7 +49,7 @@ class Controller extends \Gcms\Controller
         $ul = $breadcrumbs->add('ul');
         $ul->appendChild('<li><span class="icon-home">{LNG_Home}</span></li>');
         $section->add('header', array(
-            'innerHTML' => '<h2 class="icon-dashboard">'.$this->title.'</h2>',
+            'innerHTML' => '<h2 class="icon-dashboard">' . $this->title . '</h2>',
         ));
         // Login
         $login = Login::isMember();
@@ -57,14 +57,14 @@ class Controller extends \Gcms\Controller
         $card = new Collection();
         $menu = new Collection();
         // โหลด Component หน้า Home
-        $dir = ROOT_PATH.'modules/';
+        $dir = ROOT_PATH . 'modules/';
         $f = @opendir($dir);
         if ($f) {
             while (false !== ($text = readdir($f))) {
-                if ($text != '.' && $text != '..' && $text != 'index' && $text != 'css' && $text != 'js' && is_dir($dir.$text)) {
-                    if (is_file($dir.$text.'/controllers/home.php')) {
-                        require_once $dir.$text.'/controllers/home.php';
-                        $className = '\\'.ucfirst($text).'\Home\Controller';
+                if ($text != '.' && $text != '..' && $text != 'index' && $text != 'css' && $text != 'js' && is_dir($dir . $text)) {
+                    if (is_file($dir . $text . '/controllers/home.php')) {
+                        require_once $dir . $text . '/controllers/home.php';
+                        $className = '\\' . ucfirst($text) . '\Home\Controller';
                         if (method_exists($className, 'addCard')) {
                             $className::addCard($request, $card, $login);
                         }
@@ -133,12 +133,12 @@ class Controller extends \Gcms\Controller
      */
     public static function renderCard($card, $icon, $title, $value, $link, $url)
     {
-        $content = '<a class="table fullwidth" href="'.$url.'">';
-        $content .= '<span class="td '.$icon.' notext"></span>';
+        $content = '<a class="table fullwidth" href="' . $url . '">';
+        $content .= '<span class="td ' . $icon . ' notext"></span>';
         $content .= '<span class="td right">';
-        $content .= '<span class="cuttext">'.$title.'</span>';
-        $content .= '<b class="cuttext">'.$value.'</b>';
-        $content .= '<span class="cuttext">'.$link.'</span>';
+        $content .= '<span class="cuttext">' . $title . '</span>';
+        $content .= '<b class="cuttext">' . $value . '</b>';
+        $content .= '<span class="cuttext">' . $link . '</span>';
         $content .= '</span>';
         $content .= '</a>';
         $card->set($title, $content);
@@ -154,6 +154,6 @@ class Controller extends \Gcms\Controller
      */
     public static function renderQuickMenu($menu, $icon, $title, $url)
     {
-        $menu->set($title, '<a href="'.$url.'"><span class="'.$icon.'">'.$title.'</span></a>');
+        $menu->set($title, '<a href="' . $url . '"><span class="' . $icon . '">' . $title . '</span></a>');
     }
 }

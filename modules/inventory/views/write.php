@@ -118,7 +118,7 @@ class View extends \Gcms\View
             // quantity
             $groups->add('number', array(
                 'id' => 'write_quantity',
-                'itemClass' => 'width33'.($product['count_stock'] == 1 ? '' : ' hidden'),
+                'itemClass' => 'width33' . ($product['count_stock'] == 1 ? '' : ' hidden'),
                 'labelClass' => 'g-input icon-number',
                 'label' => '{LNG_Stock}',
             ));

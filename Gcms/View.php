@@ -57,13 +57,13 @@ class View extends \Kotchasan\View
         foreach (self::$request->getQueryParams() as $key => $value) {
             if ($value != '' && $key != 'module') {
                 $key = ltrim($key, '_');
-                $query_url[$key] = $key.'='.$value;
+                $query_url[$key] = $key . '=' . $value;
             }
         }
         foreach (self::$request->getParsedBody() as $key => $value) {
             if ($value != '' && $key != 'module') {
                 $key = ltrim($key, '_');
-                $query_url[$key] = $key.'='.$value;
+                $query_url[$key] = $key . '=' . $value;
             }
         }
         if (isset($f[2])) {
@@ -78,7 +78,7 @@ class View extends \Kotchasan\View
             }
         }
 
-        return WEB_URL.'index.php?'.implode('&amp;', $query_url);
+        return WEB_URL . 'index.php?' . implode('&amp;', $query_url);
     }
 
     /**
@@ -91,7 +91,7 @@ class View extends \Kotchasan\View
     public static function showPhone($phone_number)
     {
         if (preg_match('/^([0-9\-\s]{9,})(.*)$/', $phone_number, $match)) {
-            return '<a href="tel:'.trim($match[1]).'">'.$phone_number.'</a>';
+            return '<a href="tel:' . trim($match[1]) . '">' . $phone_number . '</a>';
         }
 
         return $phone_number;

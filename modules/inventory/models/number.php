@@ -32,12 +32,15 @@ class Model extends \Kotchasan\Model
     public static function get($id, $name, $table_name, $field)
     {
         if (isset(self::$cfg->$name)) {
+            // Model
             $model = new static();
+            // Database
+            $db = $model->db();
             $table_number = $model->getTableName('number');
-            $number = $model->db()->first($table_number, 1);
+            $number = $db->first($table_number, 1);
             if ($number) {
                 if (!isset($number->$name)) {
-                    echo 'Fied '.$number->$name.' do\'nt exists';
+                    echo 'Fied ' . $number->$name . ' do\'nt exists';
 
                     return null;
                 }
@@ -48,7 +51,7 @@ class Model extends \Kotchasan\Model
             // ตรวจสอบ order_no ซ้ำ
             while (true) {
                 $result = sprintf(self::$cfg->$name, $next_id);
-                $search = $model->db()->first($table_name, array(
+                $search = $db->first($table_name, array(
                     array($field, $result),
                 ));
                 if (!$search || ($id > 0 && $search->id == $id)) {
@@ -59,14 +62,14 @@ class Model extends \Kotchasan\Model
             }
             // อัปเดท running number
             if ($number) {
-                $model->db()->update($table_number, $number->id, array($name => $next_id));
+                $db->update($table_number, $number->id, array($name => $next_id));
             } else {
-                $model->db()->insert($table_number, array('id' => 1, $name => $next_id));
+                $db->insert($table_number, array('id' => 1, $name => $next_id));
             }
             // คืนค่า
             return $result;
         } else {
-            echo 'Not configured $cfg->'.$name;
+            echo 'Not configured $cfg->' . $name;
         }
 
         return null;

@@ -28,7 +28,7 @@ class View
      */
     public static function toPrint($content)
     {
-        $template = Template::createFromFile(ROOT_PATH.'modules/inventory/template/print.html');
+        $template = Template::createFromFile(ROOT_PATH . 'modules/inventory/template/print.html');
         $template->add($content);
         echo $template->render();
     }

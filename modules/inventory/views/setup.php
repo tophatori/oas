@@ -39,7 +39,7 @@ class View extends \Gcms\View
         $this->tax_status = Language::get('TAX_STATUS');
         $this->categories = \Inventory\Category\Model::categories();
         // URL สำหรับส่งให้ตาราง
-        $uri = $request->createUriWithGlobals(WEB_URL.'index.php');
+        $uri = $request->createUriWithGlobals(WEB_URL . 'index.php');
         // ตาราง
         $table = new DataTable(array(
             /* Uri */

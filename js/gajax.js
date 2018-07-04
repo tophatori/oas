@@ -327,7 +327,7 @@ window.$K = (function() {
     window.forEach = function(a, f) {
       var i,
         l = a.length,
-        x = new Array();
+        x = [];
       for (i = 0; i < l; i++) {
         x.push(a[i]);
       }
@@ -525,7 +525,7 @@ window.$K = (function() {
     var inYears = theYear;
     var inMonths = theMonth;
     if (month < monthStr && date > dateStr) {
-      inYears = parseFloat(inYears) + 1;
+      inYears = floatval(inYears) + 1;
       inMonths = theMonth - 1;
     }
     if (month < monthStr && date <= dateStr) {
@@ -805,25 +805,17 @@ window.$K = (function() {
       if (typeof hs[2] == "undefined") {
         d = new Date();
       } else {
-        d = new Date(
-          parseFloat(hs[2]),
-          parseFloat(hs[3]) - 1,
-          hs[4],
-          0,
-          0,
-          0,
-          0
-        );
+        d = new Date(floatval(hs[2]), floatval(hs[3]) - 1, hs[4], 0, 0, 0, 0);
       }
       if (hs[1] == "yesterday") {
         d.setDate(d.getDate() - 1);
       } else if (hs[1] == "tomorrow") {
         d.setDate(d.getDate() + 1);
       }
-      if (hs[6] == "+" && parseFloat(hs[7]) > 0) {
-        d.setDate(d.getDate() + parseFloat(hs[7]));
-      } else if (hs[6] == "-" && parseFloat(hs[7]) > 0) {
-        d.setDate(d.getDate() - parseFloat(hs[7]));
+      if (hs[6] == "+" && floatval(hs[7]) > 0) {
+        d.setDate(d.getDate() + floatval(hs[7]));
+      } else if (hs[6] == "-" && floatval(hs[7]) > 0) {
+        d.setDate(d.getDate() - floatval(hs[7]));
       }
       return d;
     } else {
@@ -926,7 +918,7 @@ window.$K = (function() {
     },
     toArray: function(o) {
       var prop,
-        result = new Array();
+        result = [];
       for (prop in o) {
         result.push(o[prop]);
       }
@@ -1144,7 +1136,7 @@ window.$K = (function() {
               .getPropertyValue(s.replace(/([A-Z])/g, "-$1").toLowerCase())
           : v;
       if (s == "opacity") {
-        return Object.isNull(v) ? 100 : parseFloat(v) * 100;
+        return Object.isNull(v) ? 100 : floatval(v) * 100;
       } else {
         return v;
       }
@@ -1229,7 +1221,7 @@ window.$K = (function() {
         this.className = "";
       } else {
         var rm = v.split(" ");
-        var cs = new Array();
+        var cs = [];
         forEach(this.className.split(" "), function(c) {
           if (c !== "" && rm.indexOf(c) == -1) {
             cs.push(c);
@@ -1243,7 +1235,7 @@ window.$K = (function() {
     removeClass: function(v) {
       if (!Object.isNull(this.className)) {
         var rm = v.split(" ");
-        var cs = new Array();
+        var cs = [];
         forEach(this.className.split(" "), function(c) {
           if (c !== "" && rm.indexOf(c) == -1) {
             cs.push(c);
@@ -1256,7 +1248,7 @@ window.$K = (function() {
     replaceClass: function(source, replace) {
       if (!Object.isNull(this.className)) {
         var rm = (replace + " " + source).split(" ");
-        var cs = new Array();
+        var cs = [];
         forEach(this.className.split(" "), function(c) {
           if (c !== "" && rm.indexOf(c) == -1) {
             cs.push(c);
@@ -1907,7 +1899,7 @@ window.$K = (function() {
     },
     getRequestBody: function(pForm) {
       pForm = $E(pForm);
-      var nParams = new Array();
+      var nParams = [];
       forEach(pForm.getElementsByTagName("*"), function() {
         var t = this.tagName.toLowerCase();
         if (t == "input") {
@@ -4022,10 +4014,10 @@ window.$K = (function() {
         patt = /((color_)([0-9]+)_)([0-9]+)/;
       this.ddcolor.innerHTML = "";
       var _dokeydown = function(e) {
-        var key = GEvent.keyCode(e);
-        var hs = patt.exec(this.id);
-        var z = parseFloat(hs[3]);
-        var x = parseFloat(hs[4]);
+        var key = GEvent.keyCode(e),
+          hs = patt.exec(this.id),
+          z = floatval(hs[3]),
+          x = floatval(hs[4]);
         if (key > 36 && key < 41) {
           if (key == 37) {
             x = x - 1;
@@ -4272,7 +4264,7 @@ window.$K = (function() {
       this.loading = this.img.nextSibling.nextSibling;
       this.body.style.overflow = "hidden";
       this.currentId = 0;
-      this.imgs = new Array();
+      this.imgs = [];
     },
     clear: function() {
       this.currentId = 0;

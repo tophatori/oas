@@ -370,8 +370,8 @@ class Request extends AbstractRequest implements RequestInterface
      */
     public function getAcceptableLanguages()
     {
-        $acceptLanguages = empty($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? [] : explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
-        $matches = [];
+        $acceptLanguages = empty($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? array() : explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
+        $matches = array();
         if (!empty($acceptLanguages)) {
             foreach ($acceptLanguages as $item) {
                 $item = array_map('trim', explode(';', $item));

@@ -33,8 +33,7 @@ class Model extends \Kotchasan\Model
     public static function get($order_id, $typ)
     {
         if ($order_id > 0) {
-            $model = new \Kotchasan\Model();
-            $result = $model->db()->createQuery()
+            $result = static::createQuery()
                 ->select('S.id', 'S.quantity', 'S.price', 'S.vat', 'S.discount', 'S.product_id', 'S.topic', 'P.unit')
                 ->from('stock S')
                 ->join('product P', 'LEFT', array(array('P.id', 'S.product_id')))
@@ -85,7 +84,7 @@ class Model extends \Kotchasan\Model
             ->where(array(
                 array('S.product_id', $id),
                 array(Sql::YEAR('S.create_date'), $year),
-                Sql::create('(S.`order_id`=0 OR O.`status`=(CASE WHEN S.`status`="IN" THEN '.self::$cfg->instock_status.' ELSE '.self::$cfg->outstock_status.' END))'),
+                Sql::create('(S.`order_id`=0 OR O.`status`=(CASE WHEN S.`status`="IN" THEN ' . self::$cfg->instock_status . ' ELSE ' . self::$cfg->outstock_status . ' END))'),
             ))
             ->groupBy('m', 'S.status');
         $query = $db->createQuery()
@@ -149,7 +148,7 @@ class Model extends \Kotchasan\Model
             ))
             ->where(array(
                 array('C.product_id', $id),
-                Sql::create('(C.`order_id`=0 OR O.`status`=(CASE WHEN C.`status`="IN" THEN '.self::$cfg->instock_status.' ELSE '.self::$cfg->outstock_status.' END))'),
+                Sql::create('(C.`order_id`=0 OR O.`status`=(CASE WHEN C.`status`="IN" THEN ' . self::$cfg->instock_status . ' ELSE ' . self::$cfg->outstock_status . ' END))'),
             ));
     }
 }

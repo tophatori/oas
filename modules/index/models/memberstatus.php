@@ -36,7 +36,7 @@ class Model extends \Kotchasan\KBase
         if ($request->initSession() && $request->isReferer() && $login = Login::isMember()) {
             if (Login::checkPermission($login, 'can_config') && Login::notDemoMode($login)) {
                 // โหลด config
-                $config = Config::load(ROOT_PATH.'settings/config.php');
+                $config = Config::load(ROOT_PATH . 'settings/config.php');
                 // รับค่าจากการ POST
                 $action = $request->post('action')->toString();
                 if (preg_match('/^list_(add|delete|color|name)_([0-9]+)$/', $action, $match)) {
@@ -66,7 +66,7 @@ class Model extends \Kotchasan\KBase
                         $config->color_status[$i] = '#000000';
                         // คืนค่าแถวใหม่
                         $ret['data'] = Language::trans(\Index\Memberstatus\View::createRow($i, $config->member_status[$i], $config->color_status[$i]));
-                        $ret['newId'] = 'list_'.$i;
+                        $ret['newId'] = 'list_' . $i;
                         $save = true;
                     } elseif ($match[1] == 'delete') {
                         // ลบ
@@ -104,7 +104,7 @@ class Model extends \Kotchasan\KBase
                     }
                 }
                 // save config
-                if ($save && !Config::save($config, ROOT_PATH.'settings/config.php')) {
+                if ($save && !Config::save($config, ROOT_PATH . 'settings/config.php')) {
                     $ret['alert'] = sprintf(Language::get('File %s cannot be created or is read-only.'), 'settings/config.php');
                 }
             }

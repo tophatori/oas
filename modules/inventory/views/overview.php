@@ -38,14 +38,14 @@ class View extends \Gcms\View
         // รายงานสินค้าคงคลัง
         $thead = '';
         foreach (\Kotchasan\Language::get('MONTH_SHORT') as $v) {
-            $thead .= '<th class=center>'.$v.'</th>';
+            $thead .= '<th class=center>' . $v . '</th>';
         }
         $rows = '';
         // สรุปรายงานสินค้าคงคลัง รายเดือน
         foreach (\Inventory\Stock\Model::inventory($product['id'], $year) as $k => $item) {
-            $rows .= '<tr><th>{LNG_'.$k.'}</th>';
+            $rows .= '<tr><th>{LNG_' . $k . '}</th>';
             for ($i = 1; $i < 13; ++$i) {
-                $rows .= '<td class=center>'.(empty($item[$i]) ? 0 : $item[$i]).'</td>';
+                $rows .= '<td class=center>' . (empty($item[$i]) ? 0 : $item[$i]) . '</td>';
             }
             $rows .= '</tr>';
         }
@@ -53,18 +53,18 @@ class View extends \Gcms\View
         // query ปีที่มีการทำรายการเพื่อเป็นตัวเลือกปี
         foreach (\Inventory\Stock\Model::listYears($product['id']) as $k => $v) {
             $sel = $year == $k ? ' selected' : '';
-            $option .= '<option value='.$k.$sel.'>'.$v.'</option>';
+            $option .= '<option value=' . $k . $sel . '>' . $v . '</option>';
         }
         $content .= '<article id=year_graph class=ggraphs>';
-        $content .= '<header><h3>{LNG_Product Activity Report} '.$product['topic'].' {LNG_Product Code} '.$product['product_no'].'<label>&nbsp;{LNG_year} <select id=year>'.$option.'</select></label></h3></header>';
+        $content .= '<header><h3>{LNG_Product Activity Report} ' . $product['topic'] . ' {LNG_Product Code} ' . $product['product_no'] . '<label>&nbsp;{LNG_year} <select id=year>' . $option . '</select></label></h3></header>';
         $content .= '<canvas></canvas>';
         $content .= '<table class=hidden>';
-        $content .= '<thead><tr><th>{LNG_monthly}</th>'.$thead.'</tr></thead>';
-        $content .= '<tbody>'.$rows.'</tbody>';
+        $content .= '<thead><tr><th>{LNG_monthly}</th>' . $thead . '</tr></thead>';
+        $content .= '<tbody>' . $rows . '</tbody>';
         $content .= '</table>';
         $content .= '</article>';
         $content .= '</section>';
-        $content .= '<script>initInventoryOverview('.$product['id'].');</script>';
+        $content .= '<script>initInventoryOverview(' . $product['id'] . ');</script>';
 
         return $content;
     }

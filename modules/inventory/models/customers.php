@@ -29,9 +29,7 @@ class Model extends \Kotchasan\Model
      */
     public static function toDataTable()
     {
-        $model = new \Kotchasan\Model();
-
-        return $model->db()->createQuery()
+        return static::createQuery()
             ->select('company', 'branch', 'phone', 'email', 'id')
             ->from('customer');
     }

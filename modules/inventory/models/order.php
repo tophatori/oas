@@ -70,9 +70,7 @@ class Model extends \Kotchasan\Model
     public static function getOrder($order)
     {
         if (preg_match('/[0-9a-zA-Z]{32,32}/', $order)) {
-            $model = new \Kotchasan\Model();
-
-            return $model->db()->createQuery()
+            return static::createQuery()
                 ->from('orders O')
                 ->join('customer U', 'LEFT', array(
                     array('U.id', 'O.customer_id'),
@@ -93,9 +91,7 @@ class Model extends \Kotchasan\Model
      */
     public static function getOrderDetails($id)
     {
-        $model = new \Kotchasan\Model();
-
-        return $model->db()->createQuery()
+        return static::createQuery()
             ->from('orders O')
             ->join('customer U', 'LEFT', array('U.id', 'O.customer_id'))
             ->where(array(

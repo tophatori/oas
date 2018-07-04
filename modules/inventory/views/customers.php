@@ -32,7 +32,7 @@ class View extends \Gcms\View
     public function render(Request $request)
     {
         // URL สำหรับส่งให้ตาราง
-        $uri = $request->createUriWithGlobals(WEB_URL.'index.php');
+        $uri = $request->createUriWithGlobals(WEB_URL . 'index.php');
         // ตาราง
         $table = new DataTable(array(
             /* Uri */
@@ -114,7 +114,7 @@ class View extends \Gcms\View
      */
     public function onRow($item, $o, $prop)
     {
-        $item['email'] = empty($item['email']) ? '' : '<a href="mailto:'.$item['email'].'">'.$item['email'].'</a>';
+        $item['email'] = empty($item['email']) ? '' : '<a href="mailto:' . $item['email'] . '">' . $item['email'] . '</a>';
         $item['phone'] = self::showPhone($item['phone']);
 
         return $item;

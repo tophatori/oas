@@ -63,6 +63,7 @@
         if (showing) {
           _hide();
           try {
+            self.input.datas = this.datas;
             options.callBack.call(this.datas);
             self.text = self.input.value;
           } catch (e) {}

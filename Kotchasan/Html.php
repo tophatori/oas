@@ -213,8 +213,14 @@ class Html extends \Kotchasan\KBase
             ));
         }
         $li = '';
-        if (isset($attributes['value'])) {
-            if (is_array($attributes['value'])) {
+        if (isset($attributes['value']) && is_array($attributes['value'])) {
+            if (isset($attributes['options'])) {
+                foreach ($attributes['value'] as $value) {
+                    if (isset($attributes['options'][$value])) {
+                        $li .= '<li><span>'.$attributes['options'][$value].'</span><button type="button">x</button><input type="hidden" name="'.$id.'[]" value="'.$value.'"></li>';
+                    }
+                }
+            } else {
                 foreach ($attributes['value'] as $value) {
                     $li .= '<li><span>'.$value.'</span><button type="button">x</button><input type="hidden" name="'.$id.'[]" value="'.$value.'"></li>';
                 }
@@ -232,7 +238,9 @@ class Html extends \Kotchasan\KBase
                     $js[] = '"'.self::$form->attributes['id'].'"';
                 }
                 self::$form->javascript[] = 'new GValidator('.implode(', ', $js).');';
-            } elseif (!in_array($key, array('id', 'type', 'itemId', 'itemClass', 'labelClass', 'label', 'value'))) {
+            } elseif ($key == 'comment') {
+                $comment = $value;
+            } elseif (!in_array($key, array('id', 'type', 'itemId', 'itemClass', 'labelClass', 'label', 'value', 'options'))) {
                 $prop[$key] = $key.'="'.$value.'"';
             }
         }
@@ -245,6 +253,13 @@ class Html extends \Kotchasan\KBase
             'class' => implode(' ', $c),
             'innerHTML' => $li,
         ));
+        if (isset($comment)) {
+            $obj->add('div', array(
+                'id' => 'result_'.$id,
+                'class' => 'comment',
+                'innerHTML' => $comment,
+            ));
+        }
 
         return $obj;
     }

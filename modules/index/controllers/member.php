@@ -49,9 +49,9 @@ class Controller extends \Gcms\Controller
             ));
             $ul = $breadcrumbs->add('ul');
             $ul->appendChild('<li><span class="icon-user">{LNG_Users}</span></li>');
-            $ul->appendChild('<li><span>'.$this->title().'</span></li>');
+            $ul->appendChild('<li><span>' . $this->title() . '</span></li>');
             $section->add('header', array(
-                'innerHTML' => '<h2 class="icon-users">'.$this->title.'</h2>',
+                'innerHTML' => '<h2 class="icon-users">' . $this->title . '</h2>',
             ));
             // แสดงตาราง
             $section->appendChild(createClass('Index\Member\View')->render($request));

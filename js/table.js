@@ -24,7 +24,11 @@
         dragColumn: -1
       };
       for (var prop in o) {
-        this.options[prop] = o[prop];
+        if (prop == "debug") {
+          console.log(o.debug);
+        } else {
+          this.options[prop] = o[prop];
+        }
       }
       this.table = $E(id);
       this.search = o["search"] || "";

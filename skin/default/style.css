@@ -363,6 +363,9 @@ div.dashboard,
   line-height: 2em;
   padding: 10px;
 }
+.setup_frm .datatable > .tablebody {
+  overflow: visible;
+}
 .subtitle,
 caption {
   padding: 5px 10px;

@@ -77,6 +77,6 @@ function fbLoginSubmit(xhr) {
       );
     }
   } else if (xhr.responseText != "") {
-    alert(xhr.responseText);
+    console.log(xhr.responseText);
   }
 }

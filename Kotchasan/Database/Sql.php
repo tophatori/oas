@@ -55,7 +55,7 @@ class Sql
     {
         if ($this->sql === null) {
             if (is_string($key) && $key != '') {
-                return ':'.preg_replace('/[\.`]/', '', strtolower($key));
+                return ':' . preg_replace('/[\.`]/', '', strtolower($key));
             } else {
                 throw new \InvalidArgumentException('$key must be a non-empty string');
             }
@@ -129,14 +129,14 @@ class Sql
             return $column_name->text();
         } elseif ($column_name instanceof QueryBuilder) {
             // QueryBuilder
-            return '('.$column_name->text().')';
+            return '(' . $column_name->text() . ')';
         } elseif (is_string($column_name)) {
             if (preg_match('/^(([A-Z0-9]{1,2})\.)?`?([a-zA-Z0-9_]+)`?(\s(ASC|DESC|asc|desc))?$/', $column_name, $match)) {
                 // U.id, U.`id`, U1.id, U1.`id`, field_name, `field_name`
-                return ($match[2] == '' ? "`$match[3]`" : "$match[2].`$match[3]`").(empty($match[5]) ? '' : $match[4]);
+                return ($match[2] == '' ? "`$match[3]`" : "$match[2].`$match[3]`") . (empty($match[5]) ? '' : $match[4]);
             } elseif (preg_match('/^`?([a-zA-Z0-9_]+)`?\.`?([a-zA-Z0-9_]+)`?(\s(ASC|DESC|asc|desc))?$/', $column_name, $match)) {
                 // table_name.field_name, table_name.`field_name`, `table_name`.field_name, `table_name`.`field_name`
-                return ("`$match[1]`.`$match[2]`").(empty($match[4]) ? '' : $match[3]);
+                return ("`$match[1]`.`$match[2]`") . (empty($match[4]) ? '' : $match[3]);
             } else {
                 // อื่นๆ คืนค่าเป็นข้อความภายใต้เครื่องหมาย ' (อัญประกาศเดี่ยว)
                 return "'$column_name'";
@@ -202,7 +202,7 @@ class Sql
                 foreach ($condition as $items) {
                     $qs[] = $this->buildWhere($items, $values, $operator, $id);
                 }
-                $sql = implode(' '.$operator.' ', $qs);
+                $sql = implode(' ' . $operator . ' ', $qs);
             } else {
                 if (sizeof($condition) == 2) {
                     $operator = '=';
@@ -215,7 +215,7 @@ class Sql
                 if (is_array($value) && $operator == '=') {
                     $operator = 'IN';
                 }
-                $sql = $key.' '.$operator.' '.self::quoteValue($key, $value, $values);
+                $sql = $key . ' ' . $operator . ' ' . self::quoteValue($key, $value, $values);
             }
         } elseif ($condition instanceof QueryBuilder) {
             // QueryBuilder ไม่มี column_name
@@ -227,7 +227,7 @@ class Sql
             $values = $condition->getValues($values);
         } else {
             // ใช้ $id เป็น column_name
-            $sql = self::fieldName($id).' = '.self::quoteValue($id, $condition, $values);
+            $sql = self::fieldName($id) . ' = ' . self::quoteValue($id, $condition, $values);
         }
 
         return $sql;
@@ -270,7 +270,7 @@ class Sql
             foreach ($value as $v) {
                 $qs[] = self::quoteValue($column_name, $v, $values);
             }
-            $sql = '('.implode(', ', $qs).')';
+            $sql = '(' . implode(', ', $qs) . ')';
         } elseif ($value === null) {
             $sql = 'NULL';
         } elseif ($value === '') {
@@ -281,7 +281,7 @@ class Sql
                 $sql = "'$value'";
             } elseif (preg_match('/0x[0-9]+/is', $value)) {
                 // 0x
-                $sql = ':'.strtolower(preg_replace('/[`\.\s\-_]+/', '', $column_name)).sizeof($values);
+                $sql = ':' . strtolower(preg_replace('/[`\.\s\-_]+/', '', $column_name)) . sizeof($values);
                 $values[$sql] = $value;
             } else {
                 if (preg_match('/^(([A-Z0-9]{1,2})|`([a-zA-Z0-9_]+)`)\.`?([a-zA-Z0-9_]+)`?$/', $value, $match)) {
@@ -294,7 +294,7 @@ class Sql
                     // ข้อความที่ไม่มีช่องว่างหรือรหัสที่อาจเป็น SQL
                     $sql = "'$value'";
                 } else {
-                    $sql = ':'.strtolower(preg_replace('/[`\.\s\-_]+/', '', $column_name)).sizeof($values);
+                    $sql = ':' . strtolower(preg_replace('/[`\.\s\-_]+/', '', $column_name)) . sizeof($values);
                     $values[$sql] = $value;
                 }
             }
@@ -307,7 +307,7 @@ class Sql
             $values = $value->getValues($values);
         } elseif ($value instanceof QueryBuilder) {
             // QueryBuilder
-            $sql = '('.$value->text().')';
+            $sql = '(' . $value->text() . ')';
             $values = $value->getValues($values);
         } else {
             throw new \InvalidArgumentException('Invalid arguments in quoteValue');
@@ -341,9 +341,9 @@ class Sql
         if (empty($condition)) {
             $condition = '';
         } else {
-            $condition = ' WHERE '.$obj->buildWhere($condition, $obj->values, $operator, $id);
+            $condition = ' WHERE ' . $obj->buildWhere($condition, $obj->values, $operator, $id);
         }
-        $obj->sql = '(1 + IFNULL((SELECT MAX(`'.$field.'`) FROM '.$table_name.' AS X'.$condition.'), 0))';
+        $obj->sql = '(1 + IFNULL((SELECT MAX(`' . $field . '`) FROM ' . $table_name . ' AS X' . $condition . '), 0))';
         if (isset($alias)) {
             $obj->sql .= " AS `$alias`";
         }
@@ -362,7 +362,7 @@ class Sql
      */
     public static function DISTINCT($column_name)
     {
-        return self::create('DISTINCT '.self::fieldName($column_name));
+        return self::create('DISTINCT ' . self::fieldName($column_name));
     }
 
     /**
@@ -381,7 +381,7 @@ class Sql
      */
     public static function SUM($column_name, $alias = '', $distinct = false)
     {
-        return self::create('SUM('.($distinct ? 'DISTINCT ' : '').self::fieldName($column_name).')'.($alias ? " AS `$alias`" : ''));
+        return self::create('SUM(' . ($distinct ? 'DISTINCT ' : '') . self::fieldName($column_name) . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -399,7 +399,7 @@ class Sql
     {
         $column_name = $column_name == '*' ? '*' : self::fieldName($column_name);
 
-        return self::create('COUNT('.($distinct ? 'DISTINCT ' : '').$column_name.')'.($alias ? " AS `$alias`" : ''));
+        return self::create('COUNT(' . ($distinct ? 'DISTINCT ' : '') . $column_name . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -415,7 +415,7 @@ class Sql
      */
     public static function AVG($column_name, $alias = null, $distinct = false)
     {
-        return self::create('AVG('.($distinct ? 'DISTINCT ' : '').self::fieldName($column_name).')'.($alias ? " AS `$alias`" : ''));
+        return self::create('AVG(' . ($distinct ? 'DISTINCT ' : '') . self::fieldName($column_name) . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -430,7 +430,7 @@ class Sql
      */
     public static function MIN($column_name, $alias = null)
     {
-        return self::create('MIN('.self::fieldName($column_name).')'.($alias ? " AS `$alias`" : ''));
+        return self::create('MIN(' . self::fieldName($column_name) . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -445,7 +445,7 @@ class Sql
      */
     public static function MAX($column_name, $alias = null)
     {
-        return self::create('MAX('.self::fieldName($column_name).')'.($alias ? " AS `$alias`" : ''));
+        return self::create('MAX(' . self::fieldName($column_name) . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -461,7 +461,7 @@ class Sql
      */
     public static function DAY($column_name, $alias = null)
     {
-        return self::create('DAY('.self::fieldName($column_name).')'.($alias ? " AS `$alias`" : ''));
+        return self::create('DAY(' . self::fieldName($column_name) . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -477,7 +477,7 @@ class Sql
      */
     public static function MONTH($column_name, $alias = null)
     {
-        return self::create('MONTH('.self::fieldName($column_name).')'.($alias ? " AS `$alias`" : ''));
+        return self::create('MONTH(' . self::fieldName($column_name) . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -493,7 +493,7 @@ class Sql
      */
     public static function YEAR($column_name, $alias = null)
     {
-        return self::create('YEAR('.self::fieldName($column_name).')'.($alias ? " AS `$alias`" : ''));
+        return self::create('YEAR(' . self::fieldName($column_name) . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -509,7 +509,7 @@ class Sql
      */
     public static function DATE($column_name, $alias = null)
     {
-        return self::create('DATE('.self::fieldName($column_name).')'.($alias ? " AS `$alias`" : ''));
+        return self::create('DATE(' . self::fieldName($column_name) . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -525,7 +525,7 @@ class Sql
      */
     public static function HOUR($column_name, $alias = null)
     {
-        return self::create('HOUR('.self::fieldName($column_name).')'.($alias ? " AS `$alias`" : ''));
+        return self::create('HOUR(' . self::fieldName($column_name) . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -541,7 +541,7 @@ class Sql
      */
     public static function MINUTE($column_name, $alias = null)
     {
-        return self::create('MINUTE('.self::fieldName($column_name).')'.($alias ? " AS `$alias`" : ''));
+        return self::create('MINUTE(' . self::fieldName($column_name) . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -557,7 +557,7 @@ class Sql
      */
     public static function SECOND($column_name, $alias = null)
     {
-        return self::create('SECOND('.self::fieldName($column_name).')'.($alias ? " AS `$alias`" : ''));
+        return self::create('SECOND(' . self::fieldName($column_name) . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -574,7 +574,7 @@ class Sql
      */
     public static function DATE_FORMAT($column_name, $format, $alias = null)
     {
-        return self::create('DATE_FORMAT('.self::fieldName($column_name).", '$format')".($alias ? " AS `$alias`" : ''));
+        return self::create('DATE_FORMAT(' . self::fieldName($column_name) . ", '$format')" . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -591,7 +591,7 @@ class Sql
      */
     public static function DATEDIFF($column_name1, $column_name2, $alias = null)
     {
-        return self::create('DATEDIFF('.self::fieldName($column_name1).', '.self::fieldName($column_name2).')'.($alias ? " AS `$alias`" : ''));
+        return self::create('DATEDIFF(' . self::fieldName($column_name1) . ', ' . self::fieldName($column_name2) . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -608,7 +608,7 @@ class Sql
      */
     public static function TIMEDIFF($column_name1, $column_name2, $alias = null)
     {
-        return self::create('TIMEDIFF('.self::fieldName($column_name1).', '.self::fieldName($column_name2).')'.($alias ? " AS `$alias`" : ''));
+        return self::create('TIMEDIFF(' . self::fieldName($column_name1) . ', ' . self::fieldName($column_name2) . ')' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -625,7 +625,7 @@ class Sql
      */
     public static function FORMAT($column_name, $format, $alias = null)
     {
-        return self::create('FORMAT('.self::fieldName($column_name).", '$format')".($alias ? " AS `$alias`" : ''));
+        return self::create('FORMAT(' . self::fieldName($column_name) . ", '$format')" . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -641,7 +641,7 @@ class Sql
      */
     public static function RAND($alias = null)
     {
-        return self::create('RAND()'.($alias ? " AS `$alias`" : ''));
+        return self::create('RAND()' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -656,7 +656,7 @@ class Sql
      */
     public static function NOW($alias = null)
     {
-        return self::create('NOW()'.($alias ? " AS `$alias`" : ''));
+        return self::create('NOW()' . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -682,7 +682,7 @@ class Sql
                 $fs[] = self::fieldName($item);
             }
 
-            return self::create(($separator === null ? 'CONCAT(' : "CONCAT_WS('$separator', ").implode(', ', $fs).($alias ? ") AS `$alias`" : ')'));
+            return self::create(($separator === null ? 'CONCAT(' : "CONCAT_WS('$separator', ") . implode(', ', $fs) . ($alias ? ") AS `$alias`" : ')'));
         } else {
             throw new \InvalidArgumentException('$fields is array only');
         }
@@ -712,10 +712,10 @@ class Sql
             } else {
                 $orders[] = self::fieldName($order);
             }
-            $order = empty($orders) ? '' : ' ORDER BY '.implode(',', $orders);
+            $order = empty($orders) ? '' : ' ORDER BY ' . implode(',', $orders);
         }
 
-        return self::create('GROUP_CONCAT('.($distinct ? 'DISTINCT ' : '').self::fieldName($column_name).$order." SEPARATOR '$separator')".($alias ? " AS `$alias`" : ''));
+        return self::create('GROUP_CONCAT(' . ($distinct ? 'DISTINCT ' : '') . self::fieldName($column_name) . $order . " SEPARATOR '$separator')" . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -735,7 +735,7 @@ class Sql
         $substr = strpos($substr, '`') === false ? "'$substr'" : $substr;
         $str = strpos($str, '`') === false ? "'$str'" : $str;
 
-        return self::create("LOCATE($substr, $str".(empty($pos) ? ')' : ", $pos)").($alias ? " AS `$alias`" : ''));
+        return self::create("LOCATE($substr, $str" . (empty($pos) ? ')' : ", $pos)") . ($alias ? " AS `$alias`" : ''));
     }
 
     /**
@@ -752,7 +752,7 @@ class Sql
      */
     public static function BETWEEN($column_name1, $column_name2)
     {
-        return self::create('BETWEEN '.self::fieldName($column_name1).' AND '.self::fieldName($column_name2));
+        return self::create('BETWEEN ' . self::fieldName($column_name1) . ' AND ' . self::fieldName($column_name2));
     }
 
     /**
@@ -769,7 +769,7 @@ class Sql
      */
     public static function IFNULL($column_name1, $column_name2, $alias = null)
     {
-        return self::create('IFNULL('.self::fieldName($column_name1).', '.self::fieldName($column_name2).')'.($alias ? ' AS `'.$alias.'`' : ''));
+        return self::create('IFNULL(' . self::fieldName($column_name1) . ', ' . self::fieldName($column_name2) . ')' . ($alias ? ' AS `' . $alias . '`' : ''));
     }
 
     /**
@@ -783,7 +783,7 @@ class Sql
      */
     public static function ISNULL($column_name)
     {
-        return self::create(self::fieldName($column_name).' IS NULL');
+        return self::create(self::fieldName($column_name) . ' IS NULL');
     }
 
     /**
@@ -797,7 +797,7 @@ class Sql
      */
     public static function ISNOTNULL($column_name)
     {
-        return self::create(self::fieldName($column_name).' IS NOT NULL');
+        return self::create(self::fieldName($column_name) . ' IS NOT NULL');
     }
 
     /**

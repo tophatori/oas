@@ -66,7 +66,7 @@ class Model extends \Kotchasan\Model
             // คืนค่า
             return $result;
         } else {
-            echo 'ไม่ได้กำหนดค่า $cfg->'.$name;
+            echo 'ไม่ได้กำหนดค่า $cfg->' . $name;
         }
 
         return null;

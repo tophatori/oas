@@ -14,7 +14,7 @@ if (defined('ROOT_PATH')) {
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
             \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
         );
-        $conn = new \PDO('mysql:host='.$_SESSION['db_server'].';dbname='.$_SESSION['db_name'], $_SESSION['db_username'], $_SESSION['db_password'], $options);
+        $conn = new \PDO('mysql:host=' . $_SESSION['db_server'] . ';dbname=' . $_SESSION['db_name'], $_SESSION['db_username'], $_SESSION['db_password'], $options);
     } catch (\PDOException $e) {
         $error = true;
         echo '<h2>ความผิดพลาดในการเชื่อมต่อกับฐานข้อมูล</h2>';
@@ -23,7 +23,7 @@ if (defined('ROOT_PATH')) {
         echo '<ol>';
         echo '<li>เซิร์ฟเวอร์ของฐานข้อมูลของคุณไม่สามารถใช้งานได้ในขณะนี้</li>';
         echo '<li>ไม่มีฐานข้อมูลที่ต้องการติดตั้ง ให้ลองเลือกให้โปรแกรมสร้างฐานข้อมูลให้</li>';
-        echo '<li>'.$e->getMessage().'</li>';
+        echo '<li>' . $e->getMessage() . '</li>';
         echo '</ol>';
         echo '<p>หากคุณไม่สามารถดำเนินการแก้ไขข้อผิดพลาดด้วยตัวของคุณเองได้ ให้ติดต่อผู้ดูแลระบบเพื่อขอข้อมูลที่ถูกต้อง</p>';
         echo '<p><a href="index.php?step=2" class="button large pink">กลับไปลองใหม่</a></p>';
@@ -38,7 +38,7 @@ if (defined('ROOT_PATH')) {
         foreach ($lines as $line) {
             $line = trim($line);
             if ($line && !startsWith($line, '--')) {
-                $commands .= $line."\n";
+                $commands .= $line . "\n";
             }
         }
         $commands = explode(";\n", $commands);
@@ -47,10 +47,10 @@ if (defined('ROOT_PATH')) {
                 $command = str_replace('{prefix}', $_SESSION['prefix'], $command);
                 try {
                     $conn->query($command);
-                    $content[] = '<li class="correct">'.$command.'</li>';
+                    $content[] = '<li class="correct">' . $command . '</li>';
                 } catch (\PDOException $ex) {
                     $error = true;
-                    $content[] = '<li class="incorrect">'.$ex->getMessage().'</li>';
+                    $content[] = '<li class="incorrect">' . $ex->getMessage() . '</li>';
                 }
             }
         }
@@ -62,17 +62,17 @@ if (defined('ROOT_PATH')) {
             $database_cfg['mysql']['dbname'] = $_SESSION['db_name'];
             $database_cfg['mysql']['hostname'] = $_SESSION['db_server'];
             $database_cfg['mysql']['prefix'] = $_SESSION['prefix'];
-            $f = save($database_cfg, ROOT_PATH.'settings/database.php');
-            $content[] = '<li class="'.($f ? 'correct' : 'incorrect').'">สร้างไฟล์ตั้งค่า <b>database.php</b> ...</li>';
+            $f = save($database_cfg, ROOT_PATH . 'settings/database.php');
+            $content[] = '<li class="' . ($f ? 'correct' : 'incorrect') . '">สร้างไฟล์ตั้งค่า <b>database.php</b> ...</li>';
             // บันทึก settings/config.php
             $cfg = include 'settings/config.php';
-            $f = save($cfg, ROOT_PATH.'settings/config.php');
-            $content[] = '<li class="'.($f ? 'correct' : 'incorrect').'">สร้างไฟล์ตั้งค่า <b>config.php</b> ...</li>';
+            $f = save($cfg, ROOT_PATH . 'settings/config.php');
+            $content[] = '<li class="' . ($f ? 'correct' : 'incorrect') . '">สร้างไฟล์ตั้งค่า <b>config.php</b> ...</li>';
         }
         if (!$error) {
             echo '<h2>ติดตั้งเรียบร้อย</h2>';
             echo '<p>การติดตั้งได้ดำเนินการเสร็จเรียบร้อยแล้ว หากคุณต้องการความช่วยเหลือในการใช้งาน คุณสามารถ ติดต่อสอบถามได้ที่ <a href="https://www.kotchasan.com" target="_blank">https://www.kotchasan.com</a></p>';
-            echo '<ul>'.implode('', $content).'</ul>';
+            echo '<ul>' . implode('', $content) . '</ul>';
             echo '<p class=warning>กรุณาลบไดเร็คทอรี่ <em>install/</em> ออกจาก Server ของคุณ</p>';
             echo '<p>คุณควรปรับ chmod ให้ไดเร็คทอรี่ <em>datas/</em> และ <em>settings/</em> (และไดเร็คทอรี่อื่นๆที่คุณได้ปรับ chmod ไว้ก่อนการติดตั้ง) ให้เป็น 644 ก่อนดำเนินการต่อ (ถ้าคุณได้ทำการปรับ chmod ไว้ด้วยตัวเอง)</p>';
             echo '<p>เมื่อเรียบร้อยแล้ว กรุณา<b>เข้าระบบ</b>เพื่อตั้งค่าที่จำเป็นอื่นๆโดยใช้ขื่ออีเมลและรหัสผ่านของผู้ดูแลระบบ</p>';
@@ -80,7 +80,7 @@ if (defined('ROOT_PATH')) {
         } else {
             echo '<h2>ติดตั้งไม่สำเร็จ</h2>';
             echo '<p>การติดตั้งยังไม่สมบูรณ์ ลองตรวจสอบข้อผิดพลาดที่เกิดขึ้นและแก้ไขดู หากคุณต้องการความช่วยเหลือการติดตั้ง คุณสามารถ ติดต่อสอบถามได้ที่ <a href="https://www.kotchasan.com" target="_blank">https://www.kotchasan.com</a></p>';
-            echo '<ul>'.implode('', $content).'</ul>';
+            echo '<ul>' . implode('', $content) . '</ul>';
             echo '<p><a href="." class="button large admin">ลองใหม่</a></p>';
         }
     }
@@ -100,7 +100,7 @@ function save($config, $file)
         if (!preg_match('/^.*\/([^\/]+)\.php?/', $file, $match)) {
             $match[1] = 'config';
         }
-        fwrite($f, '<'."?php\n/* $match[1].php */\nreturn ".var_export((array) $config, true).';');
+        fwrite($f, '<' . "?php\n/* $match[1].php */\nreturn " . var_export((array) $config, true) . ';');
         fclose($f);
 
         return true;

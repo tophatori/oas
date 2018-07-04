@@ -30,7 +30,7 @@ class Controller extends \Kotchasan\Controller
     {
         if ($request->initSession() && $request->isReferer() && preg_match('/^modal_(([a-z]+)\/)?([a-z]+)_(.*)$/', $request->post('data')->toString(), $match)) {
             $match[2] = empty($match[2]) ? 'Index' : ucfirst($match[2]);
-            $className = $match[2].'\\'.ucfirst($match[3]).'\View';
+            $className = $match[2] . '\\' . ucfirst($match[3]) . '\View';
             if (class_exists($className) && method_exists($className, 'render')) {
                 $content = createClass($className)->render($request, $match[4]);
                 if (!empty($content)) {

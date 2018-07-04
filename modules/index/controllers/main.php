@@ -37,7 +37,7 @@ class Controller extends \Gcms\Controller
         $module = strtolower($request->request('module')->toString());
         if (!empty($module) && $module != 'index' && preg_match('/^([a-z]+)([\/\-]([a-z]+))?$/', $module, $match)) {
             if (empty($match[3])) {
-                if (is_file(APP_PATH.'modules/'.$match[1].'/controllers/index.php')) {
+                if (is_file(APP_PATH . 'modules/' . $match[1] . '/controllers/index.php')) {
                     $owner = $match[1];
                     $module = 'index';
                 } else {
@@ -51,7 +51,7 @@ class Controller extends \Gcms\Controller
         } elseif (!empty($default) && preg_match('/^([a-z]+)([\/\-]([a-z]+))?$/i', $default, $match)) {
             // ถ้าไม่ระบุ module มาแสดงหน้า $default
             if (empty($match[3])) {
-                if (is_file(APP_PATH.'modules/'.$match[1].'/controllers/index.php')) {
+                if (is_file(APP_PATH . 'modules/' . $match[1] . '/controllers/index.php')) {
                     $owner = $match[1];
                     $module = 'index';
                 } else {
@@ -67,11 +67,11 @@ class Controller extends \Gcms\Controller
             return null;
         }
         // ตรวจสอบหน้าที่เรียก
-        if (is_file(APP_PATH.'modules/'.$owner.'/controllers/'.$module.'.php')) {
+        if (is_file(APP_PATH . 'modules/' . $owner . '/controllers/' . $module . '.php')) {
             // โหลดคลาส ถ้าพบโมดูลที่เรียก
-            include APP_PATH.'modules/'.$owner.'/controllers/'.$module.'.php';
+            include APP_PATH . 'modules/' . $owner . '/controllers/' . $module . '.php';
 
-            return ucfirst($owner).'\\'.ucfirst($module).'\Controller';
+            return ucfirst($owner) . '\\' . ucfirst($module) . '\Controller';
         }
 
         return null;

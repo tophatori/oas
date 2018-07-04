@@ -311,7 +311,13 @@ class DataTable extends \Kotchasan\KBase
      *
      * @var bool
      */
-    protected $debug = false;
+    private $debug = false;
+    /**
+     * แสดง Explain ของ Query
+     *
+     * @var bool
+     */
+    private $explain = false;
 
     /**
      * Initial Class.
@@ -352,7 +358,11 @@ class DataTable extends \Kotchasan\KBase
                 $this->model = $model->from(array($this->model, 'Z9'));
             }
             // อ่านข้อมูลรายการแรก
-            $first = $this->model->copy()->first($this->fields);
+            if ($this->explain) {
+                $first = $this->model->copy()->explain()->first();
+            } else {
+                $first = $this->model->copy()->first($this->fields);
+            }
             // อ่านคอลัมน์ของตาราง
             if ($first) {
                 foreach ($first as $k => $v) {
@@ -435,7 +445,7 @@ class DataTable extends \Kotchasan\KBase
         foreach ($url_query as $key => $value) {
             // แอเรย์เก็บรายการ input ที่ไม่ต้องสร้าง
             if ($key !== 'search' && $key !== 'count' && $key !== 'page' && $key !== 'action') {
-                $hidden_fields[$key] = '<input type="hidden" name="'.$key.'" value="'.$value.'">';
+                $hidden_fields[$key] = '<input type="hidden" name="' . $key . '" value="' . $value . '">';
             }
         }
         if (isset($this->model)) {
@@ -446,7 +456,7 @@ class DataTable extends \Kotchasan\KBase
             }
         }
         // create HTML
-        $content = array('<div class="datatable" id="'.$this->id.'">');
+        $content = array('<div class="datatable" id="' . $this->id . '">');
         // form
         $form = array();
         if ($this->perPage !== null) {
@@ -456,15 +466,15 @@ class DataTable extends \Kotchasan\KBase
                 if ($c == 0) {
                     $options[0] = Language::get('all items');
                 } else {
-                    $options[$c] = $c.' '.$entries;
+                    $options[$c] = $c . ' ' . $entries;
                 }
             }
             $form[] = $this->addFilter(array(
-        'name' => 'count',
-        'text' => Language::get('Show'),
-        'value' => $this->perPage,
-        'options' => $options,
-      ));
+                'name' => 'count',
+                'text' => Language::get('Show'),
+                'value' => $this->perPage,
+                'options' => $options,
+            ));
         }
         // รายการ Query กำหนดโดย User (AND)
         foreach ($this->filters as $key => $items) {
@@ -495,7 +505,7 @@ class DataTable extends \Kotchasan\KBase
         // ปุ่ม Go
         if (!empty($form)) {
             $form[] = '<fieldset class=go>';
-            $form[] = '<button type=submit class="button go">'.Language::get('Go').'</button>';
+            $form[] = '<button type=submit class="button go">' . Language::get('Go') . '</button>';
             $form[] = implode('', $hidden_fields);
             $form[] = '</fieldset>';
         }
@@ -518,27 +528,32 @@ class DataTable extends \Kotchasan\KBase
                 $this->uri = $this->uri->withParams(array('search' => $search));
             }
             $form[] = '<fieldset class=search>';
-            $form[] = '<label accesskey=f><input type=text name=search value="'.$search.'" placeholder="'.Language::get('Search').'"></label>';
+            $form[] = '<label accesskey=f><input type=text name=search value="' . $search . '" placeholder="' . Language::get('Search') . '"></label>';
             $form[] = '<button type=submit>&#xe607;</button>';
             $form[] = '<button type=submit class=clear_search>&#x78;</button>';
             $form[] = '</fieldset>';
         }
-        if (!empty($form)) {
-            $content[] = '<form class="table_nav" method="get" action="'.$this->uri.'">'.implode('', $form).'</form>';
+        if (!$this->explain && !empty($form)) {
+            $content[] = '<form class="table_nav" method="get" action="' . $this->uri . '">' . implode('', $form) . '</form>';
         }
         if (isset($this->model)) {
-            // field select
-            $this->model->select($this->fields);
-            // จำนวนข้อมูลทั้งหมด (Query Builder)
-            $model = new \Kotchasan\Model();
-            $query = $model->db()->createQuery()
-        ->selectCount()
-        ->from(array($this->model, 'Z'));
-            if ($this->cache) {
-                $query->cacheOn();
+            if ($this->explain) {
+                // explain mode
+                $count = 0;
+            } else {
+                // field select
+                $this->model->select($this->fields);
+                // จำนวนข้อมูลทั้งหมด (Query Builder)
+                $model = new \Kotchasan\Model();
+                $query = $model->db()->createQuery()
+                    ->selectCount()
+                    ->from(array($this->model, 'Z'));
+                if ($this->cache) {
+                    $query->cacheOn();
+                }
+                $result = $query->toArray()->execute();
+                $count = empty($result) ? 0 : $result[0]['count'];
             }
-            $result = $query->toArray()->execute();
-            $count = empty($result) ? 0 : $result[0]['count'];
         } elseif (!empty($this->datas)) {
             // จำนวนข้อมูลทั้งหมดจาก array
             $count = sizeof($this->datas);
@@ -592,7 +607,7 @@ class DataTable extends \Kotchasan\KBase
                     if ($sort) {
                         $sortType = isset($match[3]) && strtolower($match[3]) == 'desc' ? 'desc' : 'asc';
                         $this->sorts[$sort] = $sortType;
-                        $sorts[] = $sort.' '.$sortType;
+                        $sorts[] = $sort . ' ' . $sortType;
                     }
                 }
             }
@@ -608,9 +623,12 @@ class DataTable extends \Kotchasan\KBase
             }
         }
         if (isset($this->model)) {
-            if ($this->debug) {
+            if ($this->explain) {
+                $this->model->explain();
+            }
+            if ($this->debug === true) {
                 // debug Query
-                \Kotchasan::debug($this->model->toArray()->limit($this->perPage, $start)->text());
+                $this->debug = $this->model->toArray()->limit($this->perPage, $start)->text();
             }
             // query ข้อมูล
             $this->datas = $this->model->toArray()->limit($this->perPage, $start)->execute();
@@ -619,6 +637,10 @@ class DataTable extends \Kotchasan\KBase
             // รายการแรก
             $start = -1;
         } elseif (isset($this->datas)) {
+            if ($this->debug === true) {
+                // debug ข้อมูลแอเรย์
+                $this->debug = var_export($this->datas, true);
+            }
             // รายการสุดท้าย
             $end = $start + $this->perPage - 1;
             // รายการแรก
@@ -626,7 +648,6 @@ class DataTable extends \Kotchasan\KBase
         } else {
             $end = 0;
         }
-
         // property ของ ตาราง
         $prop = array();
         $c = array();
@@ -643,17 +664,17 @@ class DataTable extends \Kotchasan\KBase
             $c[] = 'fullwidth';
         }
         if (sizeof($c) > 0) {
-            $prop[] = ' class="'.implode(' ', $c).'"';
+            $prop[] = ' class="' . implode(' ', $c) . '"';
         }
         // table
-        $content[] = '<div class="tablebody"><table'.implode('', $prop).'>';
+        $content[] = '<div class="tablebody"><table' . implode('', $prop) . '>';
         if ($this->showCaption) {
-            $content[] = '<caption>'.$caption.'</caption>';
+            $content[] = '<caption>' . $caption . '</caption>';
         }
         $colCount = 0;
         // table header
         $thead = null;
-        if (isset($this->onCreateHeader)) {
+        if (!$this->explain && isset($this->onCreateHeader)) {
             $thead = call_user_func($this->onCreateHeader);
         } elseif (!empty($this->headers)) {
             $row = array();
@@ -661,13 +682,15 @@ class DataTable extends \Kotchasan\KBase
             $colspan = 0;
             foreach ($this->headers as $key => $attributes) {
                 if ($colspan === 0) {
-                    if (!$this->hideCheckbox && $i == $this->checkCol) {
-                        $row[] = '<th class="check-column"><a class="checkall icon-uncheck"></a></th>';
-                        ++$colCount;
-                    }
-                    if ($i == $this->dragColumn) {
-                        $row[] = '<th></th>';
-                        ++$colCount;
+                    if (!$this->explain) {
+                        if (!$this->hideCheckbox && $i == $this->checkCol) {
+                            $row[] = '<th class="check-column"><a class="checkall icon-uncheck"></a></th>';
+                            ++$colCount;
+                        }
+                        if ($i == $this->dragColumn) {
+                            $row[] = '<th></th>';
+                            ++$colCount;
+                        }
                     }
                     if (isset($attributes['colspan'])) {
                         $colspan = $attributes['colspan'] - 1;
@@ -679,7 +702,7 @@ class DataTable extends \Kotchasan\KBase
                 }
                 ++$colCount;
             }
-            if (!$this->hideCheckbox && $colCount == $this->checkCol) {
+            if (!$this->explain && !$this->hideCheckbox && $colCount == $this->checkCol) {
                 $row[] = '<th class="check-column"><a class="checkall icon-uncheck"></a></th>';
                 ++$colCount;
             }
@@ -700,28 +723,30 @@ class DataTable extends \Kotchasan\KBase
             } else {
                 --$colspan;
             }
-            $thead = '<tr>'.implode('', $row).'</tr>';
+            $thead = '<tr>' . implode('', $row) . '</tr>';
         }
         if (!empty($thead) && is_string($thead)) {
-            $content[] = '<thead>'.$thead.'</thead>';
+            $content[] = '<thead>' . $thead . '</thead>';
         }
         // tbody
         if (!empty($this->datas)) {
-            $content[] = '<tbody>'.$this->tbody($start, $end).'</tbody>';
+            $content[] = '<tbody>' . $this->tbody($start, $end) . '</tbody>';
         }
-        // tfoot
-        $tfoot = null;
-        if (isset($this->onCreateFooter)) {
-            $tfoot = call_user_func($this->onCreateFooter);
-        } elseif (!$this->hideCheckbox && $this->checkCol > -1) {
-            $tfoot = '<tr>';
-            $tfoot .= '<td colspan="'.$this->checkCol.'"></td>';
-            $tfoot .= '<td class="check-column"><a class="checkall icon-uncheck"></a></td>';
-            $tfoot .= '<td colspan="'.($colCount - $this->checkCol - 1).'"></td>';
-            $tfoot .= '</tr>';
-        }
-        if (!empty($tfoot) && is_string($tfoot)) {
-            $content[] = '<tfoot>'.$tfoot.'</tfoot>';
+        if (!$this->explain) {
+            // tfoot
+            $tfoot = null;
+            if (isset($this->onCreateFooter)) {
+                $tfoot = call_user_func($this->onCreateFooter);
+            } elseif (!$this->hideCheckbox && $this->checkCol > -1) {
+                $tfoot = '<tr>';
+                $tfoot .= '<td colspan="' . $this->checkCol . '"></td>';
+                $tfoot .= '<td class="check-column"><a class="checkall icon-uncheck"></a></td>';
+                $tfoot .= '<td colspan="' . ($colCount - $this->checkCol - 1) . '"></td>';
+                $tfoot .= '</tr>';
+            }
+            if (!empty($tfoot) && is_string($tfoot)) {
+                $content[] = '<tfoot>' . $tfoot . '</tfoot>';
+            }
         }
         $content[] = '</table></div>';
         $table_nav = array();
@@ -734,44 +759,46 @@ class DataTable extends \Kotchasan\KBase
             $prop = array();
             foreach ($this->addNew as $k => $v) {
                 if ($k != 'text') {
-                    $prop[$k] = $k.'="'.$v.'"';
+                    $prop[$k] = $k . '="' . $v . '"';
                 }
             }
             if (preg_match('/^((.*)\s+)?(icon-[a-z0-9\-_]+)(\s+(.*))?$/', $this->addNew['class'], $match)) {
-                $prop['class'] = 'class="'.trim($match[2].' '.(isset($match[5]) ? $match[5] : '')).'"';
-                $table_nav[] = '<a '.implode(' ', $prop).'><span class="'.$match[3].'">'.(isset($this->addNew['text']) ? $this->addNew['text'] : '').'</span></a>';
+                $prop['class'] = 'class="' . trim($match[2] . ' ' . (isset($match[5]) ? $match[5] : '')) . '"';
+                $table_nav[] = '<a ' . implode(' ', $prop) . '><span class="' . $match[3] . '">' . (isset($this->addNew['text']) ? $this->addNew['text'] : '') . '</span></a>';
             } else {
-                $table_nav[] = '<a '.implode(' ', $prop).'>'.(isset($this->addNew['text']) ? $this->addNew['text'] : '').'</a>';
+                $table_nav[] = '<a ' . implode(' ', $prop) . '>' . (isset($this->addNew['text']) ? $this->addNew['text'] : '') . '</a>';
             }
         }
-        if (!empty($table_nav)) {
-            $content[] = '<div class="table_nav action">'.implode('', $table_nav).'</div>';
+        if (!$this->explain) {
+            if (!empty($table_nav)) {
+                $content[] = '<div class="table_nav action">' . implode('', $table_nav) . '</div>';
+            }
+            // แบ่งหน้า
+            if ($this->perPage > 0) {
+                $content[] = '<div class="splitpage">' . $this->uri->pagination($totalpage, $page) . '</div>';
+            }
         }
-        // แบ่งหน้า
-        if ($this->perPage > 0) {
-            $content[] = '<div class="splitpage">'.$this->uri->pagination($totalpage, $page).'</div>';
-        }
-
         $content[] = '</div>';
-        if ($this->enableJavascript) {
+        if ($this->enableJavascript && !$this->explain) {
             $script = array(
-        'page' => $page,
-        'search' => $search,
-        'sort' => $this->sort,
-        'action' => $this->action,
-        'actionCallback' => $this->actionCallback,
-        'actionConfirm' => $this->actionConfirm,
-        'onBeforeDelete' => $this->onBeforeDelete,
-        'onDelete' => $this->onDelete,
-        'onInitRow' => $this->onInitRow,
-        'onAddRow' => $this->onAddRow,
-        'pmButton' => $this->pmButton,
-        'dragColumn' => $this->dragColumn,
-      );
-            $this->javascript[] = 'var table = new GTable("'.$this->id.'", '.json_encode($script).');';
+                'page' => $page,
+                'search' => $search,
+                'sort' => $this->sort,
+                'action' => $this->action,
+                'actionCallback' => $this->actionCallback,
+                'actionConfirm' => $this->actionConfirm,
+                'onBeforeDelete' => $this->onBeforeDelete,
+                'onDelete' => $this->onDelete,
+                'onInitRow' => $this->onInitRow,
+                'onAddRow' => $this->onAddRow,
+                'pmButton' => $this->pmButton,
+                'dragColumn' => $this->dragColumn,
+                'debug' => is_string($this->debug) ? $this->debug : '',
+            );
+            $this->javascript[] = 'var table = new GTable("' . $this->id . '", ' . json_encode($script) . ');';
         }
         if (!empty($this->javascript)) {
-            $content[] = "<script>\n".implode("\n", $this->javascript)."\n</script>";
+            $content[] = "<script>\n" . implode("\n", $this->javascript) . "\n</script>";
         }
 
         return implode("\n", $content);
@@ -794,40 +821,44 @@ class DataTable extends \Kotchasan\KBase
                 // id ของข้อมูล
                 $id = isset($items[$this->primaryKey]) ? $items[$this->primaryKey] : $o;
                 $prop = (object) array(
-            'id' => $this->id.'_'.$id,
-        );
+                    'id' => $this->id . '_' . $id,
+                );
                 $buttons = array();
-                if (!empty($this->buttons)) {
-                    foreach ($this->buttons as $btn => $attributes) {
-                        if (isset($this->onCreateButton)) {
-                            $attributes = call_user_func($this->onCreateButton, $btn, $attributes, $items);
-                        }
-                        if ($attributes && $attributes !== false) {
-                            $buttons[] = $this->button($btn, $attributes);
+                if (!$this->explain) {
+                    if (!empty($this->buttons)) {
+                        foreach ($this->buttons as $btn => $attributes) {
+                            if (isset($this->onCreateButton)) {
+                                $attributes = call_user_func($this->onCreateButton, $btn, $attributes, $items);
+                            }
+                            if ($attributes && $attributes !== false) {
+                                $buttons[] = $this->button($btn, $attributes);
+                            }
                         }
                     }
-                }
-                if (isset($this->onRow)) {
-                    $items = call_user_func($this->onRow, $items, $o, $prop);
-                }
-                if (isset($this->dragColumn)) {
-                    $prop->class = (empty($prop->class) ? 'sort' : $prop->class.' sort');
+                    if (isset($this->onRow)) {
+                        $items = call_user_func($this->onRow, $items, $o, $prop);
+                    }
+                    if (isset($this->dragColumn)) {
+                        $prop->class = (empty($prop->class) ? 'sort' : $prop->class . ' sort');
+                    }
                 }
                 // แถว
                 $p = array();
                 foreach ($prop as $k => $v) {
-                    $p[] = $k.'="'.$v.'"';
+                    $p[] = $k . '="' . $v . '"';
                 }
-                $row[] = '<tr '.implode(' ', $p).'>';
+                $row[] = '<tr ' . implode(' ', $p) . '>';
                 // แสดงผลข้อมูล
                 $i = 0;
                 foreach ($this->headers as $field => $attributes) {
                     if (!empty($field) && !in_array($field, $this->hideColumns)) {
-                        if (!$this->hideCheckbox && $i == $this->checkCol) {
-                            $row[] = '<td headers="r'.$id.'" class="check-column"><a id="check_'.$id.'" class="icon-uncheck"></a></td>';
-                        }
-                        if ($i == $this->dragColumn) {
-                            $row[] = '<td class=center><a id="move_'.$id.'" title="'.Language::get('Drag and drop to reorder').'" class="icon-move"></a></td>';
+                        if (!$this->explain) {
+                            if (!$this->hideCheckbox && $i == $this->checkCol) {
+                                $row[] = '<td headers="r' . $id . '" class="check-column"><a id="check_' . $id . '" class="icon-uncheck"></a></td>';
+                            }
+                            if ($i == $this->dragColumn) {
+                                $row[] = '<td class=center><a id="move_' . $id . '" title="' . Language::get('Drag and drop to reorder') . '" class="icon-move"></a></td>';
+                            }
                         }
                         $properties = isset($this->cols[$field]) ? $this->cols[$field] : array();
                         $text = isset($items[$field]) ? $items[$field] : '';
@@ -836,34 +867,36 @@ class DataTable extends \Kotchasan\KBase
                         ++$i;
                     }
                 }
-                if (!$this->hideCheckbox && $i == $this->checkCol) {
-                    $row[] = '<td headers="r'.$id.'" class="check-column"><a id="check_'.$id.'" class="icon-uncheck"></a></td>';
-                    ++$i;
-                }
-                if (!empty($this->buttons)) {
-                    if (!empty($buttons)) {
-                        $module_id = isset($items['module_id']) ? $items['module_id'] : 0;
-                        $patt = array();
-                        $replace = array();
-                        $keys = array_keys($src_items);
-                        rsort($keys);
-                        foreach ($keys as $k) {
-                            if (!is_array($src_items[$k])) {
-                                $patt[] = ":$k";
-                                $replace[] = $src_items[$k];
-                            }
-                        }
-                        $prop = array('class' => 'buttons');
-                        if (isset($this->cols['buttons']) && isset($this->cols['buttons']['class'])) {
-                            $prop = array('class' => $this->cols['buttons']['class'].' buttons');
-                        }
-                        $row[] = str_replace($patt, $replace, $this->td($id, $i, $prop, implode('', $buttons), ''));
-                    } else {
-                        $row[] = $this->td($id, $i, array(), '', '');
+                if (!$this->explain) {
+                    if (!$this->hideCheckbox && $i == $this->checkCol) {
+                        $row[] = '<td headers="r' . $id . '" class="check-column"><a id="check_' . $id . '" class="icon-uncheck"></a></td>';
+                        ++$i;
                     }
-                }
-                if ($this->pmButton) {
-                    $row[] = '<td class="icons"><div><a class="icon-plus" title="'.Language::get('Add').'"></a><a class="icon-minus" title="'.Language::get('Remove').'"></a></div></td>';
+                    if (!empty($this->buttons)) {
+                        if (!empty($buttons)) {
+                            $module_id = isset($items['module_id']) ? $items['module_id'] : 0;
+                            $patt = array();
+                            $replace = array();
+                            $keys = array_keys($src_items);
+                            rsort($keys);
+                            foreach ($keys as $k) {
+                                if (!is_array($src_items[$k])) {
+                                    $patt[] = ":$k";
+                                    $replace[] = $src_items[$k];
+                                }
+                            }
+                            $prop = array('class' => 'buttons');
+                            if (isset($this->cols['buttons']) && isset($this->cols['buttons']['class'])) {
+                                $prop = array('class' => $this->cols['buttons']['class'] . ' buttons');
+                            }
+                            $row[] = str_replace($patt, $replace, $this->td($id, $i, $prop, implode('', $buttons), ''));
+                        } else {
+                            $row[] = $this->td($id, $i, array(), '', '');
+                        }
+                    }
+                    if ($this->pmButton) {
+                        $row[] = '<td class="icons"><div><a class="icon-plus" title="' . Language::get('Add') . '"></a><a class="icon-minus" title="' . Language::get('Remove') . '"></a></div></td>';
+                    }
                 }
                 $row[] = '</tr>';
             }
@@ -885,18 +918,18 @@ class DataTable extends \Kotchasan\KBase
     private function th($i, $column, $properties)
     {
         $c = array();
-        $c['id'] = 'id="c'.$i.'"';
+        $c['id'] = 'id="c' . $i . '"';
         if (!empty($properties['sort'])) {
             $sort = isset($this->sorts[$properties['sort']]) ? $this->sorts[$properties['sort']] : 'none';
-            $properties['class'] = 'sort_'.$sort.' col_'.$column.(empty($properties['class']) ? '' : ' '.$properties['class']);
+            $properties['class'] = 'sort_' . $sort . ' col_' . $column . (empty($properties['class']) ? '' : ' ' . $properties['class']);
         }
         foreach ($properties as $key => $value) {
             if ($key !== 'sort' && $key !== 'text') {
-                $c[$key] = $key.'="'.$value.'"';
+                $c[$key] = $key . '="' . $value . '"';
             }
         }
 
-        return '<th '.implode(' ', $c).'>'.(isset($properties['text']) ? $properties['text'] : $column).'</th>';
+        return '<th ' . implode(' ', $c) . '>' . (isset($properties['text']) ? $properties['text'] : $column) . '</th>';
     }
 
     /**
@@ -911,19 +944,19 @@ class DataTable extends \Kotchasan\KBase
      */
     private function td($id, $i, $properties, $text, $th)
     {
-        $c = array('data-text' => 'data-text="'.$th.'"');
+        $c = array('data-text' => 'data-text="' . $th . '"');
         foreach ($properties as $key => $value) {
-            $c[$key] = $key.'="'.$value.'"';
+            $c[$key] = $key . '="' . $value . '"';
         }
         $c = implode(' ', $c);
         if ($i == 0) {
-            $c .= ' id="r'.$id.'" headers="c'.$i.'"';
+            $c .= ' id="r' . $id . '" headers="c' . $i . '"';
 
-            return '<th '.$c.'>'.$text.'</th>';
+            return '<th ' . $c . '>' . $text . '</th>';
         } else {
-            $c .= ' headers="c'.$i.' r'.$id.'"';
+            $c .= ' headers="c' . $i . ' r' . $id . '"';
 
-            return '<td '.$c.'>'.$text.'</td>';
+            return '<td ' . $c . '>' . $text . '</td>';
         }
     }
 
@@ -949,17 +982,17 @@ class DataTable extends \Kotchasan\KBase
                             if ($key == 'text') {
                                 $text = $value;
                             } else {
-                                $prop[$key] = $key.'="'.$value.'"';
+                                $prop[$key] = $key . '="' . $value . '"';
                             }
                         }
-                        $li .= '<li><a '.implode(' ', $prop).'>'.$text.'</a></li>';
+                        $li .= '<li><a ' . implode(' ', $prop) . '>' . $text . '</a></li>';
                     }
                 } elseif ($name == 'value') {
                     $innerHTML = $item;
                 } elseif ($name == 'class') {
-                    $attributes['class'] = 'class="'.$item.' menubutton"';
+                    $attributes['class'] = 'class="' . $item . ' menubutton"';
                 } else {
-                    $attributes[$name] = $name.'="'.$item.'"';
+                    $attributes[$name] = $name . '="' . $item . '"';
                 }
             }
             if (!isset($attributes['class'])) {
@@ -969,35 +1002,35 @@ class DataTable extends \Kotchasan\KBase
                 $attributes['tabindex'] = 'tabindex="0"';
             }
 
-            return  '<div '.implode(' ', $attributes).'>'.$innerHTML.'<ul>'.$li.'</ul></div>';
+            return '<div ' . implode(' ', $attributes) . '>' . $innerHTML . '<ul>' . $li . '</ul></div>';
         } else {
             $prop = array();
             foreach ($properties as $key => $value) {
                 if ($key === 'id') {
-                    $prop[$key] = $key.'="'.$btn.'_'.$value.'"';
+                    $prop[$key] = $key . '="' . $btn . '_' . $value . '"';
                 } elseif ($key !== 'text') {
-                    $prop[$key] = $key.'="'.$value.'"';
+                    $prop[$key] = $key . '="' . $value . '"';
                 }
             }
             if (!empty($properties['class']) && preg_match('/(.*)\s?(icon\-[a-z0-9\-_]+)($|\s(.*))/', $properties['class'], $match)) {
                 $class = array();
-                foreach (array(1, 4)as $i) {
+                foreach (array(1, 4) as $i) {
                     if (!empty($match[$i])) {
                         $class[] = $match[$i];
                     }
                 }
                 if (empty($properties['text'])) {
                     $class[] = 'notext';
-                    $prop['class'] = 'class="'.implode(' ', $class).'"';
+                    $prop['class'] = 'class="' . implode(' ', $class) . '"';
 
-                    return '<a '.implode(' ', $prop).'><span class="'.$match[2].'"></span></a>';
+                    return '<a ' . implode(' ', $prop) . '><span class="' . $match[2] . '"></span></a>';
                 } else {
-                    $prop['class'] = 'class="'.implode(' ', $class).'"';
+                    $prop['class'] = 'class="' . implode(' ', $class) . '"';
 
-                    return '<a '.implode(' ', $prop).'><span class="'.$match[2].' button_w_text"><span class=mobile>'.$properties['text'].'</span></span></a>';
+                    return '<a ' . implode(' ', $prop) . '><span class="' . $match[2] . ' button_w_text"><span class=mobile>' . $properties['text'] . '</span></span></a>';
                 }
             } else {
-                return '<a'.(empty($prop) ? '' : ' '.implode(' ', $prop)).'></a>';
+                return '<a' . (empty($prop) ? '' : ' ' . implode(' ', $prop)) . '></a>';
             }
         }
     }
@@ -1012,39 +1045,39 @@ class DataTable extends \Kotchasan\KBase
     private function addAction($item)
     {
         if (isset($item['class']) && preg_match('/^((.*)\s+)?(icon-[a-z0-9\-_]+)(\s+(.*))?$/', $item['class'], $match)) {
-            $match[2] = trim($match[2].' '.(isset($match[5]) ? $match[5] : ''));
+            $match[2] = trim($match[2] . ' ' . (isset($match[5]) ? $match[5] : ''));
         }
         if (isset($item['options'])) {
             // select
             $rows = array();
             foreach ($item['options'] as $key => $text) {
-                $rows[] = '<option value="'.$key.'">'.$text.'</option>';
+                $rows[] = '<option value="' . $key . '">' . $text . '</option>';
             }
 
-            return '<fieldset><select id="'.$item['id'].'">'.implode('', $rows).'</select><label for="'.$item['id'].'" class="button '.$item['class'].' action"><span>'.$item['text'].'</span></label></fieldset>';
+            return '<fieldset><select id="' . $item['id'] . '">' . implode('', $rows) . '</select><label for="' . $item['id'] . '" class="button ' . $item['class'] . ' action"><span>' . $item['text'] . '</span></label></fieldset>';
         } else {
             // link, button
             $prop = array();
             $text = isset($item['text']) ? $item['text'] : '';
             if (isset($item['class'])) {
                 if (empty($match[3])) {
-                    $prop[] = 'class="'.$item['class'].'"';
+                    $prop[] = 'class="' . $item['class'] . '"';
                 } else {
-                    $text = '<span class="'.$match[3].'">'.$text.'</span>';
-                    $prop[] = 'class="'.$match[2].'"';
+                    $text = '<span class="' . $match[3] . '">' . $text . '</span>';
+                    $prop[] = 'class="' . $match[2] . '"';
                 }
             }
             foreach ($item as $k => $v) {
                 if ($k != 'class' && $k != 'text') {
-                    $prop[] = $k.'="'.$v.'"';
+                    $prop[] = $k . '="' . $v . '"';
                 }
             }
             if (isset($item['href'])) {
                 // link
-                return '<a '.implode(' ', $prop).'>'.$text.'</a>';
+                return '<a ' . implode(' ', $prop) . '>' . $text . '</a>';
             } else {
                 // button
-                return '<button '.implode(' ', $prop).' type="button">'.$text.'</button>';
+                return '<button ' . implode(' ', $prop) . ' type="button">' . $text . '</button>';
             }
         }
     }
@@ -1062,22 +1095,22 @@ class DataTable extends \Kotchasan\KBase
             $prop = array();
             foreach ($item as $key => $value) {
                 if ($key != 'text' && $key != 'default') {
-                    $prop[$key] = $key.'="'.$value.'"';
+                    $prop[$key] = $key . '="' . $value . '"';
                 }
             }
-            $row = '<fieldset><label>'.$item['text'].' <input '.implode(' ', $prop).'></label></fieldset>';
+            $row = '<fieldset><label>' . $item['text'] . ' <input ' . implode(' ', $prop) . '></label></fieldset>';
         } else {
             $prop = array();
             foreach ($item as $key => $value) {
                 if ($key != 'options' && $key != 'value') {
-                    $prop[$key] = $key.'="'.$value.'"';
+                    $prop[$key] = $key . '="' . $value . '"';
                 }
             }
-            $row = '<fieldset><label>'.$item['text'].' <select '.implode(' ', $prop).'>';
+            $row = '<fieldset><label>' . $item['text'] . ' <select ' . implode(' ', $prop) . '>';
             if (!empty($item['options'])) {
                 foreach ($item['options'] as $key => $text) {
                     $sel = isset($item['value']) && (string) $key == $item['value'] ? ' selected' : '';
-                    $row .= '<option value="'.$key.'"'.$sel.'>'.$text.'</option>';
+                    $row .= '<option value="' . $key . '"' . $sel . '>' . $text . '</option>';
                 }
             }
             $row .= '</select></label></fieldset>';
