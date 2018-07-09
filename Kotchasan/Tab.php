@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Tab.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -19,10 +19,25 @@ namespace Kotchasan;
  */
 class Tab
 {
-    private $id;
-    private $urls;
+    /**
+     * @var mixed
+     */
     private $datas;
+
+    /**
+     * @var mixed
+     */
+    private $id;
+
+    /**
+     * @var mixed
+     */
     private $select;
+
+    /**
+     * @var mixed
+     */
+    private $urls;
 
     /**
      * Construct.
@@ -62,6 +77,16 @@ class Tab
     }
 
     /**
+     * คืนค่าชื่อแท็บที่ถูกเลือก
+     *
+     * @return string
+     */
+    public function getSelect()
+    {
+        return $this->select;
+    }
+
+    /**
      * สร้างโค้ด HTML.
      *
      * @param string $select ID ของ Tab ที่เลือก ถ้าเป็นค่าว่างจะเลือกรายการแรกสุด
@@ -96,15 +121,5 @@ class Tab
         }
 
         return $html.'</ul></div></div>';
-    }
-
-    /**
-     * คืนค่าชื่อแท็บที่ถูกเลือก
-     *
-     * @return string
-     */
-    public function getSelect()
-    {
-        return $this->select;
     }
 }

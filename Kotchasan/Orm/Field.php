@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Orm/Field.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/desktop
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan\Orm;
@@ -20,41 +20,46 @@ namespace Kotchasan\Orm;
 class Field extends \Kotchasan\Database\Db
 {
     /**
-     * ชื่อของการเชื่อมต่อ ใช้สำหรับโหลด config จาก settings/database.php.
-     *
-     * @var string
-     */
-    protected $conn = 'mysql';
-    /**
-     * true ถ้ามาจากการ query, false ถ้าเป็นรายการใหม่.
-     *
-     * @var bool
-     */
-    protected $exists;
-    /**
-     * ชื่อฟิลด์ที่จะใช้เป็น Primary Key INT(11) AUTO_INCREMENT.
-     *
-     * @var string
-     */
-    protected $primaryKey = 'id';
-    /**
-     * ชื่อตาราง.
-     *
-     * @var string
-     */
-    protected $table;
-    /**
      * ชื่อรองของตาราง.
      *
      * @var string
      */
     public $table_alias;
+
     /**
      * ชื่อตาราง.
      *
      * @var string
      */
     public $table_name;
+
+    /**
+     * ชื่อของการเชื่อมต่อ ใช้สำหรับโหลด config จาก settings/database.php.
+     *
+     * @var string
+     */
+    protected $conn = 'mysql';
+
+    /**
+     * true ถ้ามาจากการ query, false ถ้าเป็นรายการใหม่.
+     *
+     * @var bool
+     */
+    protected $exists;
+
+    /**
+     * ชื่อฟิลด์ที่จะใช้เป็น Primary Key INT(11) AUTO_INCREMENT.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'id';
+
+    /**
+     * ชื่อตาราง.
+     *
+     * @var string
+     */
+    protected $table;
 
     /**
      * class constructor.
@@ -71,6 +76,86 @@ class Field extends \Kotchasan\Database\Db
         } else {
             $this->exists = false;
         }
+    }
+
+    /**
+     * สร้าง record.
+     *
+     * @return \static
+     */
+    public static function create()
+    {
+        $obj = new static();
+
+        return $obj;
+    }
+
+    /**
+     * ลบ record.
+     */
+    public function delete()
+    {
+        $rs = new Recordset(get_called_class());
+
+        return $rs->delete(array($this->primaryKey, (int) $this->{$this->primaryKey}), 1);
+    }
+
+    /**
+     * อ่านค่าตัวแปร conn (ชื่อของการเชื่อมต่อ).
+     *
+     * @return string
+     */
+    public function getConn()
+    {
+        return $this->conn;
+    }
+
+    /**
+     * ฟังก์ชั่นอ่านชื่อตารางจากการตั้งค่าฐานข้อมุล
+     * คืนค่าชื่อตารางรวม prefix ถ้าไม่มีชื่อกำหนดไว้ จะคืนค่า $table ครอบชื่อตารางด้วย ``.
+     *
+     * @param string $table ชื่อตารางตามที่กำหนดใน settings/datasbase.php
+     *
+     * @return string
+     */
+    public function getFullTableName($table)
+    {
+        $dbname = empty($this->db->settings->dbname) ? '' : '`'.$this->db->settings->dbname.'`.';
+        $prefix = empty($this->db->settings->prefix) ? '' : $this->db->settings->prefix.'_';
+
+        return $dbname.'`'.$prefix.(isset($this->db->tables->$table) ? $this->db->tables->$table : $table).'`';
+    }
+
+    /**
+     * คืนค่าชื่อฟิลด์ที่เป็น Primary Key.
+     *
+     * @return string
+     */
+    public function getPrimarykey()
+    {
+        return $this->primaryKey;
+    }
+
+    /**
+     * อ่านชื่อตาราง.
+     *
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->table_name;
+    }
+
+    /**
+     * อ่านชื่อตารางรวม Alias.
+     *
+     * @param string|null $alias Alias ที่ต้องการ ถ้าไม่ระบุจะใช้ Alias ตามที่กำหนดไว้
+     *
+     * @return string
+     */
+    public function getTableWithAlias($alias = null)
+    {
+        return $this->table_name.' AS '.(empty($alias) ? $this->table_alias : $alias);
     }
 
     /**
@@ -102,28 +187,6 @@ class Field extends \Kotchasan\Database\Db
     }
 
     /**
-     * สร้าง record.
-     *
-     * @return \static
-     */
-    public static function create()
-    {
-        $obj = new static();
-
-        return $obj;
-    }
-
-    /**
-     * ลบ record.
-     */
-    public function delete()
-    {
-        $rs = new Recordset(get_called_class());
-
-        return $rs->delete(array($this->primaryKey, (int) $this->{$this->primaryKey}), 1);
-    }
-
-    /**
      * insert or update record.
      */
     public function save()
@@ -134,62 +197,5 @@ class Field extends \Kotchasan\Database\Db
         } else {
             $rs->insert($this);
         }
-    }
-
-    /**
-     * อ่านค่าตัวแปร conn (ชื่อของการเชื่อมต่อ).
-     *
-     * @return string
-     */
-    public function getConn()
-    {
-        return $this->conn;
-    }
-
-    /**
-     * อ่านชื่อตาราง.
-     *
-     * @return string
-     */
-    public function getTableName()
-    {
-        return $this->table_name;
-    }
-
-    /**
-     * อ่านชื่อตารางรวม Alias.
-     *
-     * @param string|null $alias Alias ที่ต้องการ ถ้าไม่ระบุจะใช้ Alias ตามที่กำหนดไว้
-     *
-     * @return string
-     */
-    public function getTableWithAlias($alias = null)
-    {
-        return $this->table_name.' AS '.(empty($alias) ? $this->table_alias : $alias);
-    }
-
-    /**
-     * คืนค่าชื่อฟิลด์ที่เป็น Primary Key.
-     *
-     * @return string
-     */
-    public function getPrimarykey()
-    {
-        return $this->primaryKey;
-    }
-
-    /**
-     * ฟังก์ชั่นอ่านชื่อตารางจากการตั้งค่าฐานข้อมุล.
-     *
-     * @param string $table ชื่อตารางตามที่กำหนดใน settings/datasbase.php
-     *
-     * @return string ชื่อตารางรวม prefix ถ้าไม่มีชื่อกำหนดไว้ จะคืนค่า $table ครอบชื่อตารางด้วย ``
-     */
-    public function getFullTableName($table)
-    {
-        $dbname = empty($this->db->settings->dbname) ? '' : '`'.$this->db->settings->dbname.'`.';
-        $prefix = empty($this->db->settings->prefix) ? '' : $this->db->settings->prefix.'_';
-
-        return $dbname.'`'.$prefix.(isset($this->db->tables->$table) ? $this->db->tables->$table : $table).'`';
     }
 }

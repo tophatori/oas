@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Form.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -20,30 +20,13 @@ namespace Kotchasan;
 class Form extends \Kotchasan\KBase
 {
     /**
-     * ชื่อ tag.
-     *
-     * @var string
-     */
-    private $tag;
-    /**
-     * tag attributes.
-     *
-     * @var array
-     */
-    private $attributes;
-    /**
-     * Javascript.
-     *
-     * @var string
-     */
-    public $javascript;
-    /**
      * ตับแปรบอกว่ามีการใช้ form แบบ Ajax หรือไม่
      * ถ้าใช้งานต้องมีการเรียกใช้ GAjax ด้วย.
      *
      * @var bool
      */
     public $ajax;
+
     /**
      * ตัวแปรบอกว่ามีการใช้งานฟอร์มร่วมกับ GForm หรือไม่
      * ถ้าใช้งานต้องมีการเรียกใช้ GAjax ด้วย.
@@ -53,17 +36,273 @@ class Form extends \Kotchasan\KBase
     public $gform;
 
     /**
+     * Javascript.
+     *
+     * @var string
+     */
+    public $javascript;
+
+    /**
+     * tag attributes.
+     *
+     * @var array
+     */
+    private $attributes;
+
+    /**
+     * ชื่อ tag.
+     *
+     * @var string
+     */
+    private $tag;
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function antispam($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'text';
+        $labelClass = array(
+            'antispam' => 'antispam',
+            'g-input' => 'g-input',
+        );
+        foreach (explode(' ', $attributes['labelClass']) as $c) {
+            $labelClass[$c] = $c;
+        }
+        $attributes['labelClass'] = implode(' ', $labelClass);
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function button($attributes = array())
+    {
+        $obj = new static();
+        if (isset($attributes['tag']) && $attributes['tag'] == 'input') {
+            $obj->tag = 'input';
+        } else {
+            $obj->tag = 'button';
+        }
+        unset($attributes['tag']);
+        $attributes['type'] = 'button';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function checkbox($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'checkbox';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function color($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'text';
+        $attributes['class'] = 'color';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function currency($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'text';
+        $attributes['class'] = 'currency';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function date($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'date';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function email($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'email';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function file($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'file';
+        $attributes['class'] = 'g-file';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * ฟังก์ชั่นสร้าง input ชนิด hidden สำหรับใช้ในฟอร์ม
+     * ใช้ประโยชน์ในการสร้าง URL เพื่อส่งกลับไปยังหน้าเดิมหลังจาก submit แล้ว.
+     *
+     * @return array
+     */
+    public static function get2Input()
+    {
+        $hiddens = array();
+        foreach (self::$request->getQueryParams() as $key => $value) {
+            if ($value != '' && preg_match('/^[_]+([^0-9]+)$/', $key, $match)) {
+                $hiddens[$match[1]] = '<input type="hidden" name="_'.$match[1].'" value="'.$value.'">';
+            }
+        }
+        foreach (self::$request->getParsedBody() as $key => $value) {
+            if ($value != '' && preg_match('/^[_]+([^0-9]+)$/', $key, $match)) {
+                $hiddens[$match[1]] = '<input type="hidden" name="_'.$match[1].'" value="'.$value.'">';
+            }
+        }
+
+        return $hiddens;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function hidden($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'hidden';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function number($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'number';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function password($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'password';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function radio($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'radio';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function range($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'range';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
      * ฟังก์ชั่นสร้าง Form Element.
      *
-     * @param string $tag
-     * @param array  $param   property ของ Input
      *                        id, name, type property ต่างๆของinput
      *                        label : ข้อความแสดงใน label ของ input
      *                        labelClass : class ของ label
      *                        comment : ถ้ากำหนดจะแสดงคำอธิบายของ input
      *                        ถ้าไม่กำหนดทั้ง label และ labelClass จะเป็นการสร้าง input อย่างเดียว
-     * @param string $options ตัวเลือก options ของ select
      *                        array('name1' => 'value1', 'name2' => 'value2', ....)
+     *
+     * @param string $tag
+     * @param array  $param   property ของ Input
+     * @param string $options ตัวเลือก options ของ select
      */
     public function render()
     {
@@ -257,182 +496,10 @@ class Form extends \Kotchasan\KBase
     }
 
     /**
-     * สร้าง input, select, textarea สำหรับใส่ลงในฟอร์ม
+     * @param array $attributes
      *
-     * @param array $attributes property ของ Input
-     *                          id, name, type property ต่างๆของinput
-     *                          options สำหรับ select เท่านั้น เช่น array('value1'=> 'name1', 'value2'=>'name2', ...)
-     *                          label ข้อความแสดงใน label ของ input
-     *                          labelClass class ของ label
-     *                          comment ถ้ากำหนดจะแสดงคำอธิบายของ input
-     *                          ถ้าไม่กำหนดทั้ง label และ labelClass จะเป็นการสร้าง input อย่างเดียว
+     * @return mixed
      */
-    public static function text($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'text';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function password($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'password';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function url($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'url';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function email($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'email';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function tel($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'tel';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function antispam($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'text';
-        $labelClass = array(
-            'antispam' => 'antispam',
-            'g-input' => 'g-input',
-        );
-        foreach (explode(' ', $attributes['labelClass']) as $c) {
-            $labelClass[$c] = $c;
-        }
-        $attributes['labelClass'] = implode(' ', $labelClass);
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function color($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'text';
-        $attributes['class'] = 'color';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function range($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'range';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function date($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'date';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function time($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'time';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function number($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'number';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function currency($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'text';
-        $attributes['class'] = 'currency';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function button($attributes = array())
-    {
-        $obj = new static();
-        if (isset($attributes['tag']) && $attributes['tag'] == 'input') {
-            $obj->tag = 'input';
-        } else {
-            $obj->tag = 'button';
-        }
-        unset($attributes['tag']);
-        $attributes['type'] = 'button';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function submit($attributes = array())
-    {
-        $obj = new static();
-        if (isset($attributes['tag']) && $attributes['tag'] == 'input') {
-            $obj->tag = 'input';
-        } else {
-            $obj->tag = 'button';
-        }
-        unset($attributes['tag']);
-        $attributes['type'] = 'submit';
-        if (isset($attributes['name']) && $attributes['name'] == 'submit') {
-            unset($attributes['name']);
-        }
-        if (isset($attributes['id']) && $attributes['id'] == 'submit') {
-            unset($attributes['id']);
-        }
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
     public static function reset($attributes = array())
     {
         $obj = new static();
@@ -454,47 +521,11 @@ class Form extends \Kotchasan\KBase
         return $obj;
     }
 
-    public static function checkbox($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'checkbox';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function radio($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'radio';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function hidden($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'hidden';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    public static function file($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'file';
-        $attributes['class'] = 'g-file';
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
     public static function select($attributes = array())
     {
         $obj = new static();
@@ -504,6 +535,74 @@ class Form extends \Kotchasan\KBase
         return $obj;
     }
 
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function submit($attributes = array())
+    {
+        $obj = new static();
+        if (isset($attributes['tag']) && $attributes['tag'] == 'input') {
+            $obj->tag = 'input';
+        } else {
+            $obj->tag = 'button';
+        }
+        unset($attributes['tag']);
+        $attributes['type'] = 'submit';
+        if (isset($attributes['name']) && $attributes['name'] == 'submit') {
+            unset($attributes['name']);
+        }
+        if (isset($attributes['id']) && $attributes['id'] == 'submit') {
+            unset($attributes['id']);
+        }
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function tel($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'tel';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * สร้าง input, select, textarea สำหรับใส่ลงในฟอร์ม
+     *
+     *                          id, name, type property ต่างๆของinput
+     *                          options สำหรับ select เท่านั้น เช่น array('value1'=> 'name1', 'value2'=>'name2', ...)
+     *                          label ข้อความแสดงใน label ของ input
+     *                          labelClass class ของ label
+     *                          comment ถ้ากำหนดจะแสดงคำอธิบายของ input
+     *                          ถ้าไม่กำหนดทั้ง label และ labelClass จะเป็นการสร้าง input อย่างเดียว
+     *
+     * @param array $attributes property ของ Input
+     */
+    public static function text($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'text';
+        $obj->attributes = $attributes;
+
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
     public static function textarea($attributes = array())
     {
         $obj = new static();
@@ -514,25 +613,32 @@ class Form extends \Kotchasan\KBase
     }
 
     /**
-     * ฟังก์ชั่นสร้าง input ชนิด hidden สำหรับใช้ในฟอร์ม
-     * ใช้ประโยชน์ในการสร้าง URL เพื่อส่งกลับไปยังหน้าเดิมหลังจาก submit แล้ว.
+     * @param array $attributes
      *
-     * @return array
+     * @return mixed
      */
-    public static function get2Input()
+    public static function time($attributes = array())
     {
-        $hiddens = array();
-        foreach (self::$request->getQueryParams() as $key => $value) {
-            if ($value != '' && preg_match('/^[_]+([^0-9]+)$/', $key, $match)) {
-                $hiddens[$match[1]] = '<input type="hidden" name="_'.$match[1].'" value="'.$value.'">';
-            }
-        }
-        foreach (self::$request->getParsedBody() as $key => $value) {
-            if ($value != '' && preg_match('/^[_]+([^0-9]+)$/', $key, $match)) {
-                $hiddens[$match[1]] = '<input type="hidden" name="_'.$match[1].'" value="'.$value.'">';
-            }
-        }
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'time';
+        $obj->attributes = $attributes;
 
-        return $hiddens;
+        return $obj;
+    }
+
+    /**
+     * @param array $attributes
+     *
+     * @return mixed
+     */
+    public static function url($attributes = array())
+    {
+        $obj = new static();
+        $obj->tag = 'input';
+        $attributes['type'] = 'url';
+        $obj->attributes = $attributes;
+
+        return $obj;
     }
 }

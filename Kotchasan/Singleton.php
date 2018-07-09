@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Singleton.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -23,22 +23,6 @@ abstract class Singleton
      * @var Singleton สำหรับเรียกใช้ class นี้เพียงครั้งเดียวเท่านั้น
      */
     private static $instance = null;
-
-    private function __construct()
-    {
-        // initial class
-        static::init();
-    }
-
-    private function __clone()
-    {
-        // do nothing
-    }
-
-    private function __wakeup()
-    {
-        // do nothing
-    }
 
     /**
      * เรียกใช้งาน Class แบบสามารถเรียกได้ครั้งเดียวเท่านั้น.
@@ -58,4 +42,20 @@ abstract class Singleton
      * method เรียกเมื่อมีการโหลด Class.
      */
     abstract protected function init();
+
+    private function __clone()
+    {
+        // do nothing
+    }
+
+    private function __construct()
+    {
+        // initial class
+        static::init();
+    }
+
+    private function __wakeup()
+    {
+        // do nothing
+    }
 }

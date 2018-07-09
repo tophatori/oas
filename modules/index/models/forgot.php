@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/models/forgot.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Forgot;
@@ -34,8 +34,8 @@ class Model extends \Kotchasan\KBase
     public static function execute($id, $password, $username)
     {
         // ข้อมูลอีเมล
-        $subject = Language::get('Get new password') . ' ' . self::$cfg->web_title;
-        $msg = $username . ' ' . Language::get('Your new password is') . ' : ' . $password;
+        $subject = Language::get('Get new password').' '.self::$cfg->web_title;
+        $msg = $username.' '.Language::get('Your new password is').' : '.$password;
         // send mail
         $err = Email::send($username, self::$cfg->noreply_email, $subject, $msg);
         if ($err->error()) {
@@ -47,9 +47,10 @@ class Model extends \Kotchasan\KBase
             $salt = uniqid();
             $model->db()->update($model->getTableName('user'), (int) $id, array(
                 'salt' => $salt,
-                'password' => sha1($password . $salt),
+                'password' => sha1($password.$salt),
             ));
             // สำเร็จ คืนค่าข้อความว่าง
+
             return '';
         }
     }

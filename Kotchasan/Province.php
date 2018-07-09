@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Province.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -19,6 +19,50 @@ namespace Kotchasan;
  */
 class Province
 {
+    /**
+     * list รายชื่อจังหวัดทั้งหมด  ตามภาษา (ถ้าไม่มีใช้ภาษาอังกฤษ)
+     * สามารถนำไปใช้โดย Form ได้ทันที.
+     *
+     * @return array
+     */
+    public static function all()
+    {
+        $datas = self::init();
+        $language = Language::name();
+        $language = in_array($language, array_keys(reset($datas))) ? $language : 'en';
+        $result = array();
+        foreach ($datas as $iso => $values) {
+            $result[$iso] = $values[$language];
+        }
+        if ($language == 'en') {
+            asort($result);
+        }
+
+        return $result;
+    }
+
+    /**
+     * อ่านชื่อจังหวัดจาก ISO ตามภาษา (ถ้าไม่มีใช้ภาษาอังกฤษ)
+     * คืนค่าว่างถ้าไม่พบ.
+     *
+     * @assert (102) [==] 'กรุงเทพมหานคร'
+     *
+     * @param int    $iso
+     * @param string $lang
+     *
+     * @return string
+     */
+    public static function get($iso, $lang = '')
+    {
+        $datas = self::init();
+        if (empty($lang)) {
+            $lang = Language::name();
+        }
+        $lang = in_array($lang, array_keys(reset($datas))) ? $lang : 'en';
+
+        return isset($datas[$iso]) ? $datas[$iso][$lang] : '';
+    }
+
     /**
      * รายชื่อจังหวัด เรียงลำดับตามชื่อไทย.
      *
@@ -105,47 +149,5 @@ class Province
             167 => array('th' => 'อุทัยธานี', 'en' => 'Uthaithani'),
             168 => array('th' => 'อุบลราชธานี', 'en' => 'Uboratchathani'),
         );
-    }
-
-    /**
-     * อ่านชื่อจังหวัดจาก ISO ตามภาษา (ถ้าไม่มีใช้ภาษาอังกฤษ).
-     *
-     * @param int    $iso
-     * @param string $lang
-     *
-     * @return string คืนค่าว่างถ้าไม่พบ
-     * @assert (102) [==] 'กรุงเทพมหานคร'
-     */
-    public static function get($iso, $lang = '')
-    {
-        $datas = self::init();
-        if (empty($lang)) {
-            $lang = Language::name();
-        }
-        $lang = in_array($lang, array_keys(reset($datas))) ? $lang : 'en';
-
-        return isset($datas[$iso]) ? $datas[$iso][$lang] : '';
-    }
-
-    /**
-     * list รายชื่อจังหวัดทั้งหมด  ตามภาษา (ถ้าไม่มีใช้ภาษาอังกฤษ)
-     * สามารถนำไปใช้โดย Form ได้ทันที.
-     *
-     * @return array
-     */
-    public static function all()
-    {
-        $datas = self::init();
-        $language = Language::name();
-        $language = in_array($language, array_keys(reset($datas))) ? $language : 'en';
-        $result = array();
-        foreach ($datas as $iso => $values) {
-            $result[$iso] = $values[$language];
-        }
-        if ($language == 'en') {
-            asort($result);
-        }
-
-        return $result;
     }
 }

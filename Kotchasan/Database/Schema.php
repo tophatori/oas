@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Database/Schema.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan\Database;
@@ -20,17 +20,18 @@ namespace Kotchasan\Database;
 class Schema
 {
     /**
-     * รายการ Schema ที่โหลดแล้ว.
-     *
-     * @var array
-     */
-    private $tables = array();
-    /**
      * Database object.
      *
      * @var Driver
      */
     private $db;
+
+    /**
+     * รายการ Schema ที่โหลดแล้ว.
+     *
+     * @var array
+     */
+    private $tables = array();
 
     /**
      * Create Schema Class.
@@ -45,6 +46,23 @@ class Schema
         $obj->db = $db;
 
         return $obj;
+    }
+
+    /**
+     * อ่านรายชื่อฟิลด์ของตาราง
+     * คืนค่ารายชื่อฟิลด์ทั้งหมดในตาราง.
+     *
+     * @return array
+     */
+    public function fields($table)
+    {
+        if (empty($table)) {
+            throw new \InvalidArgumentException('table name empty in fields');
+        } else {
+            $this->init($table);
+
+            return array_keys($this->tables[$table]);
+        }
     }
 
     /**
@@ -66,22 +84,6 @@ class Schema
                 }
                 $this->tables[$table] = $datas;
             }
-        }
-    }
-
-    /**
-     * อ่านรายชื่อฟิลด์ของตาราง.
-     *
-     * @return array รายชื่อฟิลด์ทั้งหมดในตาราง
-     */
-    public function fields($table)
-    {
-        if (empty($table)) {
-            throw new \InvalidArgumentException('table name empty in fields');
-        } else {
-            $this->init($table);
-
-            return array_keys($this->tables[$table]);
         }
     }
 }

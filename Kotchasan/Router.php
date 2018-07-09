@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Router.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -44,9 +44,9 @@ class Router extends \Kotchasan\KBase
      *
      * @param string $className คลาสที่จะรับค่าจาก Router
      *
-     * @return \static
-     *
      * @throws \InvalidArgumentException หากไม่พบคลาสเป้าหมาย
+     *
+     * @return \static
      */
     public function init($className)
     {
@@ -82,11 +82,6 @@ class Router extends \Kotchasan\KBase
     /**
      * แยก path คืนค่าเป็น query string.
      *
-     * @param string path เช่น /a/b/c.html
-     * @param array $modules query string
-     *
-     * @return array
-     *
      * @assert ('/print.php/css/view/index', array()) [==] array( '_mvc' => 'view', '_dir' => 'index', 'module' => 'css')
      * @assert ('/index/model/updateprofile.php', array()) [==] array( '_mvc' => 'model', '_dir' => 'updateprofile', 'module' => 'index')
      * @assert ('/index.php/alias/model/admin/settings/save', array()) [==] array('module' => 'alias', '_mvc' => 'model', '_dir' => 'admin/settings', '_method' => 'save')
@@ -101,6 +96,11 @@ class Router extends \Kotchasan\KBase
      * @assert ('/docs/1/ทดสอบ.html', array()) [==] array('alias' => 'ทดสอบ', 'module' => 'docs', 'cat' => 1)
      * @assert ('/index.php', array('_action' => 'one')) [==] array('_action' => 'one')
      * @assert ('/admin_index.php', array('_action' => 'one')) [==] array('_action' => 'one', 'module' => 'admin_index')
+     *
+     * @param  string   path     เช่น /a/b/c.html
+     * @param array $modules query string
+     *
+     * @return array
      */
     public function parseRoutes($path, $modules)
     {

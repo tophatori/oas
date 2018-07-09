@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Currency.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -20,49 +20,7 @@ namespace Kotchasan;
 class Currency
 {
     /**
-     * ฟังก์ชั่น แปลงตัวเลขเป็นจำนวนเงิน.
-     *
-     * @param float  $amount        จำนวนเงิน
-     * @param string $thousands_sep (optional) เครื่องหมายหลักพัน (default ,)
-     *
-     * @return string คืนค่าข้อความจำนวนเงิน
-     */
-    public static function format($amount, $thousands_sep = ',')
-    {
-        return number_format((float) $amount, 2, '.', $thousands_sep);
-    }
-
-    /**
-     * ฟังก์ชั่นคำนวณภาษี
-     * $vat_ex = true ราคาสินค้ารวม VAT เช่น ราคาสินค้า 100 + VAT 7 = ราคาขาย 107
-     * $vat_ex = false ราคาสินค้ารวม VAT เช่น ราคาขาย 100 = ราคาสินค้า 93 + VAT 7.
-     *
-     * @param float $amount ราคาขาย
-     * @param float $vat    VAT
-     * @param bool  $vat_ex
-     *
-     * @return float คืนค่า VAT จากราคาขาย
-     *
-     * @assert (1000, 7, true) [==] 70
-     * @assert (1000, 7, false) [==] 65.420560747663558
-     */
-    public static function calcVat($amount, $vat, $vat_ex = true)
-    {
-        if ($vat_ex) {
-            $result = (($vat * $amount) / 100);
-        } else {
-            $result = $amount - ($amount * (100 / (100 + $vat)));
-        }
-
-        return $result;
-    }
-
-    /**
      * แปลงจำนวนเงินเป็นตัวหนังสือ.
-     *
-     * @param string $thb
-     *
-     * @return string
      *
      * @assert (100.00) [==] 'one hundred Baht'
      * @assert (101.00) [==] 'one hundred and one Baht'
@@ -71,6 +29,10 @@ class Currency
      * @assert (-1000000050) [==] 'negative one billion fifty Baht'
      * @assert (1000000050) [==] 'one billion fifty Baht'
      * @assert (10000000050.25) [==] 'ten billion fifty Baht and twenty-five Satang'
+     *
+     * @param string $thb
+     *
+     * @return string
      */
     public static function bahtEng($thb)
     {
@@ -89,10 +51,6 @@ class Currency
     /**
      * ตัวเลขเป็นตัวหนังสือ (ไทย).
      *
-     * @param string $thb
-     *
-     * @return string
-     *
      * @assert (101.00) [==] 'หนึ่งร้อยเอ็ดบาทถ้วน'
      * @assert (1000.50) [==] 'หนึ่งพันบาทห้าสิบสตางค์'
      * @assert (1000.00) [==] 'หนึ่งพันบาทถ้วน'
@@ -100,6 +58,10 @@ class Currency
      * @assert (1000050) [==] 'หนึ่งล้านห้าสิบบาทถ้วน'
      * @assert (-1000000050) [==] 'ลบหนึ่งพันล้านห้าสิบบาทถ้วน'
      * @assert (10000000050.25) [==] 'หนึ่งหมื่นล้านห้าสิบบาทยี่สิบห้าสตางค์'
+     *
+     * @param string $thb
+     *
+     * @return string
      */
     public static function bahtThai($thb)
     {
@@ -174,6 +136,46 @@ class Currency
         } else {
             return '';
         }
+    }
+
+    /**
+     * ฟังก์ชั่นคำนวณภาษี
+     * $vat_ex = true ราคาสินค้ารวม VAT เช่น ราคาสินค้า 100 + VAT 7 = ราคาขาย 107
+     * $vat_ex = false ราคาสินค้ารวม VAT เช่น ราคาขาย 100 = ราคาสินค้า 93 + VAT 7.
+     * คืนค่า VAT จากราคาขาย.
+     *
+     * @assert (1000, 7, true) [==] 70
+     * @assert (1000, 7, false) [==] 65.420560747663558
+     *
+     * @param float $amount ราคาขาย
+     * @param float $vat    VAT
+     * @param bool  $vat_ex
+     *
+     * @return float
+     */
+    public static function calcVat($amount, $vat, $vat_ex = true)
+    {
+        if ($vat_ex) {
+            $result = (($vat * $amount) / 100);
+        } else {
+            $result = $amount - ($amount * (100 / (100 + $vat)));
+        }
+
+        return $result;
+    }
+
+    /**
+     * ฟังก์ชั่น แปลงตัวเลขเป็นจำนวนเงิน
+     * คืนค่าข้อความจำนวนเงิน.
+     *
+     * @param float  $amount        จำนวนเงิน
+     * @param string $thousands_sep (optional) เครื่องหมายหลักพัน (default ,)
+     *
+     * @return string
+     */
+    public static function format($amount, $thousands_sep = ',')
+    {
+        return number_format((float) $amount, 2, '.', $thousands_sep);
     }
 
     /**

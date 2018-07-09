@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/models/accsettings.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Accsettings;
@@ -36,7 +36,7 @@ class Model extends \Kotchasan\KBase
         if ($request->initSession() && $request->isSafe() && $login = Login::checkPermission(Login::isMember(), 'can_config')) {
             if (empty($login['fb'])) {
                 // โหลด config
-                $config = Config::load(ROOT_PATH . 'settings/config.php');
+                $config = Config::load(ROOT_PATH.'settings/config.php');
                 // รับค่าจากการ POST
                 $config->authorized = $request->post('company_authorized')->topic();
                 $config->email = $request->post('company_email')->url();
@@ -48,7 +48,7 @@ class Model extends \Kotchasan\KBase
                 $config->bank_name = $request->post('bank_name')->topic();
                 $config->bank_no = $request->post('bank_no')->topic();
                 // save config
-                if (Config::save($config, ROOT_PATH . 'settings/config.php')) {
+                if (Config::save($config, ROOT_PATH.'settings/config.php')) {
                     $ret['alert'] = Language::get('Saved successfully');
                     $ret['location'] = 'reload';
                     // เคลียร์

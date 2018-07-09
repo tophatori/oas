@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Collection.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -38,19 +38,22 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess
         }
     }
 
-    /*   * ****************
-     * Collection interface
-     * ******************* */
+    /**
+     * ลบข้อมูลทั้งหมด.
+     */
+    public function clear()
+    {
+        $this->datas = array();
+    }
 
     /**
-     * กำหนดค่า $value ของ $key.
+     * คืนค่าจำนวนข้อมูลทั้งหมด.
      *
-     * @param string $key
-     * @param mixed  $value
+     * @return int
      */
-    public function set($key, $value)
+    public function count()
     {
-        $this->datas[$key] = $value;
+        return count($this->datas);
     }
 
     /**
@@ -66,36 +69,18 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess
         return $this->has($key) ? $this->datas[$key] : $default;
     }
 
-    /**
-     * เพิ่มรายการใหม่ แทนที่รายการเดิม
-     *
-     * @param array $items array(array($key => $value), array($key => $value), ...)
-     */
-    public function replace(array $items)
-    {
-        foreach ($items as $key => $value) {
-            $this->set($key, $value);
-        }
-    }
+    /*   * **********************
+     * IteratorAggregate interface
+     * ************************* */
 
     /**
-     * คืนค่าข้อมูลทั้งหมดเป็น.
+     * Retrieve an external iterator.
      *
-     * @return array
+     * @return \ArrayIterator
      */
-    public function toArray()
+    public function getIterator()
     {
-        return $this->datas;
-    }
-
-    /**
-     * อ่านรายชื่อ keys.
-     *
-     * @return array แอเรย์ของรายการ key ทั้งหมด
-     */
-    public function keys()
-    {
-        return array_keys($this->datas);
+        return new \ArrayIterator($this->datas);
     }
 
     /**
@@ -111,21 +96,14 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * ลบรายการที่ $key.
+     * อ่านรายชื่อ keys
+     * คืนค่าแอเรย์ของรายการ key ทั้งหมด.
      *
-     * @param string $key
+     * @return array
      */
-    public function remove($key)
+    public function keys()
     {
-        unset($this->datas[$key]);
-    }
-
-    /**
-     * ลบข้อมูลทั้งหมด.
-     */
-    public function clear()
-    {
-        $this->datas = array();
+        return array_keys($this->datas);
     }
 
     /*   * *****************
@@ -178,26 +156,49 @@ class Collection implements \Countable, \IteratorAggregate, \ArrayAccess
     }
 
     /**
-     * คืนค่าจำนวนข้อมูลทั้งหมด.
+     * ลบรายการที่ $key.
      *
-     * @return int
+     * @param string $key
      */
-    public function count()
+    public function remove($key)
     {
-        return count($this->datas);
+        unset($this->datas[$key]);
     }
 
-    /*   * **********************
-     * IteratorAggregate interface
-     * ************************* */
+    /**
+     * เพิ่มรายการใหม่ แทนที่รายการเดิม
+     *
+     * @param array $items array(array($key => $value), array($key => $value), ...)
+     */
+    public function replace(array $items)
+    {
+        foreach ($items as $key => $value) {
+            $this->set($key, $value);
+        }
+    }
+
+    /*   * ****************
+     * Collection interface
+     * ******************* */
 
     /**
-     * Retrieve an external iterator.
+     * กำหนดค่า $value ของ $key.
      *
-     * @return \ArrayIterator
+     * @param string $key
+     * @param mixed  $value
      */
-    public function getIterator()
+    public function set($key, $value)
     {
-        return new \ArrayIterator($this->datas);
+        $this->datas[$key] = $value;
+    }
+
+    /**
+     * คืนค่าข้อมูลทั้งหมดเป็น.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->datas;
     }
 }

@@ -590,11 +590,10 @@ function initWeb(module) {
         _scrolltop = c;
         if (c) {
           document.body.addClass("toTop");
-          document.callEvent("toTopChange");
         } else {
           document.body.removeClass("toTop");
-          document.callEvent("toTopChange");
         }
+        document.callEvent("toTopChange");
       }
     });
   }

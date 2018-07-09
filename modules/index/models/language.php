@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/models/language.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Language;
@@ -113,7 +113,7 @@ class Model extends \Kotchasan\Orm\Field
      */
     public static function import()
     {
-        $dir = ROOT_PATH . 'language/';
+        $dir = ROOT_PATH.'language/';
         if (is_dir($dir)) {
             // Model
             $model = new \Kotchasan\Model();
@@ -128,9 +128,9 @@ class Model extends \Kotchasan\Orm\Field
                         $model->db()->query("ALTER TABLE `$language_table` ADD `$match[1]` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci AFTER `key`");
                     }
                     if ($match[2] == 'php') {
-                        self::importPHP($model->db(), $language_table, $match[1], $dir . $text);
+                        self::importPHP($model->db(), $language_table, $match[1], $dir.$text);
                     } else {
-                        self::importJS($model->db(), $language_table, $match[1], $dir . $text);
+                        self::importJS($model->db(), $language_table, $match[1], $dir.$text);
                     }
                 }
             }

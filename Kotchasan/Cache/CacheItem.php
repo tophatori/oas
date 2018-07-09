@@ -2,10 +2,10 @@
 /**
  * @filesource  Kotchasan/Cache/CacheItem.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan\Cache;
@@ -22,21 +22,23 @@ use Psr\Cache\CacheItemInterface;
 class CacheItem implements CacheItemInterface
 {
     /**
+     * @var bool
+     */
+    private $hit;
+
+    /**
      * Cache Key.
      *
      * @var string
      */
     private $key;
+
     /**
      * Cache value.
      *
      * @var mixed
      */
     private $value;
-    /**
-     * @var bool
-     */
-    private $hit;
 
     /**
      * Class constructor.
@@ -51,13 +53,25 @@ class CacheItem implements CacheItemInterface
     }
 
     /**
-     * อ่านค่าคีย์ของแคช.
+     * กำหนดอายุของแคช (วินาที).
      *
-     * @return string
+     * @param int|\DateInterval $time
+     *
+     * @return \static
      */
-    public function getKey()
+    public function expiresAfter($time)
     {
-        return $this->key;
+    }
+
+    /**
+     * กำหนดวันที่และเวลาหมดอายุของแคช.
+     *
+     * @param \DateTimeInterface $expiration
+     *
+     * @return \static
+     */
+    public function expiresAt($expiration)
+    {
     }
 
     /**
@@ -71,9 +85,20 @@ class CacheItem implements CacheItemInterface
     }
 
     /**
-     * ฟังก์ชั่นตรวจสอบว่ามีการกำหนดข้อมูลลงในแคชหรือไม่.
+     * อ่านค่าคีย์ของแคช.
      *
-     * @return bool true ถ้ามีการใส่ value ในแคชแล้ว
+     * @return string
+     */
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    /**
+     * ฟังก์ชั่นตรวจสอบว่ามีการกำหนดข้อมูลลงในแคชหรือไม่
+     * คืนค่า true ถ้ามีการใส่ value ในแคชแล้ว.
+     *
+     * @return bool
      */
     public function isHit()
     {
@@ -93,27 +118,5 @@ class CacheItem implements CacheItemInterface
         $this->hit = true;
 
         return $this;
-    }
-
-    /**
-     * กำหนดวันที่และเวลาหมดอายุของแคช.
-     *
-     * @param \DateTimeInterface $expiration
-     *
-     * @return \static
-     */
-    public function expiresAt($expiration)
-    {
-    }
-
-    /**
-     * กำหนดอายุของแคช (วินาที).
-     *
-     * @param int|\DateInterval $time
-     *
-     * @return \static
-     */
-    public function expiresAfter($time)
-    {
     }
 }

@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/models/id.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Id;
@@ -64,9 +64,10 @@ class Model extends \Kotchasan\Model
                 $model->db()->insert($table_number, array('id' => 1, $name => $next_id));
             }
             // คืนค่า
+
             return $result;
         } else {
-            echo 'ไม่ได้กำหนดค่า $cfg->' . $name;
+            echo 'ไม่ได้กำหนดค่า $cfg->'.$name;
         }
 
         return null;

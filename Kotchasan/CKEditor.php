@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/CKEditor.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -19,6 +19,22 @@ namespace Kotchasan;
  */
 class CKEditor extends Html
 {
+    /**
+     * ฟังก์ชั่นตรวจสอบความสามารถในการอัปโหลดของ CKEDITOR.
+     *
+     * @return bool
+     */
+    public static function enabledUpload()
+    {
+        if (Login::isAdmin()) {
+            return true;
+        } elseif ($login = Login::isMember()) {
+            return !empty($_SESSION['CKEDITOR']) && $_SESSION['CKEDITOR'] == $login['id'];
+        }
+
+        return false;
+    }
+
     /**
      * สร้างโค้ด HTML สำหรับแสดง CKEditor.
      *
@@ -88,19 +104,6 @@ class CKEditor extends Html
     }
 
     /**
-     * แปลง อักขระพิเศษ และ {} เป็น HTML entities
-     * ใช้ส่งให้กับ textarea.
-     *
-     * @param string $str ข้อความ
-     *
-     * @return string
-     */
-    public function toTextarea($str)
-    {
-        return preg_replace(array('/{/', '/}/'), array('&#x007B;', '&#x007D;'), htmlspecialchars($str));
-    }
-
-    /**
      * แปลง {} เป็น HTML entities
      * ใช้ส่งให้กับ div.
      *
@@ -114,18 +117,15 @@ class CKEditor extends Html
     }
 
     /**
-     * ฟังก์ชั่นตรวจสอบความสามารถในการอัปโหลดของ CKEDITOR.
+     * แปลง อักขระพิเศษ และ {} เป็น HTML entities
+     * ใช้ส่งให้กับ textarea.
      *
-     * @return bool
+     * @param string $str ข้อความ
+     *
+     * @return string
      */
-    public static function enabledUpload()
+    public function toTextarea($str)
     {
-        if (Login::isAdmin()) {
-            return true;
-        } elseif ($login = Login::isMember()) {
-            return !empty($_SESSION['CKEDITOR']) && $_SESSION['CKEDITOR'] == $login['id'];
-        }
-
-        return false;
+        return preg_replace(array('/{/', '/}/'), array('&#x007B;', '&#x007D;'), htmlspecialchars($str));
     }
 }

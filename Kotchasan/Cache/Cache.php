@@ -2,10 +2,10 @@
 /**
  * @filesource  Kotchasan/Cache/Cache.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan\Cache;
@@ -31,6 +31,37 @@ abstract class Cache extends \Kotchasan\KBase implements CacheItemPoolInterface
     protected $deferred = array();
 
     /**
+     * บันทึกรายการแคชในคิว
+     * คืนค่า true ถ้าสำเร็จ, ถ้ามีบางรายการไม่สำเร็จคืนค่า false.
+     *
+     * @return bool
+     */
+    public function commit()
+    {
+        $cuccess = true;
+        foreach ($this->deferred as $item) {
+            if (!$this->save($item)) {
+                $cuccess = false;
+            }
+        }
+
+        return $cuccess;
+    }
+
+    /**
+     * ลบแคช
+     * คืนค่า true ถ้าสำเร็จ, false ถ้าไม่สำเร็จ.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function deleteItem($key)
+    {
+        return $this->deleteItems(array($key));
+    }
+
+    /**
      * อ่านแคช.
      *
      * @param string $key
@@ -45,45 +76,17 @@ abstract class Cache extends \Kotchasan\KBase implements CacheItemPoolInterface
     }
 
     /**
-     * ลบแคช.
-     *
-     * @param string $key
-     *
-     * @return bool true ถ้าสำเร็จ, false ถ้าไม่สำเร็จ
-     */
-    public function deleteItem($key)
-    {
-        return $this->deleteItems(array($key));
-    }
-
-    /**
-     * กำหนดรายการแคชสำหรับบันทึกในภายหลัง.
+     * กำหนดรายการแคชสำหรับบันทึกในภายหลัง
+     * คืนค่า false ถ้าไม่มีรายการในคิว.
      *
      * @param CacheItemInterface $item
      *
-     * @return bool false ถ้าไม่มีรายการในคิว
+     * @return bool
      */
     public function saveDeferred(CacheItemInterface $item)
     {
         $this->deferred[$item->getKey()] = $item;
 
         return true;
-    }
-
-    /**
-     * บันทึกรายการแคชในคิว.
-     *
-     * @return bool ถ้ามีบางรายการไม่สำเร็จคืนค่า false
-     */
-    public function commit()
-    {
-        $cuccess = true;
-        foreach ($this->deferred as $item) {
-            if (!$this->save($item)) {
-                $cuccess = false;
-            }
-        }
-
-        return $cuccess;
     }
 }

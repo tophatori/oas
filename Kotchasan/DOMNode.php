@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/DOMNode.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -19,14 +19,13 @@ namespace Kotchasan;
  */
 class DOMNode
 {
-    public $nodeName;
     /**
-     * โหนดแม่
-     * <parentNode><childNode></childNode></parentNode>.
+     * รายการคุณสมบัติของโหนด.
      *
-     * @var DOMNode
+     * @var array
      */
-    public $parentNode;
+    public $attributes = array();
+
     /**
      * รายการของโหนดที่อยู่ภายใน
      * <parentNode><childNode></childNode><childNode></childNode></parentNode>.
@@ -34,20 +33,14 @@ class DOMNode
      * @var array
      */
     public $childNodes;
+
     /**
-     * ข้อความภายในโหนด ถ้าเป็น tag ค่านี้จะเป็น null
-     * <node>nodeValue</node>.
+     * ลำดับของโหนด ชั้นนอกสุดคือ 0.
      *
-     * @var string|null
+     * @var int
      */
-    public $nodeValue;
-    /**
-     * โหนดก่อนหน้า (ลำดับเดียวกัน) ถ้าเป็นโหนดแรกจะเป็น null
-     * <previousSibling></previousSibling><node></node>.
-     *
-     * @var DOMNode
-     */
-    public $previousSibling;
+    public $level;
+
     /**
      * โหนดถัดไป (ลำดับเดียวกัน) ถ้าเป็นโหนดสุดท้ายจะเป็น null
      * <node></node><nextSibling></nextSibling>.
@@ -55,18 +48,35 @@ class DOMNode
      * @var DOMNode
      */
     public $nextSibling;
+
     /**
-     * รายการคุณสมบัติของโหนด.
-     *
-     * @var array
+     * @var mixed
      */
-    public $attributes = array();
+    public $nodeName;
+
     /**
-     * ลำดับของโหนด ชั้นนอกสุดคือ 0.
+     * ข้อความภายในโหนด ถ้าเป็น tag ค่านี้จะเป็น null
+     * <node>nodeValue</node>.
      *
-     * @var int
+     * @var string|null
      */
-    public $level;
+    public $nodeValue;
+
+    /**
+     * โหนดแม่
+     * <parentNode><childNode></childNode></parentNode>.
+     *
+     * @var DOMNode
+     */
+    public $parentNode;
+
+    /**
+     * โหนดก่อนหน้า (ลำดับเดียวกัน) ถ้าเป็นโหนดแรกจะเป็น null
+     * <previousSibling></previousSibling><node></node>.
+     *
+     * @var DOMNode
+     */
+    public $previousSibling;
 
     /**
      * class constructor.
@@ -88,9 +98,10 @@ class DOMNode
     }
 
     /**
-     * ตรวจสอบว่ามีโหนดลูกหรือไม่.
+     * ตรวจสอบว่ามีโหนดลูกหรือไม่
+     * คืนค่า true ถ้ามีโหนดลูก, false ถ้าไม่มี.
      *
-     * @return bool true ถ้ามีโหนดลูก, false ถ้าไม่มี
+     * @return bool
      */
     public function hasChildNodes()
     {
@@ -98,49 +109,12 @@ class DOMNode
     }
 
     /**
-     * คืนค่า ข้อความทั้งหมดภายในโหนด.
-     *
-     * @return string
-     */
-    public function nodeText()
-    {
-        $txt = '';
-        foreach ($this->childNodes as $node) {
-            if ($node->hasChildNodes()) {
-                $txt .= $this->nodeText();
-            } else {
-                switch ($node->nodeName) {
-                    case 'BR':
-                        $txt .= "\n";
-                        break;
-                    case '':
-                        $txt .= $node->nodeValue;
-                        break;
-                }
-            }
-        }
-
-        return $this->unentities($txt);
-    }
-
-    /**
-     * แปลงรหัส HTML เป็นข้อความ เช่น &lt; เป็น <.
-     *
-     * @param string $html
-     *
-     * @return string
-     */
-    public function unentities($html)
-    {
-        return str_replace(array('&nbsp;', '&amp;', '&lt;', '&gt;', '&#39;', '&quot;'), array(' ', '&', '<', '>', "'", '"'), $html);
-    }
-
-    /**
-     * ตรวจสอบว่ามีคลาสอยู่หรือไม่.
+     * ตรวจสอบว่ามีคลาสอยู่หรือไม่
+     * คืนค่า true ถ้ามี.
      *
      * @param string $className ชื่อคลาสที่ต้องการตรวจสอบ
      *
-     * @return bool true ถ้ามี
+     * @return bool
      */
     public function hasClass($className)
     {
@@ -157,9 +131,10 @@ class DOMNode
     }
 
     /**
-     * ตรวจสอบว่าเป็น element แบบ Inline หรือไม่.
+     * ตรวจสอบว่าเป็น element แบบ Inline หรือไม่
+     * คืนค่า true ถ้าเป็น Inline Elements หรือ false ถ้าเป็น Block-level Elements.
      *
-     * @return bool คืนค่า true ถ้าเป็น Inline Elements หรือ false ถ้าเป็น Block-level Elements
+     * @return bool
      */
     public function isInlineElement()
     {
@@ -198,5 +173,43 @@ class DOMNode
         }
 
         return false;
+    }
+
+    /**
+     * คืนค่า ข้อความทั้งหมดภายในโหนด.
+     *
+     * @return string
+     */
+    public function nodeText()
+    {
+        $txt = '';
+        foreach ($this->childNodes as $node) {
+            if ($node->hasChildNodes()) {
+                $txt .= $this->nodeText();
+            } else {
+                switch ($node->nodeName) {
+                    case 'BR':
+                        $txt .= "\n";
+                        break;
+                    case '':
+                        $txt .= $node->nodeValue;
+                        break;
+                }
+            }
+        }
+
+        return $this->unentities($txt);
+    }
+
+    /**
+     * แปลงรหัส HTML เป็นข้อความ เช่น &lt; เป็น <.
+     *
+     * @param string $html
+     *
+     * @return string
+     */
+    public function unentities($html)
+    {
+        return str_replace(array('&nbsp;', '&amp;', '&lt;', '&gt;', '&#39;', '&quot;'), array(' ', '&', '<', '>', "'", '"'), $html);
     }
 }

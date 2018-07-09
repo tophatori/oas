@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/File.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -20,12 +20,36 @@ namespace Kotchasan;
 class File
 {
     /**
-     * อ่านนามสกุลของไฟล์เช่น config.php คืนค่า php.
+     * สำเนาไดเร็คทอรี่.
+     *
+     * @param string $dir   ไดเร็คทอรี่ต้นทาง มี / ปิดท้ายด้วย
+     * @param string $todir ไดเร็คทอรี่ปลายทาง มี / ปิดท้ายด้วย
+     */
+    public static function copyDirectory($dir, $todir)
+    {
+        $f = opendir($dir);
+        while (false !== ($text = readdir($f))) {
+            if ($text !== '.' && $text !== '..') {
+                if (is_dir($dir.$text)) {
+                    self::makeDirectory($todir.$text.'/');
+                    self::copyDirectory($dir.$text.'/', $todir.$text.'/');
+                } elseif (is_dir($todir)) {
+                    copy($dir.$text, $todir.$text);
+                }
+            }
+        }
+        closedir($f);
+    }
+
+    /**
+     * อ่านนามสกุลของไฟล์เช่น config.php คืนค่า php
+     * คืนค่า ext ของไฟล์ ตัวอักษรตัวพิมพ์เล็ก
+     *
+     * @assert ('index.php.sql') [==] 'sql'
      *
      * @param string $path ไฟล์
      *
-     * @return string คืนค่า ext ของไฟล์ ตัวอักษรตัวพิมพ์เล็ก
-     * @assert ('index.php.sql') [==] 'sql'
+     * @return string
      */
     public static function ext($path)
     {
@@ -56,28 +80,6 @@ class File
             }
             closedir($f);
         }
-    }
-
-    /**
-     * สำเนาไดเร็คทอรี่.
-     *
-     * @param string $dir   ไดเร็คทอรี่ต้นทาง มี / ปิดท้ายด้วย
-     * @param string $todir ไดเร็คทอรี่ปลายทาง มี / ปิดท้ายด้วย
-     */
-    public static function copyDirectory($dir, $todir)
-    {
-        $f = opendir($dir);
-        while (false !== ($text = readdir($f))) {
-            if ($text !== '.' && $text !== '..') {
-                if (is_dir($dir.$text)) {
-                    self::makeDirectory($todir.$text.'/');
-                    self::copyDirectory($dir.$text.'/', $todir.$text.'/');
-                } elseif (is_dir($todir)) {
-                    copy($dir.$text, $todir.$text);
-                }
-            }
-        }
-        closedir($f);
     }
 
     /**

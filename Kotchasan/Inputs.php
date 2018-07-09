@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Inputs.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -27,6 +27,30 @@ class Inputs implements \Iterator
     private $datas = array();
 
     /**
+     * magic method คืนค่าข้อมูลสำหรับ input ชนิด array.
+     *
+     * @param string $name
+     * @param array  $arguments
+     *
+     * @throws \InvalidArgumentException ถ้าไม่มี method ที่ต้องการ
+     *
+     * @return array
+     */
+    public function __call($name, $arguments)
+    {
+        if (method_exists('\Kotchasan\InputItem', $name)) {
+            $result = array();
+            foreach ($this->datas as $key => $item) {
+                $result[$key] = $this->collectInputs($item, $name, $arguments);
+            }
+
+            return $result;
+        } else {
+            throw new \InvalidArgumentException('Method '.$name.' not found');
+        }
+    }
+
+    /**
      * Class Constructer.
      *
      * @param array       $items รายการ input
@@ -46,27 +70,63 @@ class Inputs implements \Iterator
     }
 
     /**
-     * magic method คืนค่าข้อมูลสำหรับ input ชนิด array.
-     *
-     * @param string $name
-     * @param array  $arguments
-     *
-     * @return array
-     *
-     * @throws \InvalidArgumentException ถ้าไม่มี method ที่ต้องการ
+     * @return InputItem
      */
-    public function __call($name, $arguments)
+    public function current()
     {
-        if (method_exists('\Kotchasan\InputItem', $name)) {
-            $result = array();
-            foreach ($this->datas as $key => $item) {
-                $result[$key] = $this->collectInputs($item, $name, $arguments);
-            }
+        $var = current($this->datas);
 
-            return $result;
-        } else {
-            throw new \InvalidArgumentException('Method '.$name.' not found');
-        }
+        return $var;
+    }
+
+    /**
+     * อ่าน Input ที่ต้องการ.
+     *
+     * @param string|int $key รายการที่ต้องการ
+     *
+     * @return InputItem
+     */
+    public function get($key)
+    {
+        return $this->datas[$key];
+    }
+
+    /**
+     * @return string
+     */
+    public function key()
+    {
+        $var = key($this->datas);
+
+        return $var;
+    }
+
+    /**
+     * @return InputItem
+     */
+    public function next()
+    {
+        $var = next($this->datas);
+
+        return $var;
+    }
+
+    /**
+     * inherited from Iterator.
+     */
+    public function rewind()
+    {
+        reset($this->datas);
+    }
+
+    /**
+     * @return bool
+     */
+    public function valid()
+    {
+        $key = key($this->datas);
+
+        return $key !== null && $key !== false;
     }
 
     /**
@@ -95,65 +155,5 @@ class Inputs implements \Iterator
         } else {
             return $item->$name($arguments);
         }
-    }
-
-    /**
-     * อ่าน Input ที่ต้องการ.
-     *
-     * @param string|int $key รายการที่ต้องการ
-     *
-     * @return InputItem
-     */
-    public function get($key)
-    {
-        return $this->datas[$key];
-    }
-
-    /**
-     * inherited from Iterator.
-     */
-    public function rewind()
-    {
-        reset($this->datas);
-    }
-
-    /**
-     * @return InputItem
-     */
-    public function current()
-    {
-        $var = current($this->datas);
-
-        return $var;
-    }
-
-    /**
-     * @return string
-     */
-    public function key()
-    {
-        $var = key($this->datas);
-
-        return $var;
-    }
-
-    /**
-     * @return InputItem
-     */
-    public function next()
-    {
-        $var = next($this->datas);
-
-        return $var;
-    }
-
-    /**
-     * @return bool
-     */
-    public function valid()
-    {
-        $key = key($this->datas);
-
-        return $key !== null && $key !== false;
     }
 }

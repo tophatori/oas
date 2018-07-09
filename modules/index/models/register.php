@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/models/register.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Register;
@@ -86,13 +86,14 @@ class Model extends \Kotchasan\Model
     }
 
     /**
-     * ลงทะเบียนสมาชิกใหม่.
+     * ลงทะเบียนสมาชิกใหม่
+     * คืนค่าแอเรย์ของข้อมูลสมาชิกใหม่.
      *
      * @param Model $model
      * @param array $save       ข้อมูลสมาชิก
      * @param array $permission
      *
-     * @return array คืนค่าแอเรย์ของข้อมูลสมาชิกใหม่
+     * @return array
      */
     public static function execute($model, $save, $permission = null)
     {
@@ -107,9 +108,9 @@ class Model extends \Kotchasan\Model
             $save['password'] = '';
         } else {
             $save['salt'] = uniqid();
-            $save['password'] = sha1($save['password'] . $save['salt']);
+            $save['password'] = sha1($save['password'].$save['salt']);
         }
-        $save['permission'] = empty($permission) ? '' : ',' . implode(',', $permission) . ',';
+        $save['permission'] = empty($permission) ? '' : ','.implode(',', $permission).',';
         $save['active'] = 1;
         $save['create_date'] = date('Y-m-d H:i:s');
         // บันทึกลงฐานข้อมูล

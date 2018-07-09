@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/models/editprofile.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Editprofile;
@@ -87,7 +87,7 @@ class Model extends \Kotchasan\Model
                     }
                     if (Login::isAdmin()) {
                         // แอดมิน อัปเดท permission ได้
-                        $save['permission'] = empty($permission) ? '' : ',' . implode(',', $permission) . ',';
+                        $save['permission'] = empty($permission) ? '' : ','.implode(',', $permission).',';
                     } elseif ($login['id'] != $user['id']) {
                         // ไม่ใช่แอดมินแก้ไขได้แค่ตัวเองเท่านั้น
                         $user = null;
@@ -140,7 +140,7 @@ class Model extends \Kotchasan\Model
                             // แก้ไข
                             if (!empty($password)) {
                                 $save['salt'] = uniqid();
-                                $save['password'] = sha1($password . $save['salt']);
+                                $save['password'] = sha1($password.$save['salt']);
                             }
                             // แก้ไข
                             $db->update($table_user, $user['id'], $save);

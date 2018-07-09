@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/controllers/register.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Register;
@@ -52,7 +52,7 @@ class Controller extends \Gcms\Controller
             $ul->appendChild('<li><a href="{BACKURL?module=member&id=0}">{LNG_Member list}</a></li>');
             $ul->appendChild('<li><span>{LNG_Register}</span></li>');
             $section->add('header', array(
-                'innerHTML' => '<h2 class="icon-register">' . $this->title . '</h2>',
+                'innerHTML' => '<h2 class="icon-register">'.$this->title.'</h2>',
             ));
             // แสดงฟอร์ม
             $section->appendChild(createClass('Index\Register\View')->render($request));
@@ -60,6 +60,7 @@ class Controller extends \Gcms\Controller
             return $section->render();
         }
         // 404.html
+
         return \Index\Error\Controller::page404();
     }
 }

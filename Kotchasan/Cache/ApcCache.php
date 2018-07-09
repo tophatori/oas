@@ -2,10 +2,10 @@
 /**
  * @filesource  Kotchasan/Cache/ApcCache.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan\Cache;
@@ -33,6 +33,36 @@ class ApcCache extends Cache
     }
 
     /**
+     * เคลียร์แคช
+     * คืนค่า true ถ้าลบเรียบร้อย, หรือ false ถ้าไม่สำเร็จ.
+     *
+     * @return bool
+     */
+    public function clear()
+    {
+        return apc_clear_cache('user');
+    }
+
+    /**
+     * ลบแคชหลายๆรายการ
+     * คืนค่า true ถ้าสำเร็จ, false ถ้าไม่สำเร็จ.
+     *
+     * @param array $keys
+     *
+     * @return bool
+     */
+    public function deleteItems(array $keys)
+    {
+        if ($this->cache_dir) {
+            foreach ($keys as $key) {
+                apc_delete($key);
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * อ่านแคชหลายรายการ.
      *
      * @param array $keys
@@ -55,11 +85,12 @@ class ApcCache extends Cache
     }
 
     /**
-     * ตรวจสอบแคช.
+     * ตรวจสอบแคช
+     * คืนค่า true ถ้ามี.
      *
      * @param string $key
      *
-     * @return bool true ถ้ามี
+     * @return bool
      */
     public function hasItem($key)
     {
@@ -67,41 +98,14 @@ class ApcCache extends Cache
     }
 
     /**
-     * เคลียร์แคช.
-     *
-     * @return bool true ถ้าลบเรียบร้อย, หรือ false ถ้าไม่สำเร็จ
-     */
-    public function clear()
-    {
-        return apc_clear_cache('user');
-    }
-
-    /**
-     * ลบแคชหลายๆรายการ.
-     *
-     * @param array $keys
-     *
-     * @return bool true ถ้าสำเร็จ, false ถ้าไม่สำเร็จ
-     */
-    public function deleteItems(array $keys)
-    {
-        if ($this->cache_dir) {
-            foreach ($keys as $key) {
-                apc_delete($key);
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * บันทึกแคช.
+     * บันทึกแคช
+     * สำเร็จคืนค่า true ไม่สำเร็จคืนค่า false.
      *
      * @param CacheItemInterface $item
      *
-     * @return bool สำเร็จคืนค่า true ไม่สำเร็จคืนค่า false
-     *
      * @throws CacheException
+     *
+     * @return bool
      */
     public function save(CacheItemInterface $item)
     {

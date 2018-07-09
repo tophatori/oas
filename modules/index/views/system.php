@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/views/system.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\System;
@@ -30,7 +30,6 @@ class View extends \Gcms\View
      */
     public function render($config)
     {
-        // form
         $form = Html::create('form', array(
             'id' => 'setup_frm',
             'class' => 'setup_frm',
@@ -72,7 +71,7 @@ class View extends \Gcms\View
             'id' => 'timezone',
             'labelClass' => 'g-input icon-clock',
             'itemClass' => 'item',
-            'label' => '{LNG_Time zone}&nbsp;({LNG_Server time}&nbsp;<em id=server_time>' . date('H:i:s') . '</em>&nbsp;{LNG_Local time}&nbsp;<em id=local_time></em>)',
+            'label' => '{LNG_Time zone}&nbsp;({LNG_Server time}&nbsp;<em id=server_time>'.date('H:i:s').'</em>&nbsp;{LNG_Local time}&nbsp;<em id=local_time></em>)',
             'comment' => '{LNG_Settings the timing of the server to match the local time}',
             'options' => $datas,
             'value' => isset($config->timezone) ? $config->timezone : self::$cfg->timezone,

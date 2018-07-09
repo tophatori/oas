@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Files.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -44,6 +44,16 @@ class Files implements \Iterator
     }
 
     /**
+     * @return UploadedFile
+     */
+    public function current()
+    {
+        $var = current($this->datas);
+
+        return $var;
+    }
+
+    /**
      * อ่าน File ที่ต้องการ.
      *
      * @param string|int $key รายการที่ต้องการ
@@ -53,24 +63,6 @@ class Files implements \Iterator
     public function get($key)
     {
         return $this->datas[$key];
-    }
-
-    /**
-     * inherited from Iterator.
-     */
-    public function rewind()
-    {
-        reset($this->datas);
-    }
-
-    /**
-     * @return UploadedFile
-     */
-    public function current()
-    {
-        $var = current($this->datas);
-
-        return $var;
     }
 
     /**
@@ -91,6 +83,14 @@ class Files implements \Iterator
         $var = next($this->datas);
 
         return $var;
+    }
+
+    /**
+     * inherited from Iterator.
+     */
+    public function rewind()
+    {
+        reset($this->datas);
     }
 
     /**

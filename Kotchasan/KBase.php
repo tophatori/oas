@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/KBase.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -27,6 +27,7 @@ class KBase
      * @var Config
      */
     protected static $cfg;
+
     /**
      * Server request class.
      *

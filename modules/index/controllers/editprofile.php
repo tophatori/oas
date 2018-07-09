@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/controllers/editprofile.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Editprofile;
@@ -55,7 +55,7 @@ class Controller extends \Gcms\Controller
                 $ul->appendChild('<li><a href="{BACKURL?module=member&id=0}">{LNG_Member list}</a></li>');
                 $ul->appendChild('<li><span>{LNG_Edit}</span></li>');
                 $section->add('header', array(
-                    'innerHTML' => '<h2 class="icon-profile">' . $this->title . '</h2>',
+                    'innerHTML' => '<h2 class="icon-profile">'.$this->title.'</h2>',
                 ));
                 // แสดงฟอร์ม
                 $section->appendChild(createClass('Index\Editprofile\View')->render($user, $login));
@@ -64,6 +64,7 @@ class Controller extends \Gcms\Controller
             }
         }
         // 404.html
+
         return \Index\Error\Controller::page404();
     }
 }

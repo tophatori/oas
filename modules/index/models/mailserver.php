@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/models/mailserver.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Mailserver;
@@ -37,7 +37,7 @@ class Model extends \Kotchasan\KBase
         if ($request->initSession() && $request->isSafe() && $login = Login::isMember()) {
             if (Login::checkPermission($login, 'can_config') && Login::notDemoMode($login)) {
                 // โหลด config
-                $config = Config::load(ROOT_PATH . 'settings/config.php');
+                $config = Config::load(ROOT_PATH.'settings/config.php');
                 // รับค่าจากการ POST
                 $save = array(
                     'noreply_email' => $request->post('noreply_email')->url(),
@@ -78,7 +78,7 @@ class Model extends \Kotchasan\KBase
                 $config->email_SMTPAuth = $save['email_SMTPAuth'];
                 if (empty($ret)) {
                     // save config
-                    if (Config::save($config, ROOT_PATH . 'settings/config.php')) {
+                    if (Config::save($config, ROOT_PATH.'settings/config.php')) {
                         $ret['alert'] = Language::get('Saved successfully');
                         $ret['location'] = 'reload';
                         // เคลียร์

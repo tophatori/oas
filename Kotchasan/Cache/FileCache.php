@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Cache/FileCache.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan\Cache;
@@ -29,6 +29,7 @@ class FileCache extends Cache
      * @var string /root/to/dir/cache/
      */
     private $cache_dir = null;
+
     /**
      * อายุของแคช (วินาที) 0 หมายถึงไม่มีการแคช.
      *
@@ -66,6 +67,41 @@ class FileCache extends Cache
     }
 
     /**
+     * เคลียร์แคช
+     * คืนค่า true ถ้าลบเรียบร้อย, หรือ false ถ้าไม่สำเร็จ.
+     *
+     * @return bool
+     */
+    public function clear()
+    {
+        $error = array();
+        if ($this->cache_dir && !empty($this->cache_expire)) {
+            $this->clearCache($this->cache_dir, $error);
+        }
+
+        return empty($error) ? true : false;
+    }
+
+    /**
+     * ลบแคชหลายๆรายการ
+     * คืนค่า true ถ้าสำเร็จ, false ถ้าไม่สำเร็จ.
+     *
+     * @param array $keys
+     *
+     * @return bool
+     */
+    public function deleteItems(array $keys)
+    {
+        if ($this->cache_dir) {
+            foreach ($keys as $key) {
+                @unlink($this->fetchStreamUri($key));
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * อ่านแคชหลายรายการ.
      *
      * @param array $keys
@@ -87,11 +123,12 @@ class FileCache extends Cache
     }
 
     /**
-     * ตรวจสอบแคช.
+     * ตรวจสอบแคช
+     * คืนค่า true ถ้ามี.
      *
      * @param string $key
      *
-     * @return bool true ถ้ามี
+     * @return bool
      */
     public function hasItem($key)
     {
@@ -99,18 +136,30 @@ class FileCache extends Cache
     }
 
     /**
-     * เคลียร์แคช.
+     * บันทึกแคช
+     * สำเร็จคืนค่า true ไม่สำเร็จคืนค่า false.
      *
-     * @return bool true ถ้าลบเรียบร้อย, หรือ false ถ้าไม่สำเร็จ
+     * @param CacheItemInterface $item
+     *
+     * @throws CacheException
+     *
+     * @return bool
      */
-    public function clear()
+    public function save(CacheItemInterface $item)
     {
-        $error = array();
         if ($this->cache_dir && !empty($this->cache_expire)) {
-            $this->clearCache($this->cache_dir, $error);
+            $f = @fopen($this->fetchStreamUri($item->getKey()), 'wb');
+            if (!$f) {
+                throw new Exception('resource cache file cannot be created.');
+            } else {
+                fwrite($f, '<?php exit?>'.serialize($item->get()));
+                fclose($f);
+
+                return true;
+            }
         }
 
-        return empty($error) ? true : false;
+        return false;
     }
 
     /**
@@ -139,50 +188,6 @@ class FileCache extends Cache
     }
 
     /**
-     * ลบแคชหลายๆรายการ.
-     *
-     * @param array $keys
-     *
-     * @return bool true ถ้าสำเร็จ, false ถ้าไม่สำเร็จ
-     */
-    public function deleteItems(array $keys)
-    {
-        if ($this->cache_dir) {
-            foreach ($keys as $key) {
-                @unlink($this->fetchStreamUri($key));
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * บันทึกแคช.
-     *
-     * @param CacheItemInterface $item
-     *
-     * @return bool สำเร็จคืนค่า true ไม่สำเร็จคืนค่า false
-     *
-     * @throws CacheException
-     */
-    public function save(CacheItemInterface $item)
-    {
-        if ($this->cache_dir && !empty($this->cache_expire)) {
-            $f = @fopen($this->fetchStreamUri($item->getKey()), 'wb');
-            if (!$f) {
-                throw new Exception('resource cache file cannot be created.');
-            } else {
-                fwrite($f, '<?php exit?>'.serialize($item->get()));
-                fclose($f);
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * อ่านค่า full path ของไฟล์แคช.
      *
      * @param string $key
@@ -195,11 +200,12 @@ class FileCache extends Cache
     }
 
     /**
-     * ตรวจสอบวันหมดอายุของไฟล์แคช.
+     * ตรวจสอบวันหมดอายุของไฟล์แคช
+     * คืนค่า true ถ้าแคชสามารถใช้งานได้.
      *
      * @param string $file
      *
-     * @return bool คืนค่า true ถ้าแคชสามารถใช้งานได้
+     * @return bool
      */
     private function isExpired($file)
     {

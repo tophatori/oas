@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/controllers/index.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Index;
@@ -39,26 +39,26 @@ class Controller extends \Gcms\Controller
         $request->initSession();
         // ตรวจสอบการ login
         Login::create();
-        // template ที่กำลังใช้งานอยู่
+        // กำหนด skin ให้กับ template
         Template::init(self::$cfg->skin);
         // View
         self::$view = new \Gcms\View();
         // Javascript
-        self::$view->addScript('var WEB_URL="' . WEB_URL . '";');
+        self::$view->addScript('var WEB_URL="'.WEB_URL.'";');
         if ($login = Login::isMember()) {
             // โหลดเมนู
             self::$menus = \Index\Menu\Controller::init($login);
             // Javascript
-            self::$view->addScript('var FIRST_MODULE="' . self::$menus->home() . '";');
+            self::$view->addScript('var FIRST_MODULE="'.self::$menus->home().'";');
             // โหลดค่าติดตั้งโมดูล
-            $dir = ROOT_PATH . 'modules/';
+            $dir = ROOT_PATH.'modules/';
             $f = @opendir($dir);
             if ($f) {
                 while (false !== ($text = readdir($f))) {
-                    if ($text != '.' && $text != '..' && $text != 'index' && $text != 'css' && $text != 'js' && is_dir($dir . $text)) {
-                        if (is_file($dir . $text . '/controllers/init.php')) {
-                            require_once $dir . $text . '/controllers/init.php';
-                            $className = '\\' . ucfirst($text) . '\Init\Controller';
+                    if ($text != '.' && $text != '..' && $text != 'index' && $text != 'css' && $text != 'js' && is_dir($dir.$text)) {
+                        if (is_file($dir.$text.'/controllers/init.php')) {
+                            require_once $dir.$text.'/controllers/init.php';
+                            $className = '\\'.ucfirst($text).'\Init\Controller';
                             if (method_exists($className, 'execute')) {
                                 $className::execute($request, self::$menus, $login);
                             }
@@ -78,15 +78,15 @@ class Controller extends \Gcms\Controller
         $languages = array();
         $uri = $request->getUri();
         foreach (Language::installedLanguage() as $item) {
-            $languages[$item] = '<li><a id=lang_' . $item . ' href="' . $uri->withParams(array('lang' => $item), true) . '" title="{LNG_Language} ' . strtoupper($item) . '" style="background-image:url(' . WEB_URL . 'language/' . $item . '.gif)" tabindex=1>&nbsp;</a></li>';
+            $languages[$item] = '<li><a id=lang_'.$item.' href="'.$uri->withParams(array('lang' => $item), true).'" title="{LNG_Language} '.strtoupper($item).'" style="background-image:url('.WEB_URL.'language/'.$item.'.gif)" tabindex=1>&nbsp;</a></li>';
         }
-        if ($bodyclass == 'loginpage' && is_file(ROOT_PATH . self::$cfg->skin . '/bg_image.jpg')) {
-            $bg_image = WEB_URL . self::$cfg->skin . '/bg_image.jpg';
+        if ($bodyclass == 'loginpage' && is_file(ROOT_PATH.self::$cfg->skin.'/bg_image.jpg')) {
+            $bg_image = WEB_URL.self::$cfg->skin.'/bg_image.jpg';
         } else {
             $bg_image = '';
         }
-        if (is_file(ROOT_PATH . self::$cfg->skin . '/logo.png')) {
-            $logo = '<img src="' . WEB_URL . self::$cfg->skin . '/logo.png" alt="{WEBTITLE}">';
+        if (is_file(ROOT_PATH.self::$cfg->skin.'/logo.png')) {
+            $logo = '<img src="'.WEB_URL.self::$cfg->skin.'/logo.png" alt="{WEBTITLE}">';
         } else {
             $logo = '<span class="icon-office">{WEBTITLE}</span>';
         }

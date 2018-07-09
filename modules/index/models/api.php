@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/models/api.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Api;
@@ -121,6 +121,7 @@ class Model extends \Kotchasan\Model
             ->toArray()
             ->execute();
         // คืนค่า
+
         return $result;
     }
 

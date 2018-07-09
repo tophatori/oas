@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Log/Logger.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan\Log;
@@ -28,17 +28,7 @@ class Logger extends AbstractLogger implements LoggerInterface
      * @var Singleton สำหรับเรียกใช้ class นี้เพียงครั้งเดียวเท่านั้น
      */
     protected static $instance = null;
-    /**
-     * รูปแบบของ log.
-     *
-     * @var array
-     */
-    protected $options = array(
-        'dateFormat' => 'Y-m-d H:i:s',
-        'logFormat' => '[{datetime}] {level}: {message} {context}',
-        'logFilePath' => 'logs/',
-        'extension' => 'php',
-    );
+
     /**
      * Log Levels.
      *
@@ -56,15 +46,16 @@ class Logger extends AbstractLogger implements LoggerInterface
     );
 
     /**
-     * Singleton.
+     * รูปแบบของ log.
+     *
+     * @var array
      */
-    private function __construct($options)
-    {
-        $this->options['logFilePath'] = ROOT_PATH.'datas/logs/';
-        foreach ($options as $key => $value) {
-            $this->options[$key] = $value;
-        }
-    }
+    protected $options = array(
+        'dateFormat' => 'Y-m-d H:i:s',
+        'logFormat' => '[{datetime}] {level}: {message} {context}',
+        'logFilePath' => 'logs/',
+        'extension' => 'php',
+    );
 
     /**
      * create Logger instance (Singleton).
@@ -132,6 +123,19 @@ class Logger extends AbstractLogger implements LoggerInterface
         } else {
             printf(Language::get('Directory %s cannot be created or is read-only.'), 'logs/');
             echo $message;
+        }
+    }
+
+    /**
+     * Singleton.
+     *
+     * @param array $options
+     */
+    private function __construct($options)
+    {
+        $this->options['logFilePath'] = ROOT_PATH.'datas/logs/';
+        foreach ($options as $key => $value) {
+            $this->options[$key] = $value;
         }
     }
 }

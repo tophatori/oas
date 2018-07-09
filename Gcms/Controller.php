@@ -2,10 +2,10 @@
 /**
  * @filesource Gcms/Controller.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Gcms;
@@ -20,29 +20,32 @@ namespace Gcms;
 class Controller extends \Kotchasan\Controller
 {
     /**
-     * ข้อความไตเติลบาร์.
+     * View.
      *
-     * @var string
+     * @var \Gcms\View
      */
-    protected $title;
+    public static $view;
+
     /**
      * เก็บคลาสของเมนูที่เลือก
      *
      * @var string
      */
     protected $menu;
-    /**
-     * View.
-     *
-     * @var \Gcms\View
-     */
-    public static $view;
+
     /**
      * Menu Controller.
      *
      * @var \Index\Menu\Controller
      */
     protected static $menus;
+
+    /**
+     * ข้อความไตเติลบาร์.
+     *
+     * @var string
+     */
+    protected $title;
 
     /**
      * init Class.
@@ -55,13 +58,33 @@ class Controller extends \Kotchasan\Controller
     }
 
     /**
-     * ข้อความ title bar.
+     * โหลด permissions ของโมดูลต่างๆ.
      *
-     * @return string
+     * @return array
      */
-    public function title()
+    public static function getPermissions()
     {
-        return $this->title;
+        // permissions เริ่มต้น
+        $permissions = \Kotchasan\Language::get('PERMISSIONS');
+        // โหลดค่าติดตั้งโมดูล
+        $dir = ROOT_PATH.'modules/';
+        $f = @opendir($dir);
+        if ($f) {
+            while (false !== ($text = readdir($f))) {
+                if ($text != '.' && $text != '..' && $text != 'index' && $text != 'css' && $text != 'js' && is_dir($dir.$text)) {
+                    if (is_file($dir.$text.'/controllers/init.php')) {
+                        require_once $dir.$text.'/controllers/init.php';
+                        $className = '\\'.ucfirst($text).'\Init\Controller';
+                        if (method_exists($className, 'updatePermissions')) {
+                            $permissions = $className::updatePermissions($permissions);
+                        }
+                    }
+                }
+            }
+            closedir($f);
+        }
+
+        return $permissions;
     }
 
     /**
@@ -75,32 +98,12 @@ class Controller extends \Kotchasan\Controller
     }
 
     /**
-     * โหลด permissions ของโมดูลต่างๆ.
+     * ข้อความ title bar.
      *
-     * @return array
+     * @return string
      */
-    public static function getPermissions()
+    public function title()
     {
-        // permissions เริ่มต้น
-        $permissions = \Kotchasan\Language::get('PERMISSIONS');
-        // โหลดค่าติดตั้งโมดูล
-        $dir = ROOT_PATH . 'modules/';
-        $f = @opendir($dir);
-        if ($f) {
-            while (false !== ($text = readdir($f))) {
-                if ($text != '.' && $text != '..' && $text != 'index' && $text != 'css' && $text != 'js' && is_dir($dir . $text)) {
-                    if (is_file($dir . $text . '/controllers/init.php')) {
-                        require_once $dir . $text . '/controllers/init.php';
-                        $className = '\\' . ucfirst($text) . '\Init\Controller';
-                        if (method_exists($className, 'updatePermissions')) {
-                            $permissions = $className::updatePermissions($permissions);
-                        }
-                    }
-                }
-            }
-            closedir($f);
-        }
-
-        return $permissions;
+        return $this->title;
     }
 }

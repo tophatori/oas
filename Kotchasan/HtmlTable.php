@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/HtmlTable.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -20,35 +20,39 @@ namespace Kotchasan;
 class HtmlTable
 {
     /**
-     * แอเรย์เก็บข้อมูลส่วน thead.
-     *
-     * @var array
-     */
-    private $thead;
-    /**
-     * แอเรย์ของ TableRow เก็บแถวของตาราง (tbody).
-     *
-     * @var array
-     */
-    private $tbody;
-    /**
-     * แอเรย์ของ TableRow เก็บแถวของตาราง (tfoot).
-     *
-     * @var array
-     */
-    private $tfoot;
-    /**
      * caption ของ ตาราง.
      *
      * @var string
      */
     private $caption;
+
     /**
      * แอเรย์เก็บ property ของตาราง.
      *
      * @var array
      */
     private $properties;
+
+    /**
+     * แอเรย์ของ TableRow เก็บแถวของตาราง (tbody).
+     *
+     * @var array
+     */
+    private $tbody;
+
+    /**
+     * แอเรย์ของ TableRow เก็บแถวของตาราง (tfoot).
+     *
+     * @var array
+     */
+    private $tfoot;
+
+    /**
+     * แอเรย์เก็บข้อมูลส่วน thead.
+     *
+     * @var array
+     */
+    private $thead;
 
     /**
      * class constructure.
@@ -64,20 +68,6 @@ class HtmlTable
     }
 
     /**
-     * สร้างตาราง.
-     *
-     * @param array $properties
-     *
-     * @return \static
-     */
-    public static function create($properties = array())
-    {
-        $obj = new static($properties);
-
-        return $obj;
-    }
-
-    /**
      * กำหนด caption ของตาราง.
      *
      * @param string $text
@@ -85,6 +75,16 @@ class HtmlTable
     public function addCaption($text)
     {
         $this->caption = $text;
+    }
+
+    /**
+     * แทรกแถวของ tfoot.
+     *
+     * @param TableRow $row
+     */
+    public function addFooter(TableRow $row)
+    {
+        $this->tfoot[] = $row;
     }
 
     /**
@@ -113,13 +113,17 @@ class HtmlTable
     }
 
     /**
-     * แทรกแถวของ tfoot.
+     * สร้างตาราง.
      *
-     * @param TableRow $row
+     * @param array $properties
+     *
+     * @return \static
      */
-    public function addFooter(TableRow $row)
+    public static function create($properties = array())
     {
-        $this->tfoot[] = $row;
+        $obj = new static($properties);
+
+        return $obj;
     }
 
     /**
@@ -200,6 +204,7 @@ class TableRow
      * @var array
      */
     private $properties;
+
     /**
      * แอเรย์เก็บรายการ cell ในแถว.
      *
@@ -219,6 +224,16 @@ class TableRow
     }
 
     /**
+     * เพิ่ม cell ลงในแถว.
+     *
+     * @param array $td
+     */
+    public function addCell($td)
+    {
+        $this->tds[] = $td;
+    }
+
+    /**
      * สร้างแถวสำหรับ tbody.
      *
      * @param array $properties
@@ -230,16 +245,6 @@ class TableRow
         $obj = new static($properties);
 
         return $obj;
-    }
-
-    /**
-     * เพิ่ม cell ลงในแถว.
-     *
-     * @param array $td
-     */
-    public function addCell($td)
-    {
-        $this->tds[] = $td;
     }
 
     /**

@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Menu.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -43,14 +43,15 @@ class Menu
     }
 
     /**
-     * ฟังก์ชั่น แปลงเป็นรายการเมนู.
+     * ฟังก์ชั่น แปลงเป็นรายการเมนู
+     * คืนค่า HTML ของเมนู.
      *
      * @param string|int $name   ชื่อเมนู
      * @param array      $item   แอเรย์ข้อมูลเมนู
      * @param bool       $arrow  true แสดงลูกศรสำหรับเมนูที่มีเมนูย่อย
      * @param string     $select ชื่อเมนูที่ถูกเลือก
      *
-     * @return string คืนค่า HTML ของเมนู
+     * @return string
      */
     protected static function getItem($name, $item, $arrow, $select)
     {

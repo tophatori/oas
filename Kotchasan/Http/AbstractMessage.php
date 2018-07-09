@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Http/AbstractMessage.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan\Http;
@@ -23,26 +23,169 @@ use Psr\Http\Message\StreamInterface;
 abstract class AbstractMessage implements MessageInterface
 {
     /**
-     * @var string
-     */
-    protected $protocol = '1.1';
-    /**
-     * @var StreamInterface
-     */
-    protected $stream;
-    /**
      * @var array
      */
     protected $headers = array();
 
     /**
-     * อ่านเวอร์ชั่นของโปรโตคอล.
+     * @var string
+     */
+    protected $protocol = '1.1';
+
+    /**
+     * @var StreamInterface
+     */
+    protected $stream;
+
+    /**
+     * อ่าน stream.
      *
-     * @return string เช่น 1.1, 1.0
+     * @return StreamInterface
+     */
+    public function getBody()
+    {
+        return $this->stream;
+    }
+
+    /**
+     * อ่าน header ที่ต้องการ ผลลัพท์เป็น array
+     * คืนค่าแอเรย์ของ header ถ้าไม่พบคืนค่าแอเรย์ว่าง.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public function getHeader($name)
+    {
+        return isset($this->headers[$name]) ? $this->headers[$name] : array();
+    }
+
+    /**
+     * อ่าน header ที่ต้องการ ผลลัพท์เป็น string
+     * คืนค่ารายการ header ทั้งหมดที่พบเชื่อมต่อด้วย ลูกน้ำ (,) หรือคืนค่าข้อความว่าง หากไม่พบ.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public function getHeaderLine($name)
+    {
+        $values = $this->getHeader($name);
+
+        return empty($values) ? '' : implode('', $values);
+    }
+
+    /**
+     * คืนค่า header ทั้งหมด ผลลัพท์เป็น array.
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    /**
+     * คืนค่าเวอร์ชั่นของโปรโตคอล
+     * เช่น 1.1, 1.0.
+     *
+     * @return string
      */
     public function getProtocolVersion()
     {
         return $this->protocol;
+    }
+
+    /**
+     * ตรวจสอบว่ามี header หรือไม่
+     * คืนค่า true ถ้ามี.
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasHeader($name)
+    {
+        return isset($this->headers[$name]);
+    }
+
+    /**
+     * เพิ่ม header ใหม่.
+     *
+     * @param string          $name  ชื่อของ Header
+     * @param string|string[] $value ค่าของ Header เป็น string หรือ แอเรย์ของ string
+     *
+     * @throws \InvalidArgumentException ถ้าชื่อ header ไม่ถูกต้อง
+     *
+     * @return \static
+     */
+    public function withAddedHeader($name, $value)
+    {
+        $this->filterHeader($name);
+        $clone = clone $this;
+        if (is_array($value)) {
+            foreach ($value as $item) {
+                $clone->headers[$name][] = $item;
+            }
+        } else {
+            $clone->headers[$name][] = $value;
+        }
+
+        return $clone;
+    }
+
+    /**
+     * กำหนด stream.
+     *
+     * @param streamInterface $body
+     *
+     * @return \static
+     */
+    public function withBody(StreamInterface $body)
+    {
+        $clone = clone $this;
+        $clone->stream = $body;
+
+        return $clone;
+    }
+
+    /**
+     * กำหนด header แทนที่รายการเดิม
+     *
+     * @param string          $name  ชื่อของ Header
+     * @param string|string[] $value ค่าของ Header เป็น string หรือ แอเรย์ของ string
+     *
+     * @throws \InvalidArgumentException for invalid header names or values
+     *
+     * @return \static
+     */
+    public function withHeader($name, $value)
+    {
+        $this->filterHeader($name);
+        $clone = clone $this;
+        $clone->headers[$name] = is_array($value) ? $value : (array) $value;
+
+        return $clone;
+    }
+
+    /**
+     * กำหนด header พร้อมกันหลายรายการ แทนที่รายการเดิม
+     *
+     * @param array $headers array($key => $value, $key => $value...)
+     *
+     * @throws \InvalidArgumentException for invalid header names or values
+     *
+     * @return \static
+     */
+    public function withHeaders($headers)
+    {
+        $clone = clone $this;
+        foreach ($headers as $name => $value) {
+            $this->filterHeader($name);
+            $clone->headers[$name] = is_array($value) ? $value : (array) $value;
+        }
+
+        return $clone;
     }
 
     /**
@@ -61,118 +204,6 @@ abstract class AbstractMessage implements MessageInterface
     }
 
     /**
-     * คืนค่า header ทั้งหมด ผลลัพท์เป็น array.
-     *
-     * @return array
-     */
-    public function getHeaders()
-    {
-        return $this->headers;
-    }
-
-    /**
-     * ตรวจสอบว่ามี header หรือไม่.
-     *
-     * @param string $name
-     *
-     * @return bool คืนค่า true ถ้ามี
-     */
-    public function hasHeader($name)
-    {
-        return isset($this->headers[$name]);
-    }
-
-    /**
-     * อ่าน header ที่ต้องการ ผลลัพท์เป็น array.
-     *
-     * @param string $name
-     *
-     * @return string[] คืนค่าแอเรย์ของ header ถ้าไม่พบคืนค่าแอเรย์ว่าง
-     */
-    public function getHeader($name)
-    {
-        return isset($this->headers[$name]) ? $this->headers[$name] : array();
-    }
-
-    /**
-     * อ่าน header ที่ต้องการ ผลลัพท์เป็น string.
-     *
-     * @param string $name
-     *
-     * @return string คืนค่ารายการ header ทั้งหมดที่พบเชื่อมต่อด้วย ลูกน้ำ (,) หรือคืนค่าข้อความว่าง หากไม่พบ
-     */
-    public function getHeaderLine($name)
-    {
-        $values = $this->getHeader($name);
-
-        return empty($values) ? '' : implode('', $values);
-    }
-
-    /**
-     * กำหนด header แทนที่รายการเดิม
-     *
-     * @param string          $name  ชื่อของ Header
-     * @param string|string[] $value ค่าของ Header เป็น string หรือ แอเรย์ของ string
-     *
-     * @return \static
-     *
-     * @throws \InvalidArgumentException for invalid header names or values
-     */
-    public function withHeader($name, $value)
-    {
-        $this->filterHeader($name);
-        $clone = clone $this;
-        $clone->headers[$name] = is_array($value) ? $value : (array) $value;
-
-        return $clone;
-    }
-
-    /**
-     * กำหนด header พร้อมกันหลายรายการ แทนที่รายการเดิม
-     *
-     * @param array $headers array($key => $value, $key => $value...)
-     *
-     * @return \static
-     *
-     * @throws \InvalidArgumentException for invalid header names or values
-     */
-    public function withHeaders($headers)
-    {
-        $clone = clone $this;
-        foreach ($headers as $name => $value) {
-            $this->filterHeader($name);
-            $clone->headers[$name] = is_array($value) ? $value : (array) $value;
-        }
-
-        return $clone;
-    }
-
-    /**
-     * เพิ่ม header ใหม่.
-     *
-     * @param string          $name  ชื่อของ Header
-     * @param string|string[] $value ค่าของ Header เป็น string หรือ แอเรย์ของ string
-     *
-     * @return \static
-     *
-     * @throws \InvalidArgumentException ถ้าชื่อ header ไม่ถูกต้อง
-     */
-    public function withAddedHeader($name, $value)
-    {
-        $this->filterHeader($name);
-        $clone = clone $this;
-        if (is_array($value)) {
-            foreach ($value as $item) {
-                $clone->headers[$name][] = $item;
-            }
-        } else {
-            $clone->headers[$name][] = $value;
-        }
-
-        return $clone;
-    }
-
-    /**
      * ลบ header.
      *
      * @param string $name ชื่อ header ที่ต้องการลบ
@@ -183,31 +214,6 @@ abstract class AbstractMessage implements MessageInterface
     {
         $clone = clone $this;
         unset($clone->headers[$name]);
-
-        return $clone;
-    }
-
-    /**
-     * อ่าน stream.
-     *
-     * @return StreamInterface
-     */
-    public function getBody()
-    {
-        return $this->stream;
-    }
-
-    /**
-     * กำหนด stream.
-     *
-     * @param streamInterface $body
-     *
-     * @return \static
-     */
-    public function withBody(StreamInterface $body)
-    {
-        $clone = clone $this;
-        $clone->stream = $body;
 
         return $clone;
     }

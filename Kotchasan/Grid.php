@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Grid.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -28,6 +28,16 @@ class Grid extends \Kotchasan\Template
     }
 
     /**
+     * คืนค่าจำนวนคอลัมน์ของกริด.
+     *
+     * @return int
+     */
+    public function getCols()
+    {
+        return $this->cols;
+    }
+
+    /**
      * กำหนดจำนวนกอลัมน์ของกริด.
      *
      * @param int $cols จำนวนคอลัมน์ มากกว่า 0
@@ -40,15 +50,5 @@ class Grid extends \Kotchasan\Template
         $this->num = $this->cols;
 
         return $this;
-    }
-
-    /**
-     * คืนค่าจำนวนคอลัมน์ของกริด.
-     *
-     * @return int
-     */
-    public function getCols()
-    {
-        return $this->cols;
     }
 }

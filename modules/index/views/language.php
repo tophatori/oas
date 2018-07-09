@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/views/language.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Language;
@@ -42,7 +42,7 @@ class View extends \Gcms\View
         $js = $request->request('js')->toBoolean();
         $this->languages = Language::installedLanguage();
         // URL สำหรับส่งให้ตาราง
-        $uri = $request->createUriWithGlobals(WEB_URL . 'index.php');
+        $uri = $request->createUriWithGlobals(WEB_URL.'index.php');
         // ตารางภาษา
         $table = new DataTable(array(
             'id' => 'language_table',
@@ -61,7 +61,7 @@ class View extends \Gcms\View
             /* คอลัมน์ที่สามารถค้นหาได้ */
             'searchColumns' => array_merge(array('key'), $this->languages),
             /* ตั้งค่าการกระทำของของตัวเลือกต่างๆ ด้านล่างตาราง ซึ่งจะใช้ร่วมกับการขีดถูกเลือกแถว */
-            'action' => 'index.php/index/model/language/action?js=' . $js,
+            'action' => 'index.php/index/model/language/action?js='.$js,
             'actionCallback' => 'dataTableActionCallback',
             'actions' => array(
                 array(
@@ -133,6 +133,7 @@ class View extends \Gcms\View
         // Javascript
         $table->script('initLanguageTable("language_table");');
         // คืนค่า HTML
+
         return $table->render();
     }
 
@@ -156,9 +157,9 @@ class View extends \Gcms\View
                     }
                 }
             }
-            $item[$lng] = empty($item[$lng]) ? '' : '<span title="' . htmlspecialchars($item[$lng]) . '">' . self::toText($item[$lng]) . '</span>';
+            $item[$lng] = empty($item[$lng]) ? '' : '<span title="'.htmlspecialchars($item[$lng]).'">'.self::toText($item[$lng]).'</span>';
         }
-        $item['key'] = '<a class="icon-copy" title="' . htmlspecialchars($item['key']) . '">' . self::toText($item['key']) . '</a>';
+        $item['key'] = '<a class="icon-copy" title="'.htmlspecialchars($item['key']).'">'.self::toText($item['key']).'</a>';
 
         return $item;
     }

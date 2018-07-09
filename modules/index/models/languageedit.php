@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/models/languageedit.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Languageedit;
@@ -136,12 +136,12 @@ class Model extends \Kotchasan\Model
                                 // ใหม่
                                 $id = $model->db()->insert($table_language, $save);
                                 // redirect
-                                $ret['location'] = $request->getUri()->postBack('index.php', array('module' => 'language', 'js' => $save['js'], 'sort' => 'id DESC')) . '#datatable_' . $id;
+                                $ret['location'] = $request->getUri()->postBack('index.php', array('module' => 'language', 'js' => $save['js'], 'sort' => 'id DESC')).'#datatable_'.$id;
                             } else {
                                 // แก้ไข
                                 $model->db()->update($table_language, $id, $save);
                                 // redirect
-                                $ret['location'] = $request->getUri()->postBack('index.php', array('module' => 'language', 'js' => $save['js'])) . '#datatable_' . $id;
+                                $ret['location'] = $request->getUri()->postBack('index.php', array('module' => 'language', 'js' => $save['js'])).'#datatable_'.$id;
                             }
                             // อัปเดทไฟล์ ภาษา
                             $error = \Index\Language\Model::updateLanguageFile();

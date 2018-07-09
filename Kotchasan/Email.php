@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Email.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -19,12 +19,37 @@ namespace Kotchasan;
  */
 class Email extends \Kotchasan\KBase
 {
+    /**
+     * @var mixed
+     */
     protected $error;
+
+    /**
+     * ตรวจสอบว่ามีข้อผิดพลาดในการส่งอีเมลหรือไม่
+     * คืนค่า true ถ้ามี error, false ถ้าส่งอีเมลสำเร็จ.
+     *
+     * @return bool
+     */
+    public function error()
+    {
+        return empty($this->error) ? false : true;
+    }
+
+    /**
+     * คืนค่าข้อผิดพลาดการส่งอีเมล
+     * ถ้าไม่มีข้อผิดพลาดคืนค่าข้อความว่าง.
+     *
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        return empty($this->error) ? '' : implode("\n", $this->error);
+    }
 
     /**
      * ฟังก์ชั่นส่งเมล์แบบกำหนดรายละเอียดเอง.
      *
-     * @param string $mailto  ที่อยู่อีเมลผู้รับ  คั่นแต่ละรายชื่อด้วย ,
+     * @param string $mailto  ที่อยู่อีเมลผู้รับ คั่นแต่ละรายชื่อด้วย ,
      * @param string $replyto ที่อยู่อีเมลสำหรับการตอบกลับจดหมาย ถ้าระบุเป็นค่าว่างจะใช้ที่อยู่อีเมลจาก noreply_email
      * @param string $subject หัวข้อจดหมาย
      * @param string $msg     รายละเอียดของจดหมาย (รองรับ HTML)
@@ -119,25 +144,5 @@ class Email extends \Kotchasan\KBase
         }
 
         return $obj;
-    }
-
-    /**
-     * ตรวจสอบว่ามีข้อผิดพลาดในการส่งอีเมลหรือไม่.
-     *
-     * @return bool คืนค่า true ถ้ามี error, false ถ้าส่งอีเมลสำเร็จ
-     */
-    public function error()
-    {
-        return empty($this->error) ? false : true;
-    }
-
-    /**
-     * คืนค่าข้อผิดพลาดการส่งอีเมล.
-     *
-     * @return string ถ้าไม่มีข้อผิดพลาดคืนค่าข้อความว่าง
-     */
-    public function getErrorMessage()
-    {
-        return empty($this->error) ? '' : implode("\n", $this->error);
     }
 }

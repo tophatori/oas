@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Orm/Recordset.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan\Orm;
@@ -29,24 +29,35 @@ class Recordset extends Query implements \Iterator
      * @var array
      */
     private $datas;
-    /**
-     * รายการเริ่มต้นสำหรับการ query เพื่อแบ่งหน้า.
-     *
-     * @var int
-     */
-    private $firstRecord;
+
     /**
      * คลาส Field.
      *
      * @var Field
      */
     private $field;
+
+    /**
+     * รายชื่อฟิลด์.
+     *
+     * @var array
+     */
+    private $fields = array();
+
+    /**
+     * รายการเริ่มต้นสำหรับการ query เพื่อแบ่งหน้า.
+     *
+     * @var int
+     */
+    private $firstRecord;
+
     /**
      * จำนวนรายการต่อหน้า สำหรับใช้ในการแบ่งหน้า.
      *
      * @var int
      */
     private $perPage;
+
     /**
      * กำหนดผลลัพท์ของ Recordset
      * true ผลลัพท์เป็น Array
@@ -55,18 +66,13 @@ class Recordset extends Query implements \Iterator
      * @var bool
      */
     private $toArray = false;
+
     /**
      * ถ้ามีข้อมูลในตัวแปรนี้ จะใช้การ prepare แทน exexute.
      *
      * @var array
      */
     private $values;
-    /**
-     * รายชื่อฟิลด์.
-     *
-     * @var array
-     */
-    private $fields = array();
 
     /**
      * create new Recordset.
@@ -85,18 +91,6 @@ class Recordset extends Query implements \Iterator
                 $this->buildQuery($key, $value);
             }
         }
-    }
-
-    /**
-     * create new Recordset.
-     *
-     * @param string $filed ชื่อ Field
-     *
-     * @return \static
-     */
-    public static function create($filed)
-    {
-        return new static($filed);
     }
 
     /**
@@ -122,36 +116,6 @@ class Recordset extends Query implements \Iterator
         }
 
         return $this->doExecute(0, 0);
-    }
-
-    /**
-     * build query string.
-     *
-     * @return string
-     */
-    public function createQuery($start, $count)
-    {
-        $this->sqls['from'] = $this->field->getTableWithAlias();
-        if (!empty($start) || !empty($count)) {
-            $this->sqls['limit'] = $count;
-            $this->sqls['start'] = $start;
-        }
-
-        return $this->db()->makeQuery($this->sqls);
-    }
-
-    /**
-     * ฟังก์ชั่นประมวลผลคำสั่ง SQL สำหรับสอบถามข้อมูล คืนค่าผลลัพท์เป็นแอเรย์ของข้อมูลที่ตรงตามเงื่อนไข.
-     *
-     * @param string $sql     query string
-     * @param bool   $toArray (option) default true คืนค่าเป็น Array, false คืนค่าผลลัทเป็น Object
-     * @param array  $values  ถ้าระบุตัวแปรนี้จะเป็นการบังคับใช้คำสั่ง prepare แทน query
-     *
-     * @return array|object คืนค่าผลการทำงานเป็น record ของข้อมูลทั้งหมดที่ตรงตามเงื่อนไข
-     */
-    public function customQuery($sql, $toArray = true, $values = array())
-    {
-        return $this->db()->customQuery($sql, $toArray, $values);
     }
 
     /**
@@ -195,13 +159,67 @@ class Recordset extends Query implements \Iterator
     }
 
     /**
-     * ลบ record กำหนดโดย $condition.
+     * create new Recordset.
+     *
+     * @param string $filed ชื่อ Field
+     *
+     * @return \static
+     */
+    public static function create($filed)
+    {
+        return new static($filed);
+    }
+
+    /**
+     * build query string.
+     *
+     * @return string
+     */
+    public function createQuery($start, $count)
+    {
+        $this->sqls['from'] = $this->field->getTableWithAlias();
+        if (!empty($start) || !empty($count)) {
+            $this->sqls['limit'] = $count;
+            $this->sqls['start'] = $start;
+        }
+
+        return $this->db()->makeQuery($this->sqls);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function current()
+    {
+        $var = current($this->datas);
+
+        return $var;
+    }
+
+    /**
+     * ฟังก์ชั่นประมวลผลคำสั่ง SQL สำหรับสอบถามข้อมูล คืนค่าผลลัพท์เป็นแอเรย์ของข้อมูลที่ตรงตามเงื่อนไข
+     * คืนค่าผลการทำงานเป็น record ของข้อมูลทั้งหมดที่ตรงตามเงื่อนไข
+     *
+     * @param string $sql     query string
+     * @param bool   $toArray (option) default true คืนค่าเป็น Array, false คืนค่าผลลัทเป็น Object
+     * @param array  $values  ถ้าระบุตัวแปรนี้จะเป็นการบังคับใช้คำสั่ง prepare แทน query
+     *
+     * @return array|object
+     */
+    public function customQuery($sql, $toArray = true, $values = array())
+    {
+        return $this->db()->customQuery($sql, $toArray, $values);
+    }
+
+    /**
+     * ลบ record กำหนดโดย $condition
+     * คืนค่า true ถ้าสำเร็จ.
      *
      * @param mixed  $condition int (primaryKey), string (SQL QUERY), array
      * @param bool   $all       false (default) ลบรายการเดียว, true ลบทุกรายการที่ตรงตามเงื่อนไข
      * @param string $oprator   สำหรับเชื่อมแต่ละ $condition เข้าด้วยกัน AND (default), OR
      *
-     * @return bool true ถ้าสำเร็จ
+     * @return bool
      */
     public function delete($condition = array(), $all = false, $oprator = 'AND')
     {
@@ -219,56 +237,14 @@ class Recordset extends Query implements \Iterator
     }
 
     /**
-     * query ข้อมูลที่มีการแบ่งหน้า
-     * SELECT ....
+     * ฟังก์ชั่นลบข้อมูลทั้งหมดในตาราง
+     * คืนค่า true ถ้าสำเร็จ.
      *
-     * @param int $start
-     * @param int $end
-     *
-     * @return array|\static
+     * @return bool
      */
-    private function doExecute($start, $end)
+    public function emptyTable()
     {
-        $sql = $this->createQuery($start, $end);
-        $result = $this->db()->customQuery($sql, true, $this->values);
-        if ($this->toArray) {
-            return $result;
-        } else {
-            $class = get_class($this->field);
-            $this->datas = array();
-            foreach ($result as $item) {
-                $this->datas[] = new $class($item);
-            }
-
-            return $this;
-        }
-    }
-
-    /**
-     * INNER JOIN table ON ....
-     *
-     * @param string $field field class ของตารางที่ join
-     * @param string $type  เช่น LEFT, RIGHT, INNER...
-     * @param mixed  $on    where condition สำหรับการ join
-     *
-     * @return \static
-     */
-    private function doJoin($field, $type, $on)
-    {
-        if (preg_match('/^([a-zA-Z0-9\\\\]+)(\s+(as|AS))?[\s]+([A-Z0-9]{1,2})?$/', $field, $match)) {
-            $field = $match[1];
-        }
-        $rs = new self($field);
-        $table = $rs->field->getTableWithAlias(isset($match[4]) ? $match[4] : null);
-        $ret = $rs->buildJoin($table, $type, $on);
-        if (is_array($ret)) {
-            $this->sqls['join'][] = $ret[0];
-            $this->values = ArrayTool::replace($this->values, $ret[1]);
-        } else {
-            $this->sqls['join'][] = $ret;
-        }
-
-        return $this;
+        return $this->db()->emptyTable($this->field->table_name);
     }
 
     /**
@@ -297,6 +273,23 @@ class Recordset extends Query implements \Iterator
     }
 
     /**
+     * ฟังก์ชั่นตรวจสอบว่ามีฟิลด์ หรือไม่
+     * คืนค่า true หากมีฟิลด์นี้อยู่ ไม่พบคืนค่า false.
+     *
+     * @param string $field ชื่อฟิลด์
+     *
+     * @return bool
+     */
+    public function fieldExists($field)
+    {
+        if (empty($this->fields)) {
+            $this->fields = Schema::create($this->db())->fields($this->field->table_name);
+        }
+
+        return in_array($field, $this->fields);
+    }
+
+    /**
      * สอบถามข้อมูลที่ $primaryKey คืนค่าข้อมูลรายการเดียว.
      *
      * @param int $id รายการที่ค้นหา
@@ -310,11 +303,12 @@ class Recordset extends Query implements \Iterator
 
     /**
      * Query ข้อมูลรายการเดียว
+     * ไม่พบคืนค่า false พบคืนค่า record ของข้อมูลรายการเดียว
      * SELECT .... LIMIT 1.
      *
      * @param array|string $fields (options) null หมายถึง SELECT ตามที่กำหนดโดย field
      *
-     * @return bool|array|Field ไม่พบคืนค่า false พบคืนค่า record ของข้อมูลรายการเดียว
+     * @return bool|array|Field
      */
     public function first($fields = null)
     {
@@ -372,28 +366,23 @@ class Recordset extends Query implements \Iterator
     }
 
     /**
-     * ฟังก์ชั่นตรวจสอบว่ามีฟิลด์ หรือไม่.
+     * คืนค่า value สำหรับการ execute.
      *
-     * @param string $field ชื่อฟิลด์
-     *
-     * @return bool คืนค่า true หากมีฟิลด์นี้อยู่ ไม่พบคืนค่า false
+     * @return array
      */
-    public function fieldExists($field)
+    public function getValues()
     {
-        if (empty($this->fields)) {
-            $this->fields = Schema::create($this->db())->fields($this->field->table_name);
-        }
-
-        return in_array($field, $this->fields);
+        return $this->values;
     }
 
     /**
-     * ฟังก์ชั่นสำหรับจัดกลุ่มคำสั่ง และ เชื่อมแต่ละกลุ่มด้วย $oprator.
+     * ฟังก์ชั่นสำหรับจัดกลุ่มคำสั่ง และ เชื่อมแต่ละกลุ่มด้วย $oprator
+     * คืนค่า query ภายใต้ ().
      *
      * @param array  $params  คำสั่ง รูปแบบ array('field1', 'condition', 'field2')
      * @param string $oprator AND หรือ OR
      *
-     * @return string query ภายใต้ ()
+     * @return string
      */
     public function group($params, $oprator = 'AND')
     {
@@ -408,11 +397,12 @@ class Recordset extends Query implements \Iterator
     }
 
     /**
-     * insert ข้อมูล.
+     * insert ข้อมูล
+     * สำเร็จ คืนค่า id ที่เพิ่ม ผิดพลาด คืนค่า false.
      *
      * @param Field $field
      *
-     * @return int|bool สำเร็จ คืนค่า id ที่เพิ่ม ผิดพลาด คืนค่า false
+     * @return int|bool
      */
     public function insert(Field $field)
     {
@@ -446,6 +436,44 @@ class Recordset extends Query implements \Iterator
     }
 
     /**
+     * @return mixed
+     */
+    public function key()
+    {
+        $var = key($this->datas);
+
+        return $var;
+    }
+
+    /**
+     * จำกัดผลลัพท์ และกำหนดรายการเริ่มต้น.
+     *
+     * @param int $count จำนวนผลลัท์ที่ต้องการ
+     * @param int $start รายการเริ่มต้น
+     *
+     * @return \static
+     */
+    public function limit($count, $start = 0)
+    {
+        if (!empty($start)) {
+            $this->sqls['start'] = (int) $start;
+        }
+        $this->sqls['limit'] = (int) $count;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function next()
+    {
+        $var = next($this->datas);
+
+        return $var;
+    }
+
+    /**
      * สร้าง query เรียงลำดับ.
      *
      * @param mixed $sort array('field ASC','field DESC') หรือ 'field ASC', 'field DESC', ....
@@ -464,12 +492,13 @@ class Recordset extends Query implements \Iterator
     }
 
     /**
-     * ฟังก์ชั่นประมวลผลคำสั่ง SQL ที่ไม่ต้องการผลลัพท์ เช่น CREATE INSERT UPDATE.
+     * ฟังก์ชั่นประมวลผลคำสั่ง SQL ที่ไม่ต้องการผลลัพท์ เช่น CREATE INSERT UPDATE
+     * สำเร็จคืนค่า true ไม่สำเร็จคืนค่า false.
      *
      * @param string $sql
      * @param array  $values ถ้าระบุตัวแปรนี้จะเป็นการบังคับใช้คำสั่ง prepare แทน query
      *
-     * @return bool สำเร็จคืนค่า true ไม่สำเร็จคืนค่า false
+     * @return bool
      */
     public function query($sql, $values = array())
     {
@@ -477,29 +506,21 @@ class Recordset extends Query implements \Iterator
     }
 
     /**
-     * สร้าง query จาก config.
+     * สอบถามจำนวน record ทั้งหมดที่ query แล้ว.
      *
-     * @param string $method
-     * @param mixed  $param
+     * @return int
      */
-    private function buildQuery($method, $param)
+    public function recordCount()
     {
-        if ($method == 'join') {
-            foreach ($param as $item) {
-                $this->doJoin($item[1], $item[0], $item[2]);
-            }
-        } else {
-            $func = 'build'.ucfirst($method);
-            if (method_exists($this, $func)) {
-                $ret = $this->{$func}($param);
-                if (is_array($ret)) {
-                    $this->sqls[$method] = $ret[0];
-                    $this->values = ArrayTool::replace($this->values, $ret[1]);
-                } else {
-                    $this->sqls[$method] = $ret;
-                }
-            }
-        }
+        return sizeof($this->datas);
+    }
+
+    /**
+     * inherited from Iterator.
+     */
+    public function rewind()
+    {
+        reset($this->datas);
     }
 
     /**
@@ -539,22 +560,23 @@ class Recordset extends Query implements \Iterator
     }
 
     /**
-     * ฟังก์ชั่นลบข้อมูลทั้งหมดในตาราง.
+     * ส่งออกฐานข้อมูลเป็น QueryBuilder.
      *
-     * @return bool คืนค่า true ถ้าสำเร็จ
+     * @return \Kotchasan\Database\QueryBuilder
      */
-    public function emptyTable()
+    public function toQueryBuilder()
     {
-        return $this->db()->emptyTable($this->field->table_name);
+        return $this->db()->createQuery()->assignment($this);
     }
 
     /**
-     * อัปเดทข้อมูล.
+     * อัปเดทข้อมูล
+     * สำเร็จ คืนค่า true, ผิดพลาด คืนค่า false.
      *
      * @param array       $condition
      * @param array|Field $save
      *
-     * @return bool สำเร็จ คืนค่า true, ผิดพลาด คืนค่า false
+     * @return bool
      */
     public function update($condition, $save)
     {
@@ -588,15 +610,26 @@ class Recordset extends Query implements \Iterator
 
     /**
      * อัปเดทข้อมูลทุก record.
+     * สำเร็จ คืนค่า true, ผิดพลาด คืนค่า false.
      *
-     * @param array $save ข้อมูลที่ต้องการบันทึก
-     *                    array('key1'=>'value1', 'key2'=>'value2', ...)
+     * @param array $save ข้อมูลที่ต้องการบันทึก array('key1'=>'value1', 'key2'=>'value2', ...)
      *
-     * @return bool สำเร็จ คืนค่า true, ผิดพลาด คืนค่า false
+     * @return bool
      */
     public function updateAll($save)
     {
         return $this->db()->updateAll($this->field->table_name, $save);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function valid()
+    {
+        $key = key($this->datas);
+        $var = ($key !== null && $key !== false);
+
+        return $var;
     }
 
     /**
@@ -627,87 +660,81 @@ class Recordset extends Query implements \Iterator
     }
 
     /**
-     * จำกัดผลลัพท์ และกำหนดรายการเริ่มต้น.
+     * สร้าง query จาก config.
      *
-     * @param int $count จำนวนผลลัท์ที่ต้องการ
-     * @param int $start รายการเริ่มต้น
+     * @param string $method
+     * @param mixed  $param
+     */
+    private function buildQuery($method, $param)
+    {
+        if ($method == 'join') {
+            foreach ($param as $item) {
+                $this->doJoin($item[1], $item[0], $item[2]);
+            }
+        } else {
+            $func = 'build'.ucfirst($method);
+            if (method_exists($this, $func)) {
+                $ret = $this->{$func}($param);
+                if (is_array($ret)) {
+                    $this->sqls[$method] = $ret[0];
+                    $this->values = ArrayTool::replace($this->values, $ret[1]);
+                } else {
+                    $this->sqls[$method] = $ret;
+                }
+            }
+        }
+    }
+
+    /**
+     * query ข้อมูลที่มีการแบ่งหน้า
+     * SELECT ....
+     *
+     * @param int $start
+     * @param int $end
+     *
+     * @return array|\static
+     */
+    private function doExecute($start, $end)
+    {
+        $sql = $this->createQuery($start, $end);
+        $result = $this->db()->customQuery($sql, true, $this->values);
+        if ($this->toArray) {
+            return $result;
+        } else {
+            $class = get_class($this->field);
+            $this->datas = array();
+            foreach ($result as $item) {
+                $this->datas[] = new $class($item);
+            }
+
+            return $this;
+        }
+    }
+
+    /**
+     * INNER JOIN table ON ....
+     *
+     * @param string $field field class ของตารางที่ join
+     * @param string $type  เช่น LEFT, RIGHT, INNER...
+     * @param mixed  $on    where condition สำหรับการ join
      *
      * @return \static
      */
-    public function limit($count, $start = 0)
+    private function doJoin($field, $type, $on)
     {
-        if (!empty($start)) {
-            $this->sqls['start'] = (int) $start;
+        if (preg_match('/^([a-zA-Z0-9\\\\]+)(\s+(as|AS))?[\s]+([A-Z0-9]{1,2})?$/', $field, $match)) {
+            $field = $match[1];
         }
-        $this->sqls['limit'] = (int) $count;
+        $rs = new self($field);
+        $table = $rs->field->getTableWithAlias(isset($match[4]) ? $match[4] : null);
+        $ret = $rs->buildJoin($table, $type, $on);
+        if (is_array($ret)) {
+            $this->sqls['join'][] = $ret[0];
+            $this->values = ArrayTool::replace($this->values, $ret[1]);
+        } else {
+            $this->sqls['join'][] = $ret;
+        }
 
         return $this;
-    }
-
-    /**
-     * คืนค่า value สำหรับการ execute.
-     *
-     * @return array
-     */
-    public function getValues()
-    {
-        return $this->values;
-    }
-
-    /**
-     * ส่งออกฐานข้อมูลเป็น QueryBuilder.
-     *
-     * @return \Kotchasan\Database\QueryBuilder
-     */
-    public function toQueryBuilder()
-    {
-        return $this->db()->createQuery()->assignment($this);
-    }
-
-    /**
-     * สอบถามจำนวน record ทั้งหมดที่ query แล้ว.
-     *
-     * @return int
-     */
-    public function recordCount()
-    {
-        return sizeof($this->datas);
-    }
-
-    /**
-     * inherited from Iterator.
-     */
-    public function rewind()
-    {
-        reset($this->datas);
-    }
-
-    public function current()
-    {
-        $var = current($this->datas);
-
-        return $var;
-    }
-
-    public function key()
-    {
-        $var = key($this->datas);
-
-        return $var;
-    }
-
-    public function next()
-    {
-        $var = next($this->datas);
-
-        return $var;
-    }
-
-    public function valid()
-    {
-        $key = key($this->datas);
-        $var = ($key !== null && $key !== false);
-
-        return $var;
     }
 }

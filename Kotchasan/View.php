@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/View.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -20,29 +20,33 @@ namespace Kotchasan;
 class View extends \Kotchasan\KBase
 {
     /**
+     * ตัวแปรเก็บเนื่อหาของเว็บไซต์ ที่จะแทนที่หลังจาก render แล้ว.
+     *
+     * @var array
+     */
+    protected $after_contents = array();
+
+    /**
      * ตัวแปรเก็บเนื่อหาของเว็บไซต์.
      *
      * @var array
      */
     protected $contents = array();
-    /**
-     * meta tag.
-     *
-     * @var array
-     */
-    protected $metas = array();
+
     /**
      * รายการ header.
      *
      * @var array
      */
     protected $headers = array();
+
     /**
-     * ตัวแปรเก็บเนื่อหาของเว็บไซต์ ที่จะแทนที่หลังจาก render แล้ว.
+     * meta tag.
      *
      * @var array
      */
-    protected $after_contents = array();
+    protected $metas = array();
+
     /**
      * คำสั่ง Javascript ที่จะแทรกไว้ใน head.
      *
@@ -51,39 +55,13 @@ class View extends \Kotchasan\KBase
     protected $script = array();
 
     /**
-     * ใส่เนื้อหาลงใน $contens.
+     * ใส่ไฟล์ CSS ลงใน header.
      *
-     * @param array $array ชื่อที่ปรากฏใน template รูปแบบ array(key1 => val1, key2 => val2)
+     * @param string $url
      */
-    public function setContents($array)
+    public function addCSS($url)
     {
-        foreach ($array as $key => $value) {
-            $this->contents[$key] = $value;
-        }
-    }
-
-    /**
-     * ใส่เนื้อหาลงใน $contens หลัง render แล้ว.
-     *
-     * @param array $array ชื่อที่ปรากฏใน template รูปแบบ array(key1 => val1, key2 => val2)
-     */
-    public function setContentsAfter($array)
-    {
-        foreach ($array as $key => $value) {
-            $this->after_contents[$key] = $value;
-        }
-    }
-
-    /**
-     * ใส่ Tag ลงใน Head ของ HTML.
-     *
-     * @param array $array
-     */
-    public function setMetas($array)
-    {
-        foreach ($array as $key => $value) {
-            $this->metas[$key] = $value;
-        }
+        $this->metas[$url] = '<link rel=stylesheet href="'.$url.'">';
     }
 
     /**
@@ -97,16 +75,6 @@ class View extends \Kotchasan\KBase
     }
 
     /**
-     * ใส่ไฟล์ CSS ลงใน header.
-     *
-     * @param string $url
-     */
-    public function addCSS($url)
-    {
-        $this->metas[$url] = '<link rel=stylesheet href="'.$url.'">';
-    }
-
-    /**
      * เพิ่มคำสั่ง Javascript ใส่ลงใน head ก่อนปิด head.
      *
      * @param string $script
@@ -117,15 +85,66 @@ class View extends \Kotchasan\KBase
     }
 
     /**
-     * กำหนด header ให้กับเอกสาร.
+     * ฟังก์ชั่น แทนที่ query string ด้วยข้อมูลจาก GET สำหรับส่งต่อไปยัง URL ถัดไป.
+     * array ส่งมาจาก preg_replace
+     * string กำหนดเอง
+     * คืนค่า query string ใหม่ ลบ id=0.
      *
-     * @param array $array
+     * @assert (array(2 => 'module=retmodule&id=0')) [==] "http://localhost/?module=retmodule&amp;page=1&amp;sort=id"  [[$_SERVER['QUERY_STRING'] = '_module=test&1234&_page=1&_sort=id&action=login&id=1']]
+     * @assert ('module=retmodule&5678') [==] "http://localhost/?module=retmodule&amp;page=1&amp;sort=id&amp;id=1&amp;5678"
+     *
+     * @param array|string $f รับค่าจากตัวแปร $f มาสร้าง query string
+     *
+     * @return string
      */
-    public function setHeaders($array)
+    public static function back($f)
     {
-        foreach ($array as $key => $value) {
-            $this->headers[$key] = $value;
+        $uri = self::$request->getUri();
+        $query_url = array();
+        foreach (explode('&', $uri->getQuery()) as $item) {
+            if (preg_match('/^(_)?(.*)=([^$]{1,})$/', $item, $match)) {
+                if ($match[2] == 'action' && ($match[3] == 'login' || $match[3] == 'logout')) {
+                    // ไม่ใช้รายการ action=login, action=logout
+                } else {
+                    $query_url[$match[2]] = $match[3];
+                }
+            }
         }
+        if (is_array($f)) {
+            $f = isset($f[2]) ? $f[2] : null;
+        }
+        if (!empty($f)) {
+            foreach (explode('&', $f) as $item) {
+                if (preg_match('/^([a-zA-Z0-9_\-]+)(=(.*))?$/', $item, $match)) {
+                    if (!isset($match[3])) {
+                        // ไม่มี value
+                        $query_url[$match[1]] = null;
+                    } elseif ($match[3] === '0') {
+                        // ไม่ใช้รายการที่หลังเครื่องหมาย = เท่ากับ 0
+                        unset($query_url[$match[1]]);
+                    } else {
+                        $query_url[$match[1]] = $match[3];
+                    }
+                }
+            }
+        }
+
+        return (string) $uri->withQuery($uri->paramsToQuery($query_url, true));
+    }
+
+    /**
+     * ส่งออกเนื้อหา และ header ตามที่กำหนด.
+     *
+     * @param string $content เนื้อหา
+     */
+    public function output($content)
+    {
+        // send header
+        foreach ($this->headers as $key => $value) {
+            header("$key: $value");
+        }
+        // output content
+        echo $content;
     }
 
     /**
@@ -163,63 +182,50 @@ class View extends \Kotchasan\KBase
     }
 
     /**
-     * ส่งออกเนื้อหา และ header ตามที่กำหนด.
+     * ใส่เนื้อหาลงใน $contens.
      *
-     * @param string $content เนื้อหา
+     * @param array $array ชื่อที่ปรากฏใน template รูปแบบ array(key1 => val1, key2 => val2)
      */
-    public function output($content)
+    public function setContents($array)
     {
-        // send header
-        foreach ($this->headers as $key => $value) {
-            header("$key: $value");
+        foreach ($array as $key => $value) {
+            $this->contents[$key] = $value;
         }
-        // output content
-        echo $content;
     }
 
     /**
-     * ฟังก์ชั่น แทนที่ query string ด้วยข้อมูลจาก GET สำหรับส่งต่อไปยัง URL ถัดไป.
+     * ใส่เนื้อหาลงใน $contens หลัง render แล้ว.
      *
-     * @param array|string $f รับค่าจากตัวแปร $f มาสร้าง query string
-     *                        array ส่งมาจาก preg_replace
-     *                        string กำหนดเอง
-     *
-     * @return string คืนค่า query string ใหม่ ลบ id=0
-     * @assert (array(2 => 'module=retmodule&id=0')) [==] "http://localhost/?module=retmodule&amp;page=1&amp;sort=id"  [[$_SERVER['QUERY_STRING'] = '_module=test&1234&_page=1&_sort=id&action=login&id=1']]
-     * @assert ('module=retmodule&5678') [==] "http://localhost/?module=retmodule&amp;page=1&amp;sort=id&amp;id=1&amp;5678"
+     * @param array $array ชื่อที่ปรากฏใน template รูปแบบ array(key1 => val1, key2 => val2)
      */
-    public static function back($f)
+    public function setContentsAfter($array)
     {
-        $uri = self::$request->getUri();
-        $query_url = array();
-        foreach (explode('&', $uri->getQuery()) as $item) {
-            if (preg_match('/^(_)?(.*)=([^$]{1,})$/', $item, $match)) {
-                if ($match[2] == 'action' && ($match[3] == 'login' || $match[3] == 'logout')) {
-                    // ไม่ใช้รายการ action=login, action=logout
-                } else {
-                    $query_url[$match[2]] = $match[3];
-                }
-            }
+        foreach ($array as $key => $value) {
+            $this->after_contents[$key] = $value;
         }
-        if (is_array($f)) {
-            $f = isset($f[2]) ? $f[2] : null;
-        }
-        if (!empty($f)) {
-            foreach (explode('&', $f) as $item) {
-                if (preg_match('/^([a-zA-Z0-9_\-]+)(=(.*))?$/', $item, $match)) {
-                    if (!isset($match[3])) {
-                        // ไม่มี value
-                        $query_url[$match[1]] = null;
-                    } elseif ($match[3] === '0') {
-                        // ไม่ใช้รายการที่หลังเครื่องหมาย = เท่ากับ 0
-                        unset($query_url[$match[1]]);
-                    } else {
-                        $query_url[$match[1]] = $match[3];
-                    }
-                }
-            }
-        }
+    }
 
-        return (string) $uri->withQuery($uri->paramsToQuery($query_url, true));
+    /**
+     * กำหนด header ให้กับเอกสาร.
+     *
+     * @param array $array
+     */
+    public function setHeaders($array)
+    {
+        foreach ($array as $key => $value) {
+            $this->headers[$key] = $value;
+        }
+    }
+
+    /**
+     * ใส่ Tag ลงใน Head ของ HTML.
+     *
+     * @param array $array
+     */
+    public function setMetas($array)
+    {
+        foreach ($array as $key => $value) {
+            $this->metas[$key] = $value;
+        }
     }
 }

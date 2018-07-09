@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/models/fblogin.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Fblogin;
@@ -52,7 +52,7 @@ class Model extends \Kotchasan\Model
                 } else {
                     $permissions = array();
                 }
-                $name = trim($request->post('first_name')->topic() . ' ' . $request->post('last_name')->topic());
+                $name = trim($request->post('first_name')->topic().' '.$request->post('last_name')->topic());
                 $save = \Index\Register\Model::execute($this, array(
                     'username' => $username,
                     'password' => $password,
@@ -76,7 +76,7 @@ class Model extends \Kotchasan\Model
                 $save['lastvisited'] = time();
                 $save['ip'] = $request->getClientIp();
                 $save['salt'] = uniqid();
-                $save['password'] = sha1($password . $save['salt']);
+                $save['password'] = sha1($password.$save['salt']);
                 // อัปเดท
                 $db->update($user_table, $search['id'], $save);
                 $save['permission'] = explode(',', trim($save['permission'], " \t\n\r\0\x0B,"));

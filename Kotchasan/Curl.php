@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Curl.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -20,18 +20,6 @@ namespace Kotchasan;
 class Curl
 {
     /**
-     * พารามิเตอร์ CURLOPT.
-     *
-     * @var array
-     */
-    protected $options = array();
-    /**
-     * HTTP headers.
-     *
-     * @var array
-     */
-    protected $headers = array();
-    /**
      * ตัวแปรสำหรับเก็บ Error ที่มาจาก cURL
      * 0 ไม่มี error (ค่าเริ่มต้น)
      * มากกว่า 0 Error No. ของ cURL.
@@ -39,12 +27,27 @@ class Curl
      * @var int
      */
     protected $error = 0;
+
     /**
      * ข้อความ Error จาก cURL หากมีข้อผิดพลาดในการส่ง.
      *
      * @var string
      */
     protected $errorMessage = '';
+
+    /**
+     * HTTP headers.
+     *
+     * @var array
+     */
+    protected $headers = array();
+
+    /**
+     * พารามิเตอร์ CURLOPT.
+     *
+     * @var array
+     */
+    protected $options = array();
 
     /**
      * Construct.
@@ -73,27 +76,6 @@ class Curl
     }
 
     /**
-     * คืนค่า error no จากการ cURL
-     * 0 หมายถึงไม่มี error.
-     *
-     * @return int
-     * */
-    public function error()
-    {
-        return $this->error;
-    }
-
-    /**
-     * คืนค่าข้อความ Error จาก cURL หากมีข้อผิดพลาดในการส่ง.
-     *
-     * @return string
-     * */
-    public function errorMessage()
-    {
-        return $this->errorMessage;
-    }
-
-    /**
      * DELETE.
      *
      * @param string $url
@@ -111,6 +93,27 @@ class Curl
         }
 
         return $this->execute($url);
+    }
+
+    /**
+     * คืนค่า error no จากการ cURL
+     * 0 หมายถึงไม่มี error.
+     *
+     * @return int
+     */
+    public function error()
+    {
+        return $this->error;
+    }
+
+    /**
+     * คืนค่าข้อความ Error จาก cURL หากมีข้อผิดพลาดในการส่ง.
+     *
+     * @return string
+     */
+    public function errorMessage()
+    {
+        return $this->errorMessage;
     }
 
     /**
@@ -153,6 +156,44 @@ class Curl
         }
 
         return $this->execute($url);
+    }
+
+    /**
+     * Login สำหรับการส่งแบบ HTTP.
+     *
+     * @param string $username
+     * @param string $password
+     * @param string $type     any (default), digest, basic, digest_ie, negotiate, ntlm, ntlm_wb, anysafe, only
+     *
+     * @return $this
+     */
+    public function httpauth($username = '', $password = '', $type = 'any')
+    {
+        $this->options[CURLOPT_HTTPAUTH] = constant('CURLAUTH_'.strtoupper($type));
+        $this->options[CURLOPT_USERPWD] = $username.':'.$password;
+
+        return $this;
+    }
+
+    /**
+     * ใช้งาน PROXY.
+     *
+     * @param string $url
+     * @param int    $port
+     * @param string $username
+     * @param string $password
+     *
+     * @return $this
+     */
+    public function httpproxy($url = '', $port = 80, $username = null, $password = null)
+    {
+        $this->options[CURLOPT_HTTPPROXYTUNNEL] = true;
+        $this->options[CURLOPT_PROXY] = $url.':'.$port;
+        if ($username !== null && $password !== null) {
+            $this->options[CURLOPT_PROXYUSERPWD] = $username.':'.$password;
+        }
+
+        return $this;
     }
 
     /**
@@ -206,44 +247,6 @@ class Curl
     public function referer($referrer)
     {
         $this->options[CURLOPT_REFERER] = $referrer;
-
-        return $this;
-    }
-
-    /**
-     * ใช้งาน PROXY.
-     *
-     * @param string $url
-     * @param int    $port
-     * @param string $username
-     * @param string $password
-     *
-     * @return $this
-     */
-    public function httpproxy($url = '', $port = 80, $username = null, $password = null)
-    {
-        $this->options[CURLOPT_HTTPPROXYTUNNEL] = true;
-        $this->options[CURLOPT_PROXY] = $url.':'.$port;
-        if ($username !== null && $password !== null) {
-            $this->options[CURLOPT_PROXYUSERPWD] = $username.':'.$password;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Login สำหรับการส่งแบบ HTTP.
-     *
-     * @param string $username
-     * @param string $password
-     * @param string $type     any (default), digest, basic, digest_ie, negotiate, ntlm, ntlm_wb, anysafe, only
-     *
-     * @return $this
-     */
-    public function httpauth($username = '', $password = '', $type = 'any')
-    {
-        $this->options[CURLOPT_HTTPAUTH] = constant('CURLAUTH_'.strtoupper($type));
-        $this->options[CURLOPT_USERPWD] = $username.':'.$password;
 
         return $this;
     }

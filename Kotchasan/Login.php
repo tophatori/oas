@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Login.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -22,26 +22,6 @@ use Kotchasan\Http\Request;
 class Login extends \Kotchasan\KBase implements LoginInterface
 {
     /**
-     * ข้อความจาก Login Class.
-     *
-     * @var string
-     */
-    public static $login_message;
-    /**
-     * ชื่อ Input ที่ต้องการให้ active
-     * login_username หรือ login_password.
-     *
-     * @var string
-     */
-    public static $login_input;
-    /**
-     * ตัวแปรเก็บข้อมูลที่ส่งมา
-     * เช่น username, password.
-     *
-     * @var array
-     */
-    public static $login_params = array();
-    /**
      * ตัวแปรบอกว่ามาจากการ submit
      * true มาจากการ submit
      * false default.
@@ -49,6 +29,60 @@ class Login extends \Kotchasan\KBase implements LoginInterface
      * @var bool
      */
     public static $from_submit = false;
+
+    /**
+     * ชื่อ Input ที่ต้องการให้ active
+     * login_username หรือ login_password.
+     *
+     * @var string
+     */
+    public static $login_input;
+
+    /**
+     * ข้อความจาก Login Class.
+     *
+     * @var string
+     */
+    public static $login_message;
+
+    /**
+     * ตัวแปรเก็บข้อมูลที่ส่งมา
+     * เช่น username, password.
+     *
+     * @var array
+     */
+    public static $login_params = array();
+
+    /**
+     * ฟังก์ชั่นตรวจสอบการ login
+     * เข้าระบบสำเร็จคืนค่าแอเรย์ข้อมูลสมาชิก, ไม่สำเร็จ คืนค่าข้อความผิดพลาด.
+     *
+     * @param array $params ข้อมูลการ login ที่ส่งมา $params = array('username' => '', 'password' => '');
+     *
+     * @return string|array
+     */
+    public function checkLogin($params)
+    {
+        $field_name = reset(self::$cfg->login_fields);
+        if ($params['username'] !== self::$cfg->get($field_name)) {
+            self::$login_input = $field_name;
+
+            return 'not a registered user';
+        } elseif ($params['password'] !== self::$cfg->get('password')) {
+            self::$login_input = 'password';
+
+            return 'password incorrect';
+        } else {
+            return array(
+                'id' => 1,
+                $field_name => $params['username'],
+                'password' => $params['password'],
+                'status' => 1,
+            );
+        }
+
+        return 'not a registered user';
+    }
 
     /**
      * ตรวจสอบการ login เมื่อมีการเรียกใช้ class new Login
@@ -140,13 +174,46 @@ class Login extends \Kotchasan\KBase implements LoginInterface
     }
 
     /**
+     * ฟังก์ชั่นส่งอีเมลลืมรหัสผ่าน.
+     */
+    public function forgot(Request $request)
+    {
+        return $this;
+    }
+
+    /**
+     * ฟังก์ชั่นตรวจสอบสถานะแอดมิน
+     * คืนค่าข้อมูลสมาชิก (แอเรย์) ถ้าเป็นผู้ดูแลระบบและเข้าระบบแล้ว ไม่ใช่คืนค่า null.
+     *
+     * @return array|null
+     */
+    public static function isAdmin()
+    {
+        $login = self::isMember();
+
+        return isset($login['status']) && $login['status'] == 1 ? $login : null;
+    }
+
+    /**
+     * ฟังก์ชั่นตรวจสอบการเข้าระบบ
+     * คืนค่าข้อมูลสมาชิก (แอเรย์) ถ้าเป็นสมาชิกและเข้าระบบแล้ว ไม่ใช่คืนค่า null.
+     *
+     * @return array|null
+     */
+    public static function isMember()
+    {
+        return empty($_SESSION['login']) ? null : $_SESSION['login'];
+    }
+
+    /**
      * อ่านข้อมูลจาก POST, SESSION และ COOKIE ตามลำดับ
-     * เจออันไหนก่อนใช้อันนั้น.
+     * เจออันไหนก่อนใช้อันนั้น
+     * คืนค่าข้อความ ไม่พบคืนค่า null.
      *
      * @param string        $name
      * @param null|Password $pw
      *
-     * @return string|null คืนค่าข้อความ ไม่พบคืนค่า null
+     * @return string|null
      */
     protected static function get($name, $pw = null)
     {
@@ -164,65 +231,5 @@ class Login extends \Kotchasan\KBase implements LoginInterface
         } else {
             return isset($datas['login_'.$name]) ? $datas['login_'.$name] : null;
         }
-    }
-
-    /**
-     * ฟังก์ชั่นตรวจสอบการ login.
-     *
-     * @param array $params ข้อมูลการ login ที่ส่งมา $params = array('username' => '', 'password' => '');
-     *
-     * @return string|array เข้าระบบสำเร็จคืนค่าแอเรย์ข้อมูลสมาชิก, ไม่สำเร็จ คืนค่าข้อความผิดพลาด
-     */
-    public function checkLogin($params)
-    {
-        $field_name = reset(self::$cfg->login_fields);
-        if ($params['username'] !== self::$cfg->get($field_name)) {
-            self::$login_input = $field_name;
-
-            return 'not a registered user';
-        } elseif ($params['password'] !== self::$cfg->get('password')) {
-            self::$login_input = 'password';
-
-            return 'password incorrect';
-        } else {
-            return array(
-                'id' => 1,
-                $field_name => $params['username'],
-                'password' => $params['password'],
-                'status' => 1,
-            );
-        }
-
-        return 'not a registered user';
-    }
-
-    /**
-     * ฟังก์ชั่นส่งอีเมลลืมรหัสผ่าน.
-     */
-    public function forgot(Request $request)
-    {
-        return $this;
-    }
-
-    /**
-     * ฟังก์ชั่นตรวจสอบการเข้าระบบ.
-     *
-     * @return array|null คืนค่าข้อมูลสมาชิก (แอเรย์) ถ้าเป็นสมาชิกและเข้าระบบแล้ว ไม่ใช่คืนค่า null
-     */
-    public static function isMember()
-    {
-        return empty($_SESSION['login']) ? null : $_SESSION['login'];
-    }
-
-    /**
-     * ฟังก์ชั่นตรวจสอบสถานะแอดมิน.
-     *
-     * @return array|null คืนค่าข้อมูลสมาชิก (แอเรย์) ถ้าเป็นผู้ดูแลระบบและเข้าระบบแล้ว ไม่ใช่คืนค่า null
-     */
-    public static function isAdmin()
-    {
-        $login = self::isMember();
-
-        return isset($login['status']) && $login['status'] == 1 ? $login : null;
     }
 }

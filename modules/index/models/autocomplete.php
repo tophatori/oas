@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/models/autocomplete.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Autocomplete;
@@ -103,7 +103,7 @@ class Model extends \Kotchasan\Model
                 ->limit($request->post('count')->toInt())
                 ->toArray();
             if ($search != '') {
-                $query->andWhere(array('topic', 'LIKE', '%' . $search . '%'));
+                $query->andWhere(array('topic', 'LIKE', '%'.$search.'%'));
             }
             $result = $query->execute();
             // คืนค่า JSON

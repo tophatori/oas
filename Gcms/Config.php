@@ -2,10 +2,10 @@
 /**
  * @filesource Gcms/Config.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Gcms;
@@ -20,22 +20,13 @@ namespace Gcms;
 class Config extends \Kotchasan\Config
 {
     /**
-     * รายชื่อฟิลด์จากตารางสมาชิก สำหรับตรวจสอบการ login.
+     * กำหนดอายุของแคช (วินาที)
+     * 0 หมายถึงไม่มีการใช้งานแคช.
      *
-     * @var array
+     * @var int
      */
-    public $login_fields = array('username');
-    /**
-     * สถานะสมาชิก
-     * 0 สมาชิกทั่วไป
-     * 1 ผู้ดูแลระบบ.
-     *
-     * @var array
-     */
-    public $member_status = array(
-        0 => 'สมาชิก',
-        1 => 'ผู้ดูแลระบบ',
-    );
+    public $cache_expire = 5;
+
     /**
      * สีของสมาชิกตามสถานะ.
      *
@@ -50,13 +41,66 @@ class Config extends \Kotchasan\Config
         5 => '#660000',
         6 => '#336600',
     );
+
     /**
-     * กำหนดอายุของแคช (วินาที)
-     * 0 หมายถึงไม่มีการใช้งานแคช.
+     * ถ้ากำหนดเป็น true บัญชี Facebook จะเป็นบัญชีตัวอย่าง
+     * ได้รับสถานะแอดมิน (สมาชิกใหม่) แต่อ่านได้อย่างเดียว.
+     *
+     * @var bool
+     */
+    public $demo_mode = false;
+
+    /**
+     * App ID สำหรับการเข้าระบบด้วย Facebook https://gcms.in.th/howto/การขอ_app_id_จาก_facebook.html.
+     *
+     * @var string
+     */
+    public $facebook_appId = '';
+
+    /**
+     * สถานะของบัญชีที่นับสต๊อก (ซื้อ).
      *
      * @var int
      */
-    public $cache_expire = 5;
+    public $instock_status = 6;
+
+    /**
+     * รายชื่อฟิลด์จากตารางสมาชิก สำหรับตรวจสอบการ login.
+     *
+     * @var array
+     */
+    public $login_fields = array('username');
+
+    /**
+     * สถานะสมาชิก
+     * 0 สมาชิกทั่วไป
+     * 1 ผู้ดูแลระบบ.
+     *
+     * @var array
+     */
+    public $member_status = array(
+        0 => 'สมาชิก',
+        1 => 'ผู้ดูแลระบบ',
+    );
+
+    /**
+     * สถานะของบัญชีที่ตัดสต๊อก (ขาย).
+     *
+     * @var int
+     */
+    public $outstock_status = 6;
+
+    /*
+     * คีย์สำหรับการเข้ารหัส ควรแก้ไขให้เป็นรหัสของตัวเอง
+     * ตัวเลขหรือภาษาอังกฤษเท่านั้น ไม่น้อยกว่า 10 ตัว
+     *
+     * @var string
+     */
+    /**
+     * @var string
+     */
+    public $password_key = '1245678912';
+
     /**
      * ไดเร็คทอรี่ template ที่ใช้งานอยู่ ตั้งแต่ DOCUMENT_ROOT
      * ไม่ต้องมี / ทั้งเริ่มต้นและปิดท้าย
@@ -65,42 +109,11 @@ class Config extends \Kotchasan\Config
      * @var string
      */
     public $skin = 'skin/default';
-    /*
-     * คีย์สำหรับการเข้ารหัส ควรแก้ไขให้เป็นรหัสของตัวเอง
-     * ตัวเลขหรือภาษาอังกฤษเท่านั้น ไม่น้อยกว่า 10 ตัว
-     *
-     * @var string
-     */
-    public $password_key = '1245678912';
-    /**
-     * ถ้ากำหนดเป็น true บัญชี Facebook จะเป็นบัญชีตัวอย่าง
-     * ได้รับสถานะแอดมิน (สมาชิกใหม่) แต่อ่านได้อย่างเดียว.
-     *
-     * @var bool
-     */
-    public $demo_mode = false;
-    /**
-     * App ID สำหรับการเข้าระบบด้วย Facebook https://gcms.in.th/howto/การขอ_app_id_จาก_facebook.html.
-     *
-     * @var string
-     */
-    public $facebook_appId = '';
+
     /**
      * VAT.
      *
      * @var int
      */
     public $vat = 7;
-    /**
-     * สถานะของบัญชีที่ตัดสต๊อก (ขาย).
-     *
-     * @var int
-     */
-    public $outstock_status = 6;
-    /**
-     * สถานะของบัญชีที่นับสต๊อก (ซื้อ).
-     *
-     * @var int
-     */
-    public $instock_status = 6;
 }

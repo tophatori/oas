@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/DOMParser.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -106,26 +106,6 @@ class DOMParser
     }
 
     /**
-     * ตรวจสอบ previousSibling และ nextSibling.
-     *
-     * @param DOMNode $node
-     */
-    private function populate($node)
-    {
-        $currentNode = null;
-        foreach ($node->childNodes as $item) {
-            $item->previousSibling = $currentNode;
-            foreach ($item->childNodes as $child) {
-                $this->populate($child);
-                if ($node->previousSibling) {
-                    $node->previousSibling->nextSibling = $node;
-                }
-            }
-            $currentNode = $item;
-        }
-    }
-
-    /**
      * parse HTML จาก URL.
      *
      * @param string $url URL ที่ต้องการ parse
@@ -199,5 +179,25 @@ class DOMParser
         }
 
         return $html;
+    }
+
+    /**
+     * ตรวจสอบ previousSibling และ nextSibling.
+     *
+     * @param DOMNode $node
+     */
+    private function populate($node)
+    {
+        $currentNode = null;
+        foreach ($node->childNodes as $item) {
+            $item->previousSibling = $currentNode;
+            foreach ($item->childNodes as $child) {
+                $this->populate($child);
+                if ($node->previousSibling) {
+                    $node->previousSibling->nextSibling = $node;
+                }
+            }
+            $currentNode = $item;
+        }
     }
 }

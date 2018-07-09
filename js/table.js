@@ -24,7 +24,7 @@
         dragColumn: -1
       };
       for (var prop in o) {
-        if (prop == "debug") {
+        if (prop == "debug" && o.debug != "") {
           console.log(o.debug);
         } else {
           this.options[prop] = o[prop];

@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/InputItem.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -20,17 +20,18 @@ namespace Kotchasan;
 class InputItem
 {
     /**
-     * ตัวแปรเก็บค่าของ Object.
-     *
-     * @var mixed
-     */
-    protected $value;
-    /**
      * ตัวแปรบอกประเภท Input เช่น GET POST SESSION COOKIE.
      *
      * @var string|null
      */
     protected $type;
+
+    /**
+     * ตัวแปรเก็บค่าของ Object.
+     *
+     * @var mixed
+     */
+    protected $value;
 
     /**
      * Class Constructer.
@@ -42,6 +43,29 @@ class InputItem
     {
         $this->value = $value;
         $this->type = $type;
+    }
+
+    /**
+     * คืนค่าตามข้อมูลที่ส่งมา.
+     *
+     * @return mixed
+     */
+    public function all()
+    {
+        return $this->value;
+    }
+
+    /**
+     * ค่าสี.
+     *
+     * @assert create('#000')->color() [==] '#000'
+     * @assert create('red')->color() [==] 'red'
+     *
+     * @return string
+     */
+    public function color()
+    {
+        return $this->filter('\#a-zA-Z0-9');
     }
 
     /**
@@ -58,227 +82,20 @@ class InputItem
     }
 
     /**
-     * คืนค่าตามข้อมูลที่ส่งมา.
+     * วันที่และเวลา
+     * คืนค่า null ถ้าข้อมูลวันที่ว่างเปล่า.
      *
-     * @return mixed
-     */
-    public function all()
-    {
-        return $this->value;
-    }
-
-    /**
-     * ตรวจสอบว่ามาจาก $_GET หรือไม่.
-     *
-     * @return bool คืนค่า true ถ้ามาจาก $_GET
-     */
-    public function isGet()
-    {
-        return $this->type === 'GET';
-    }
-
-    /**
-     * ตรวจสอบว่ามาจาก $_POST หรือไม่.
-     *
-     * @return bool คืนค่า true ถ้ามาจาก $_POST
-     */
-    public function isPost()
-    {
-        return $this->type === 'POST';
-    }
-
-    /**
-     * ตรวจสอบว่ามาจาก $_SESSION หรือไม่.
-     *
-     * @return bool คืนค่า true ถ้ามาจาก $_SESSION
-     */
-    public function isSession()
-    {
-        return $this->type === 'SESSION';
-    }
-
-    /**
-     * ตรวจสอบว่ามาจาก $_COOKIE หรือไม่.
-     *
-     * @return bool คืนค่า true ถ้ามาจาก $_COOKIE
-     */
-    public function isCookie()
-    {
-        return $this->type === 'COOKIE';
-    }
-
-    /**
-     * ตรวจสอบว่ามีตัวแปรส่งมาหรือไม่.
-     *
-     * @return bool คืนค่า true ถ้ามีตัวแปรส่งมา
-     */
-    public function exists()
-    {
-        return $this->type !== null;
-    }
-
-    /**
-     * คืนค่าเป็น boolean.
-     *
-     * @return bool
-     *
-     * @assert create(true)->toBoolean() [==] 1
-     * @assert create(false)->toBoolean() [==] 0
-     * @assert create(1)->toBoolean() [==] 1
-     * @assert create(0)->toBoolean() [==] 0
-     * @assert create(null)->toBoolean() [==] 0
-     */
-    public function toBoolean()
-    {
-        return empty($this->value) ? 0 : 1;
-    }
-
-    /**
-     * คืนค่าเป็น double.
-     *
-     * @return float
-     *
-     * @assert create(0.454)->toDouble() [==] 0.454
-     * @assert create(0.545)->toDouble() [==] 0.545
-     */
-    public function toDouble()
-    {
-        return (float) $this->value;
-    }
-
-    /**
-     * คืนค่าเป็น float.
-     *
-     * @return float
-     *
-     * @assert create(0.454)->toFloat() [==] 0.454
-     * @assert create(0.545)->toFloat() [==] 0.545
-     */
-    public function toFloat()
-    {
-        return (float) $this->value;
-    }
-
-    /**
-     * คืนค่าเป็น integer.
-     *
-     * @return int
-     *
-     * @assert create(0.454)->toInt() [==] 0
-     * @assert create(2.945)->toInt() [==] 2
-     */
-    public function toInt()
-    {
-        return (int) $this->value;
-    }
-
-    /**
-     * คืนค่าเป็น Object.
-     *
-     * @return object
-     *
-     * @assert create('test')->toObject() [==] (object)'test'
-     */
-    public function toObject()
-    {
-        return (object) $this->value;
-    }
-
-    /**
-     * คืนค่าเป็น String.
-     *
-     * @return string|null คืนค่าเป็น string หรือ null
-     *
-     * @assert create('ทดสอบ')->toString() [==] 'ทดสอบ'
-     * @assert create('1')->toString() [==] '1'
-     * @assert create(1)->toString() [==] '1'
-     * @assert create(null)->toString() [==] null
-     */
-    public function toString()
-    {
-        return $this->value === null ? null : (string) $this->value;
-    }
-
-    /**
-     * แปลง tag และ ลบช่องว่างไม่เกิน 1 ช่อง ไม่ขึ้นบรรทัดใหม่
-     * เช่นหัวข้อของบทความ
+     * @assert create('2016-01-01 20:20:20')->date() [==] '2016-01-01 20:20:20'
+     * @assert create('')->date() [==] null
+     * @assert create(null)->date() [==] null
      *
      * @return string
-     *
-     * @assert create(' ทด\/สอบ'."\r\n\t".'<?php echo \'555\'?> ')->topic() [==] 'ทด&#92;/สอบ &lt;?php echo &#039;555&#039;?&gt;'
      */
-    public function topic()
+    public function date()
     {
-        return Text::topic($this->value);
-    }
+        $ret = $this->filter('\d\s\-:');
 
-    /**
-     * แปลง tag ไม่แปลง &amp;
-     * และลบช่องว่างหัวท้าย
-     * สำหรับ URL หรือ email.
-     *
-     * @return string
-     *
-     * @assert create(" http://www.kotchasan.com?a=1&b=2&amp;c=3 ")->url() [==] 'http://www.kotchasan.com?a=1&amp;b=2&amp;c=3'
-     * @assert create("javascript:alert('xxx')")->url() [==] 'alertxxx'
-     * @assert create("http://www.xxx.com/javascript/")->url() [==] 'http://www.xxx.com/javascript/'
-     */
-    public function url()
-    {
-        return Text::url($this->value);
-    }
-
-    /**
-     * รับค่าอีเมลและหมายเลขโทรศัพท์เท่านั้น.
-     *
-     * @return string
-     *
-     * @assert create(' admin@demo.com')->username() [==] 'admin@demo.com'
-     * @assert create('012 3465')->username() [==] '0123465'
-     */
-    public function username()
-    {
-        return Text::username($this->value);
-    }
-
-    /**
-     * รับค่าสำหรับ password อักขระทุกตัวไม่มีช่องว่าง.
-     *
-     * @return string
-     *
-     * @assert create(" 0\n12   34\r\r6\t5 ")->password() [==] '0123465'
-     */
-    public function password()
-    {
-        return Text::password($this->value);
-    }
-
-    /**
-     * ฟังก์ชั่น แปลง & " ' < > \ เป็น HTML entities
-     * และลบช่องว่างหัวท้าย
-     * ใช้แปลงค่าที่รับจาก input ที่ไม่ยอมรับ tag.
-     *
-     * @return string
-     *
-     * @assert create(" ทด\/สอบ<?php echo '555'?> ")->text() [==] 'ทด&#92;/สอบ&lt;?php echo &#039;555&#039;?&gt;'
-     */
-    public function text()
-    {
-        return trim(Text::htmlspecialchars($this->value));
-    }
-
-    /**
-     * แปลง < > \ { } เป็น HTML entities และแปลง \n เป็น <br>
-     * และลบช่องว่างหัวท้าย
-     * ใช้รับข้อมูลที่มาจาก textarea.
-     *
-     * @return string
-     *
-     * @assert create("ทด\/สอบ\n<?php echo '555'?>")->textarea() [==] "ทด&#92;/สอบ\n&lt;?php echo '555'?&gt;"
-     */
-    public function textarea()
-    {
-        return trim(preg_replace(array('/</s', '/>/s', '/\\\/s', '/\{/', '/\}/'), array('&lt;', '&gt;', '&#92;', '&#x007B;', '&#x007D;'), $this->value));
+        return $ret == '' ? null : $ret;
     }
 
     /**
@@ -287,10 +104,6 @@ class InputItem
      * และลบช่องว่างหัวท้าย
      * ใช้เป็น description.
      *
-     *
-     * @param int $len ความยาวของ description 0 หมายถึงคืนค่าทั้งหมด
-     *
-     * @return string
      *
      * @assert create("ท.ด(ส     )อ\"บ'\r\n\t<?php echo '555'?>")->description() [==] 'ท.ด(ส )อ บ'
      * @assert create('ทดสอบ<style>body {color: red}</style>')->description() [==] 'ทดสอบ'
@@ -302,6 +115,10 @@ class InputItem
      * @assert create('ทดสอบ<!--WIDGET_XXX-->')->description() [==] 'ทดสอบ'
      * @assert create('ท&amp;ด&quot;\&nbsp;/__ส-อ+บ')->description() [==] 'ท ด \ /__ส-อ+บ'
      * @assert create('ภาคภูมิ')->description(2) [==] 'ภา'
+     *
+     * @param int $len ความยาวของ description หมายถึงคืนค่าทั้งหมด
+     *
+     * @return string
      */
     public function description($len = 0)
     {
@@ -328,9 +145,9 @@ class InputItem
      * ลบ PHP tag และแปลง \ เป็น $#92; ใช้รับข้อมูลจาก editor
      * เช่นเนื้อหาของบทความ
      *
-     * @return string
-     *
      * @assert create('ทด\/สอบ<?php echo "555"?>')->detail() [==] 'ทด&#92;/สอบ'
+     *
+     * @return string
      */
     public function detail()
     {
@@ -338,15 +155,86 @@ class InputItem
     }
 
     /**
+     * ตรวจสอบว่ามีตัวแปรส่งมาหรือไม่
+     * คืนค่า true ถ้ามีตัวแปรส่งมา.
+     *
+     * @return bool
+     */
+    public function exists()
+    {
+        return $this->type !== null;
+    }
+
+    /**
+     * ฟังก์ชั่นแทนที่อักขระที่ไม่ต้องการ.
+     *
+     * @assert create('admin,1234')->filter('0-9a-zA-Z,') [==] 'admin,1234'
+     * @assert create('adminกข,12ฟ34')->filter('0-9a-zA-Z,') [==] 'admin,1234'
+     *
+     * @param string $format  Regular Expression อักขระที่ยอมรับ เช่น \d\s\-:
+     * @param string $replace ข้อความแทนที่
+     *
+     * @return string
+     */
+    public function filter($format, $replace = '')
+    {
+        return trim(preg_replace('/[^'.$format.']/', $replace, $this->value));
+    }
+
+    /**
+     * ตรวจสอบว่ามาจาก $_COOKIE หรือไม่
+     * คืนค่า true ถ้ามาจาก $_COOKIE.
+     *
+     * @return bool
+     */
+    public function isCookie()
+    {
+        return $this->type === 'COOKIE';
+    }
+
+    /**
+     * ตรวจสอบว่ามาจาก $_GET หรือไม่
+     * คืนค่า true ถ้ามาจาก $_GET.
+     *
+     * @return bool
+     */
+    public function isGet()
+    {
+        return $this->type === 'GET';
+    }
+
+    /**
+     * ตรวจสอบว่ามาจาก $_POST หรือไม่
+     * คืนค่า true ถ้ามาจาก $_POST.
+     *
+     * @return bool
+     */
+    public function isPost()
+    {
+        return $this->type === 'POST';
+    }
+
+    /**
+     * ตรวจสอบว่ามาจาก $_SESSION หรือไม่
+     * คืนค่า true ถ้ามาจาก $_SESSION.
+     *
+     * @return bool
+     */
+    public function isSession()
+    {
+        return $this->type === 'SESSION';
+    }
+
+    /**
      * ลบ tags และ ลบช่องว่างไม่เกิน 1 ช่อง ไม่ขึ้นบรรทัดใหม่
      * และลบช่องว่างหัวท้าย
      * ใช้เป็น tags หรือ keywords.
      *
-     * @param int $len ความยาวของ keywords 0 หมายถึงคืนค่าทั้งหมด
+     * @assert create("<b>ทด</b>   \r\nสอบ")->keywords() [==] 'ทด สอบ'
+     *
+     * @param int $len ความยาวของ keywords หมายถึงคืนค่าทั้งหมด
      *
      * @return string
-     *
-     * @assert create("<b>ทด</b>   \r\nสอบ")->keywords() [==] 'ทด สอบ'
      */
     public function keywords($len = 0)
     {
@@ -356,13 +244,39 @@ class InputItem
     }
 
     /**
+     * ตัวเลข
+     *
+     * @assert create(12345)->number() [==] '12345'
+     * @assert create(0.12345)->number() [==] '012345'
+     * @assert create('ทด0123สอ4บ5')->number() [==] '012345'
+     *
+     * @return string
+     */
+    public function number()
+    {
+        return $this->filter('\d');
+    }
+
+    /**
+     * รับค่าสำหรับ password อักขระทุกตัวไม่มีช่องว่าง.
+     *
+     * @assert create(" 0\n12   34\r\r6\t5 ")->password() [==] '0123465'
+     *
+     * @return string
+     */
+    public function password()
+    {
+        return Text::password($this->value);
+    }
+
+    /**
      * ฟังก์ชั่นรับข้อความ ยอมรับอักขระทั้งหมด
      * และแปลง ' เป็น &#39;
      * และลบช่องว่างหัวท้าย.
      *
-     * @return string
-     *
      * @assert create("ทด'สอบ")->quote() [==] "ทด&#39;สอบ"
+     *
+     * @return string
      */
     public function quote()
     {
@@ -370,63 +284,155 @@ class InputItem
     }
 
     /**
-     * ฟังก์ชั่นแทนที่อักขระที่ไม่ต้องการ.
+     * ฟังก์ชั่น แปลง & " ' < > \ เป็น HTML entities
+     * และลบช่องว่างหัวท้าย
+     * ใช้แปลงค่าที่รับจาก input ที่ไม่ยอมรับ tag.
      *
-     * @param string $format  Regular Expression อักขระที่ยอมรับ เช่น \d\s\-:
-     * @param string $replace ข้อความแทนที่
+     * @assert create(" ทด\/สอบ<?php echo '555'?> ")->text() [==] 'ทด&#92;/สอบ&lt;?php echo &#039;555&#039;?&gt;'
      *
      * @return string
-     *
-     * @assert create('admin,1234')->filter('0-9a-zA-Z,') [==] 'admin,1234'
-     * @assert create('adminกข,12ฟ34')->filter('0-9a-zA-Z,') [==] 'admin,1234'
      */
-    public function filter($format, $replace = '')
+    public function text()
     {
-        return trim(preg_replace('/[^'.$format.']/', $replace, $this->value));
+        return trim(Text::htmlspecialchars($this->value));
     }
 
     /**
-     * วันที่และเวลา
-     * คืนค่า null ถ้าข้อมูลวันที่ว่างเปล่า.
+     * แปลง < > \ { } เป็น HTML entities และแปลง \n เป็น <br>
+     * และลบช่องว่างหัวท้าย
+     * ใช้รับข้อมูลที่มาจาก textarea.
+     *
+     * @assert create("ทด\/สอบ\n<?php echo '555'?>")->textarea() [==] "ทด&#92;/สอบ\n&lt;?php echo '555'?&gt;"
      *
      * @return string
-     *
-     * @assert create('2016-01-01 20:20:20')->date() [==] '2016-01-01 20:20:20'
-     * @assert create('')->date() [==] null
-     * @assert create(null)->date() [==] null
      */
-    public function date()
+    public function textarea()
     {
-        $ret = $this->filter('\d\s\-:');
-
-        return $ret == '' ? null : $ret;
+        return trim(preg_replace(array('/</s', '/>/s', '/\\\/s', '/\{/', '/\}/'), array('&lt;', '&gt;', '&#92;', '&#x007B;', '&#x007D;'), $this->value));
     }
 
     /**
-     * ค่าสี.
+     * คืนค่าเป็น boolean.
      *
-     * @return string
+     * @assert create(true)->toBoolean() [==] 1
+     * @assert create(false)->toBoolean() [==] 0
+     * @assert create(1)->toBoolean() [==] 1
+     * @assert create(0)->toBoolean() [==] 0
+     * @assert create(null)->toBoolean() [==] 0
      *
-     * @assert create('#000')->color() [==] '#000'
-     * @assert create('red')->color() [==] 'red'
+     * @return bool
      */
-    public function color()
+    public function toBoolean()
     {
-        return $this->filter('\#a-zA-Z0-9');
+        return empty($this->value) ? 0 : 1;
     }
 
     /**
-     * ตัวเลข
+     * คืนค่าเป็น double.
+     *
+     * @assert create(0.454)->toDouble() [==] 0.454
+     * @assert create(0.545)->toDouble() [==] 0.545
+     *
+     * @return float
+     */
+    public function toDouble()
+    {
+        return (float) $this->value;
+    }
+
+    /**
+     * คืนค่าเป็น float.
+     *
+     * @assert create(0.454)->toFloat() [==] 0.454
+     * @assert create(0.545)->toFloat() [==] 0.545
+     *
+     * @return float
+     */
+    public function toFloat()
+    {
+        return (float) $this->value;
+    }
+
+    /**
+     * คืนค่าเป็น integer.
+     *
+     * @assert create(0.454)->toInt() [==] 0
+     * @assert create(2.945)->toInt() [==] 2
+     *
+     * @return int
+     */
+    public function toInt()
+    {
+        return (int) $this->value;
+    }
+
+    /**
+     * คืนค่าเป็น Object.
+     *
+     * @assert create('test')->toObject() [==] (object)'test'
+     *
+     * @return object
+     */
+    public function toObject()
+    {
+        return (object) $this->value;
+    }
+
+    /**
+     * คืนค่าเป็น string หรือ null.
+     *
+     * @assert create('ทดสอบ')->toString() [==] 'ทดสอบ'
+     * @assert create('1')->toString() [==] '1'
+     * @assert create(1)->toString() [==] '1'
+     * @assert create(null)->toString() [==] null
+     *
+     * @return string|null
+     */
+    public function toString()
+    {
+        return $this->value === null ? null : (string) $this->value;
+    }
+
+    /**
+     * แปลง tag และ ลบช่องว่างไม่เกิน 1 ช่อง ไม่ขึ้นบรรทัดใหม่
+     * เช่นหัวข้อของบทความ
+     *
+     * @assert create(' ทด\/สอบ'."\r\n\t".'<?php echo \'555\'?> ')->topic() [==] 'ทด&#92;/สอบ &lt;?php echo &#039;555&#039;?&gt;'
      *
      * @return string
-     *
-     * @assert create(12345)->number() [==] '12345'
-     * @assert create(0.12345)->number() [==] '012345'
-     * @assert create('ทด0123สอ4บ5')->number() [==] '012345'
      */
-    public function number()
+    public function topic()
     {
-        return $this->filter('\d');
+        return Text::topic($this->value);
+    }
+
+    /**
+     * แปลง tag ไม่แปลง &amp;
+     * และลบช่องว่างหัวท้าย
+     * สำหรับ URL หรือ email.
+     *
+     * @assert create(" http://www.kotchasan.com?a=1&b=2&amp;c=3 ")->url() [==] 'http://www.kotchasan.com?a=1&amp;b=2&amp;c=3'
+     * @assert create("javascript:alert('xxx')")->url() [==] 'alertxxx'
+     * @assert create("http://www.xxx.com/javascript/")->url() [==] 'http://www.xxx.com/javascript/'
+     *
+     * @return string
+     */
+    public function url()
+    {
+        return Text::url($this->value);
+    }
+
+    /**
+     * รับค่าอีเมลและหมายเลขโทรศัพท์เท่านั้น.
+     *
+     * @assert create(' admin@demo.com')->username() [==] 'admin@demo.com'
+     * @assert create('012 3465')->username() [==] '0123465'
+     *
+     * @return string
+     */
+    public function username()
+    {
+        return Text::username($this->value);
     }
 
     /**

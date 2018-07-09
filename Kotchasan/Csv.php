@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Csv.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -19,13 +19,29 @@ namespace Kotchasan;
  */
 class Csv
 {
-    private $columns;
-    private $datas;
+    /**
+     * @var mixed
+     */
     private $charset;
+
+    /**
+     * @var mixed
+     */
+    private $columns;
+
+    /**
+     * @var mixed
+     */
+    private $datas;
+
+    /**
+     * @var mixed
+     */
     private $keys;
 
     /**
-     * ฟังก์ชั่นนำเข้าข้อมูล CSV.
+     * ฟังก์ชั่นนำเข้าข้อมูล CSV
+     * คืนค่าข้อมูลที่อ่านได้เป็นแอเรย์.
      *
      * @param string $csv     ชื่อไฟล์รวมพาธ
      * @param array  $columns ข้อมูลคอลัมน์ array('column1' => 'data type', 'column2' => 'data type', ....)
@@ -33,7 +49,7 @@ class Csv
      * @param string $charset รหัสภาษาของไฟล์ ค่าเริ่มต้นคือ Windows-874 (ภาษาไทย)
      * @param int    $skip    จำนวนแถวของ header ที่ข้ามการอ่านข้อมูล ค่าเริ่มต้นคือ 1
      *
-     * @return array คืนค่าข้อมูลที่อ่านได้เป็นแอเรย์
+     * @return array
      */
     public static function import($csv, $columns, $keys = array(), $charset = 'Windows-874', $skip = 1)
     {
@@ -45,72 +61,6 @@ class Csv
         $obj->read($csv, array($obj, 'importDatas'));
 
         return $obj->datas;
-    }
-
-    /**
-     * ฟังก์ชั่นรับค่าจากการอ่าน CSV.
-     *
-     * @param array $data
-     */
-    private function importDatas($data)
-    {
-        $save = array();
-        $n = 0;
-        foreach ($this->columns as $key => $type) {
-            $save[$key] = null;
-            if (isset($data[$n])) {
-                if (is_array($type)) {
-                    $save[$key] = call_user_func($type, $data[$n]);
-                } elseif ($type == 'int') {
-                    $save[$key] = (int) $data[$n];
-                } elseif ($type == 'double') {
-                    $save[$key] = (float) $data[$n];
-                } elseif ($type == 'float') {
-                    $save[$key] = (float) $data[$n];
-                } elseif ($type == 'number') {
-                    $save[$key] = preg_replace('/[^0-9]+/', '', $data[$n]);
-                } elseif ($type == 'en') {
-                    $save[$key] = preg_replace('/[^a-zA-Z0-9]+/', '', $data[$n]);
-                } elseif ($type == 'date') {
-                    if (preg_match('/^([0-9]{4,4})[\-\/]([0-9]{1,2})[\-\/]([0-9]{1,2})$/', $data[$n])) {
-                        $save[$key] = $data[$n];
-                    } elseif (preg_match('/^([0-9]{1,2})[\-\/]([0-9]{1,2})[\-\/]([0-9]{4,4})$/', $data[$n], $match)) {
-                        $save[$key] = "$match[3]-$match[2]-$match[1]";
-                    }
-                } elseif ($type == 'datetime') {
-                    if (preg_match('/^([0-9]{4,4})[\-\/]([0-9]{2,2})[\-\/]([0-9]{2,2})\s([0-9]{2,2}):([0-9]{2,2}):([0-9]{2,2})$/', $data[$n])) {
-                        $save[$key] = $data[$n];
-                    } elseif (preg_match('/^([0-9]{2,2})[\-\/]([0-9]{2,2})[\-\/]([0-9]{4,4})\s(([0-9]{2,2}):([0-9]{2,2}):([0-9]{2,2}))$/', $data[$n])) {
-                        $save[$key] = "$match[4]-$match[3]-$match[2] $match[1]";
-                    }
-                } elseif ($type == 'time') {
-                    if (preg_match('/^([0-9]{2,2}):([0-9]{2,2}):([0-9]{2,2})$/', $data[$n])) {
-                        $save[$key] = $data[$n];
-                    }
-                } elseif ($this->charset == 'UTF-8') {
-                    $save[$key] = \Kotchasan\Text::topic($data[$n]);
-                } else {
-                    $save[$key] = iconv($this->charset, 'UTF-8', \Kotchasan\Text::topic($data[$n]));
-                }
-            }
-            ++$n;
-        }
-        if (empty($this->keys)) {
-            $this->datas[] = $save;
-        } else {
-            $keys = '';
-            foreach ($this->keys as $item) {
-                if ($save[$item] !== null && $save[$item] !== '') {
-                    $keys .= $save[$item];
-                } else {
-                    $save = null;
-                    continue;
-                }
-            }
-            if (!empty($save) && !isset($this->datas[$keys])) {
-                $this->datas[$keys] = $save;
-            }
-        }
     }
 
     /**
@@ -185,5 +135,71 @@ class Csv
         }
 
         return $datas;
+    }
+
+    /**
+     * ฟังก์ชั่นรับค่าจากการอ่าน CSV.
+     *
+     * @param array $data
+     */
+    private function importDatas($data)
+    {
+        $save = array();
+        $n = 0;
+        foreach ($this->columns as $key => $type) {
+            $save[$key] = null;
+            if (isset($data[$n])) {
+                if (is_array($type)) {
+                    $save[$key] = call_user_func($type, $data[$n]);
+                } elseif ($type == 'int') {
+                    $save[$key] = (int) $data[$n];
+                } elseif ($type == 'double') {
+                    $save[$key] = (float) $data[$n];
+                } elseif ($type == 'float') {
+                    $save[$key] = (float) $data[$n];
+                } elseif ($type == 'number') {
+                    $save[$key] = preg_replace('/[^0-9]+/', '', $data[$n]);
+                } elseif ($type == 'en') {
+                    $save[$key] = preg_replace('/[^a-zA-Z0-9]+/', '', $data[$n]);
+                } elseif ($type == 'date') {
+                    if (preg_match('/^([0-9]{4,4})[\-\/]([0-9]{1,2})[\-\/]([0-9]{1,2})$/', $data[$n])) {
+                        $save[$key] = $data[$n];
+                    } elseif (preg_match('/^([0-9]{1,2})[\-\/]([0-9]{1,2})[\-\/]([0-9]{4,4})$/', $data[$n], $match)) {
+                        $save[$key] = "$match[3]-$match[2]-$match[1]";
+                    }
+                } elseif ($type == 'datetime') {
+                    if (preg_match('/^([0-9]{4,4})[\-\/]([0-9]{2,2})[\-\/]([0-9]{2,2})\s([0-9]{2,2}):([0-9]{2,2}):([0-9]{2,2})$/', $data[$n])) {
+                        $save[$key] = $data[$n];
+                    } elseif (preg_match('/^([0-9]{2,2})[\-\/]([0-9]{2,2})[\-\/]([0-9]{4,4})\s(([0-9]{2,2}):([0-9]{2,2}):([0-9]{2,2}))$/', $data[$n])) {
+                        $save[$key] = "$match[4]-$match[3]-$match[2] $match[1]";
+                    }
+                } elseif ($type == 'time') {
+                    if (preg_match('/^([0-9]{2,2}):([0-9]{2,2}):([0-9]{2,2})$/', $data[$n])) {
+                        $save[$key] = $data[$n];
+                    }
+                } elseif ($this->charset == 'UTF-8') {
+                    $save[$key] = \Kotchasan\Text::topic($data[$n]);
+                } else {
+                    $save[$key] = iconv($this->charset, 'UTF-8', \Kotchasan\Text::topic($data[$n]));
+                }
+            }
+            ++$n;
+        }
+        if (empty($this->keys)) {
+            $this->datas[] = $save;
+        } else {
+            $keys = '';
+            foreach ($this->keys as $item) {
+                if ($save[$item] !== null && $save[$item] !== '') {
+                    $keys .= $save[$item];
+                } else {
+                    $save = null;
+                    continue;
+                }
+            }
+            if (!empty($save) && !isset($this->datas[$keys])) {
+                $this->datas[$keys] = $save;
+            }
+        }
     }
 }

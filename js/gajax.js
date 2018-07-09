@@ -248,6 +248,8 @@ window.$K = (function() {
                 p.style.position = "relative";
                 var display = document.createElement("input");
                 display.setAttribute("type", "text");
+                display.id = elem.id;
+                elem.id = elem.id + "_tmp";
                 display.disabled = true;
                 display.placeholder = elem.placeholder;
                 p.appendChild(display);

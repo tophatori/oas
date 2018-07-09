@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Template.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -20,29 +20,26 @@ namespace Kotchasan;
 class Template
 {
     /**
-     * ข้อมูล template.
+     * จำนวนคอลัมน์ สำหรับการแสดงผลด้วย Grid.
      *
-     * @var string
+     * @var int
      */
-    private $skin;
+    protected $cols = 0;
+
     /**
      * แอเรย์ของข้อมูล.
      *
      * @var array
      */
     protected $items;
-    /**
-     * จำนวนคอลัมน์ สำหรับการแสดงผลด้วย Grid.
-     *
-     * @var int
-     */
-    protected $cols = 0;
+
     /**
      * ตัวแปรสำหรับการขึ้นแถวใหม่ (Grid).
      *
      * @var int
      */
     protected $num;
+
     /**
      * ชื่อ template ที่กำลังใช้งานอยู่ รวมโฟลเดอร์ที่เก็บ template ด้วย
      * นับแต่ DOCUMENT_ROOT เช่น skin/default/.
@@ -52,26 +49,43 @@ class Template
     protected static $src;
 
     /**
-     * เรียกใช้งาน template ในครั้งแรก
+     * ข้อมูล template.
      *
-     * @param string $skin ไดเร็คทอรี่ของ template ตั้งแต่ DOCUMENT_ROOT ไม่ต้องมี / ปิดท้าย เช่น skin/default
+     * @var string
      */
-    public static function init($skin)
+    private $skin;
+
+    /**
+     * ฟังก์ชั่นกำหนดค่าตัวแปรของ template
+     * ฟังก์ชั่นนี้จะแทนที่ตัวแปรที่ส่งทั้งหมดลงใน template ทันที.
+     *
+     * @param array $array ชื่อที่ปรากฏใน template รูปแบบ array(key1=>val1,key2=>val2)
+     *
+     * @return \static
+     */
+    public function add($array)
     {
-        self::$src = $skin == '' ? '' : $skin.'/';
+        if ($this->cols > 0 && $this->num == 0) {
+            $this->items[] = "</div>\n<div class=row>";
+            $this->num = $this->cols;
+        }
+        $this->items[] = self::pregReplace(array_keys($array), array_values($array), $this->skin);
+        --$this->num;
+
+        return $this;
     }
 
     /**
      * โหลด template
      * ครั้งแรกจะตรวจสอบไฟล์จาก module ถ้าไม่พบ จะใช้ไฟล์จาก owner.
      *
+     * @assert ('', '', 'FileNotFound')->isEmpty() [==] true
+     *
      * @param string $owner  ชื่อโมดูลที่ติดตั้ง
      * @param string $module ชื่อโมดูล
      * @param string $name   ชื่อ template ไม่ต้องระบุนามสกุลของไฟล์
      *
      * @return \static
-     *
-     * @assert ('', '', 'FileNotFound')->isEmpty() [==] true
      */
     public static function create($owner, $module, $name)
     {
@@ -81,13 +95,13 @@ class Template
     /**
      * โหลด template จากไฟล์.
      *
-     * @param string $filename
+     * @assert ('FileNotFound') [throws] InvalidArgumentException
      *
-     * @return \static
+     * @param string $filename
      *
      * @throws \InvalidArgumentException ถ้าไม่พบไฟล์
      *
-     * @assert ('FileNotFound') [throws] InvalidArgumentException
+     * @return \static
      */
     public static function createFromFile($filename)
     {
@@ -116,23 +130,34 @@ class Template
     }
 
     /**
-     * ฟังก์ชั่นกำหนดค่าตัวแปรของ template
-     * ฟังก์ชั่นนี้จะแทนที่ตัวแปรที่ส่งทั้งหมดลงใน template ทันที.
+     * คืนค่าไดเร็คทอรี่ของ template ตั้งแต่ DOCUMENT_ROOT เช่น skin/default/.
      *
-     * @param array $array ชื่อที่ปรากฏใน template รูปแบบ array(key1=>val1,key2=>val2)
-     *
-     * @return \static
+     * @return string
      */
-    public function add($array)
+    public static function get()
     {
-        if ($this->cols > 0 && $this->num == 0) {
-            $this->items[] = "</div>\n<div class=row>";
-            $this->num = $this->cols;
-        }
-        $this->items[] = self::pregReplace(array_keys($array), array_values($array), $this->skin);
-        --$this->num;
+        return self::$src;
+    }
 
-        return $this;
+    /**
+     * ฟังก์ชั่นตรวจสอบว่ามีการ add ข้อมูลมาหรือเปล่า
+     * คืนค่า true ถ้ามีการเรียกใช้คำสั่ง add มาก่อนหน้า, หรือ false ถ้าไม่ใช่.
+     *
+     * @return bool
+     */
+    public function hasItem()
+    {
+        return empty($this->items) ? false : true;
+    }
+
+    /**
+     * กำหนด template ที่ต้องการ.
+     *
+     * @param string $skin ไดเร็คทอรี่ของ template ตั้งแต่ DOCUMENT_ROOT ไม่ต้องมี / ปิดท้าย เช่น skin/default
+     */
+    public static function init($skin)
+    {
+        self::$src = $skin == '' ? '' : $skin.'/';
     }
 
     /**
@@ -151,16 +176,52 @@ class Template
     }
 
     /**
-     * ฟังก์ชั่น preg_replace.
+     * ตรวจสอบว่ามีไฟล์ Template ถูกเลือกหรือไม่
+     * คืนค่า true ถ้าไม่พบไฟล์ Template หรือ Template ว่างเปล่า, อื่นๆคืนค่า False.
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return $this->skin == '';
+    }
+
+    /**
+     * โหลด template
+     * ครั้งแรกจะตรวจสอบไฟล์จาก $module ถ้าไม่พบ จะใช้ไฟล์จาก $owner
+     * ถ้าไม่พบคืนค่าว่าง.
+     *
+     * @param string $owner  ชื่อโมดูลที่ติดตั้ง
+     * @param string $module ชื่อโมดูลที่ลงทะเบียน
+     * @param string $name   ชื่อ template ไม่ต้องระบุนามสกุลของไฟล์
+     *
+     * @return string
+     */
+    public static function load($owner, $module, $name)
+    {
+        $src = APP_PATH.self::$src;
+        if ($module != '' && is_file($src.$module.'/'.$name.'.html')) {
+            return file_get_contents($src.$module.'/'.$name.'.html');
+        } elseif ($owner != '' && is_file($src.$owner.'/'.$name.'.html')) {
+            return file_get_contents($src.$owner.'/'.$name.'.html');
+        } elseif (is_file($src.$name.'.html')) {
+            return file_get_contents($src.$name.'.html');
+        }
+
+        return '';
+    }
+
+    /**
+     * ฟังก์ชั่น preg_replace รองรับถึง PHP7.
+     *
+     * @assert ('/{TITLE}/', 'Title', '<b>{TITLE}</b>') [==] '<b>Title</b>'
+     * @assert ('/{LNG_([\w\s\.\-\'\(\),%\/:&\#;]+)}/e', '\Kotchasan\Language::parse(array(1=>"$1"))', '<b>{LNG_Language test}</b>') [==] '<b>Language test</b>'
      *
      * @param array  $patt    คีย์ใน template
      * @param array  $replace ข้อความที่จะถูกแทนที่ลงในคีย์
      * @param string $skin    template
      *
-     * @return string คืนค่า HTML template
-     *
-     * @assert ('/{TITLE}/', 'Title', '<b>{TITLE}</b>') [==] '<b>Title</b>'
-     * @assert ('/{LNG_([\w\s\.\-\'\(\),%\/:&\#;]+)}/e', '\Kotchasan\Language::parse(array(1=>"$1"))', '<b>{LNG_Language test}</b>') [==] '<b>Language test</b>'
+     * @return string
      */
     public static function pregReplace($patt, $replace, $skin)
     {
@@ -182,7 +243,9 @@ class Template
     }
 
     /**
-     * แสดงผล เป็น HTML.
+     * คืนค่า HTML ถ้าไม่พบ template คืนค่าว่าง.
+     *
+     * @return string
      */
     public function render()
     {
@@ -195,59 +258,5 @@ class Template
         }
 
         return '';
-    }
-
-    /**
-     * โหลด template
-     * ครั้งแรกจะตรวจสอบไฟล์จาก $module ถ้าไม่พบ จะใช้ไฟล์จาก $owner.
-     *
-     * @param string $owner  ชื่อโมดูลที่ติดตั้ง
-     * @param string $module ชื่อโมดูลที่ลงทะเบียน
-     * @param string $name   ชื่อ template ไม่ต้องระบุนามสกุลของไฟล์
-     *
-     * @return string ถ้าไม่พบคืนค่าว่าง
-     */
-    public static function load($owner, $module, $name)
-    {
-        $src = APP_PATH.self::$src;
-        if ($module != '' && is_file($src.$module.'/'.$name.'.html')) {
-            return file_get_contents($src.$module.'/'.$name.'.html');
-        } elseif ($owner != '' && is_file($src.$owner.'/'.$name.'.html')) {
-            return file_get_contents($src.$owner.'/'.$name.'.html');
-        } elseif (is_file($src.$name.'.html')) {
-            return file_get_contents($src.$name.'.html');
-        }
-
-        return '';
-    }
-
-    /**
-     * ตรวจสอบว่ามีไฟล์ Template ถูกเลือกหรือไม่.
-     *
-     * @return bool true ถ้าไม่พบไฟล์ Template หรือ Template ว่างเปล่า, อื่นๆคืนค่า False
-     */
-    public function isEmpty()
-    {
-        return $this->skin == '';
-    }
-
-    /**
-     * คืนค่าไดเร็คทอรี่ของ template ตั้งแต่ DOCUMENT_ROOT เช่น skin/default/.
-     *
-     * @return string
-     */
-    public static function get()
-    {
-        return self::$src;
-    }
-
-    /**
-     * ฟังก์ชั่นตรวจสอบว่ามีการ add ข้อมูลมาหรือเปล่า.
-     *
-     * @return bool คืนค่า true ถ้ามีการเรียกใช้คำสั่ง add มาก่อนหน้า, หรือ false ถ้าไม่ใช่
-     */
-    public function hasItem()
-    {
-        return empty($this->items) ? false : true;
     }
 }

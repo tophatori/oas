@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/ListItem.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -25,123 +25,13 @@ class ListItem
      * @var array
      */
     public $datas;
+
     /**
      * ที่อยู่ไฟล์ที่โหลดมา.
      *
      * @var string
      */
     private $source;
-
-    /**
-     * กำหนดค่าเริ่มต้นของ Class.
-     *
-     * @param array $config
-     */
-    public function init($config)
-    {
-        $this->datas = $config;
-    }
-
-    /**
-     * อ่านจำนวนสมาชิกทั้งหมด.
-     *
-     * @return int จำนวนสมาชิกทั้งหมด
-     */
-    public function count()
-    {
-        return sizeof($this->datas);
-    }
-
-    /**
-     * อ่านจำนวนรายการทั้งหมด.
-     *
-     * @return array คืนค่ารายการทั้งหมด
-     */
-    public function items()
-    {
-        return $this->datas;
-    }
-
-    /**
-     * อ่านรายชื่อ keys.
-     *
-     * @return array แอเรย์ของรายการ key ทั้งหมด
-     */
-    public function keys()
-    {
-        return array_keys($this->datas);
-    }
-
-    /**
-     * อ่านรายการข้อมูลทั้งหมด.
-     *
-     * @return array แอเรย์ของข้อมูลทั้งหมด
-     */
-    public function values()
-    {
-        return array_values($this->datas);
-    }
-
-    /**
-     * อ่านข้อมูลที่ $key.
-     *
-     * @param string $key
-     *
-     * @return mixed คืนค่ารายการที่ $key ถ้าไม่พบคืนค่า null
-     */
-    public function get($key)
-    {
-        return array_key_exists($key, $this->datas) ? $this->datas[$key] : null;
-    }
-
-    /**
-     * เพิ่มรายการใหม่ที่ลำดับสุดท้าย ถ้ามี $key อยู่แล้วจะแทนที่รายการเดิม
-     *
-     * @param string $key
-     * @param mixed  $value
-     */
-    public function set($key, $value)
-    {
-        $this->datas[$key] = $value;
-    }
-
-    /**
-     * อ่านข้อมูลรายการแรก
-     *
-     * @return mixed คืนค่าแอเรย์รายการแรก
-     */
-    public function firstItem()
-    {
-        return reset($this->datas);
-    }
-
-    /**
-     * อ่านข้อมูลรายการสุดท้าย.
-     *
-     * @return mixed คืนค่าแอเรย์รายการสุดท้าย
-     */
-    public function lastItem()
-    {
-        return end($this->datas);
-    }
-
-    /**
-     * ลบรายการที่กำหนด.
-     *
-     * @param string $key ของรายการที่ต้องการจะลบ
-     *
-     * @return bool คืนค่า true ถ้าสำเร็จ, false ถ้าไม่พบ
-     */
-    public function delete($key)
-    {
-        if (array_key_exists($key, $this->datas)) {
-            unset($this->datas[$key]);
-
-            return true;
-        }
-
-        return false;
-    }
 
     /**
      * นำเข้าข้อมูลครั้งละหลายรายการ.
@@ -163,6 +53,81 @@ class ListItem
     public function clear()
     {
         unset($this->datas);
+    }
+
+    /**
+     * อ่านจำนวนสมาชิกทั้งหมด.
+     *
+     * @return int จำนวนสมาชิกทั้งหมด
+     */
+    public function count()
+    {
+        return sizeof($this->datas);
+    }
+
+    /**
+     * ลบรายการที่กำหนด
+     * คืนค่า true ถ้าสำเร็จ, false ถ้าไม่พบ.
+     *
+     * @param string $key ของรายการที่ต้องการจะลบ
+     *
+     * @return bool
+     */
+    public function delete($key)
+    {
+        if (array_key_exists($key, $this->datas)) {
+            unset($this->datas[$key]);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * คืนค่าแอเรย์รายการแรก
+     *
+     * @return mixed
+     */
+    public function firstItem()
+    {
+        return reset($this->datas);
+    }
+
+    /**
+     * อ่านข้อมูลที่ $key
+     * คืนค่ารายการที่ $key ถ้าไม่พบคืนค่า null.
+     *
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function get($key)
+    {
+        return array_key_exists($key, $this->datas) ? $this->datas[$key] : null;
+    }
+
+    /**
+     * ค้นหาข้อมูลในแอเรย์
+     * คืนค่า key ของรายการที่พบ ถ้าไม่พบคืนค่า false.
+     *
+     * @param mixed $value รายการค้นหา
+     *
+     * @return mixed
+     */
+    public function indexOf($value)
+    {
+        return array_search($value, $this->datas);
+    }
+
+    /**
+     * กำหนดค่าเริ่มต้นของ Class.
+     *
+     * @param array $config
+     */
+    public function init($config)
+    {
+        $this->datas = $config;
     }
 
     /**
@@ -206,15 +171,34 @@ class ListItem
     }
 
     /**
-     * ค้นหาข้อมูลในแอเรย์.
+     * อ่านจำนวนรายการทั้งหมด.
      *
-     * @param mixed $value รายการค้นหา
-     *
-     * @return mixed คืนค่า key ของรายการที่พบ ถ้าไม่พบคืนค่า false
+     * @return array
      */
-    public function indexOf($value)
+    public function items()
     {
-        return array_search($value, $this->datas);
+        return $this->datas;
+    }
+
+    /**
+     * อ่านรายชื่อ keys
+     * คืนค่า แอเรย์ของรายการ key ทั้งหมด.
+     *
+     * @return array
+     */
+    public function keys()
+    {
+        return array_keys($this->datas);
+    }
+
+    /**
+     * คืนค่าแอเรย์รายการสุดท้าย.
+     *
+     * @return mixed
+     */
+    public function lastItem()
+    {
+        return end($this->datas);
     }
 
     /**
@@ -236,9 +220,10 @@ class ListItem
     }
 
     /**
-     * บันทึกเป็นไฟล์.
+     * บันทึกเป็นไฟล์
+     * คืนค่า true ถ้าสำเร็จ.
      *
-     * @return bool true ถ้าสำเร็จ
+     * @return bool
      */
     public function saveToFile()
     {
@@ -264,6 +249,27 @@ class ListItem
                 return true;
             }
         }
+    }
+
+    /**
+     * เพิ่มรายการใหม่ที่ลำดับสุดท้าย ถ้ามี $key อยู่แล้วจะแทนที่รายการเดิม
+     *
+     * @param string $key
+     * @param mixed  $value
+     */
+    public function set($key, $value)
+    {
+        $this->datas[$key] = $value;
+    }
+
+    /**
+     * คืนค่า แอเรย์ของข้อมูลทั้งหมด.
+     *
+     * @return array
+     */
+    public function values()
+    {
+        return array_values($this->datas);
     }
 
     /**

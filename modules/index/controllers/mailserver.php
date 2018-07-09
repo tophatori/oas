@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/controllers/mailserver.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Mailserver;
@@ -52,16 +52,17 @@ class Controller extends \Gcms\Controller
             $ul->appendChild('<li><span class="icon-settings">{LNG_Settings}</span></li>');
             $ul->appendChild('<li><span>{LNG_Email settings}</span></li>');
             $section->add('header', array(
-                'innerHTML' => '<h2 class="icon-email">' . $this->title . '</h2>',
+                'innerHTML' => '<h2 class="icon-email">'.$this->title.'</h2>',
             ));
             // โหลด config
-            $config = Config::load(ROOT_PATH . 'settings/config.php');
+            $config = Config::load(ROOT_PATH.'settings/config.php');
             // แสดงฟอร์ม
             $section->appendChild(createClass('Index\Mailserver\View')->render($config));
 
             return $section->render();
         }
         // 404.html
+
         return \Index\Error\Controller::page404();
     }
 }

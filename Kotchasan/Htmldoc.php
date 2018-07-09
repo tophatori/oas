@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Htmldoc.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -25,24 +25,27 @@ class Htmldoc
      * @var string
      */
     private $docFile;
-    /**
-     * title.
-     *
-     * @var string
-     */
-    private $title;
-    /**
-     * HTML header.
-     *
-     * @var string
-     */
-    private $htmlHead;
+
     /**
      * เนื้อหา.
      *
      * @var string
      */
     private $htmlBody;
+
+    /**
+     * HTML header.
+     *
+     * @var string
+     */
+    private $htmlHead;
+
+    /**
+     * title.
+     *
+     * @var string
+     */
+    private $title;
 
     /**
      * Class Constructor.
@@ -91,6 +94,40 @@ class Htmldoc
     }
 
     /**
+     * Parse HTML source.
+     *
+     * @param string $html HTML Content
+     * @param string $file Document File Name
+     */
+    private function parseHtml($html, $file)
+    {
+        // remove script
+        $html = preg_replace('/<script((.|\n)*?)>((.|\n)*?)<\/script>/ims', '', $html);
+        // head
+        if (preg_match('/<head>(.*)<\/head>/isU', $html, $matches)) {
+            $this->htmlHead = preg_replace('/<title>(.*)<\/title>/isU', '', $matches[1]);
+        }
+        // file name
+        if ($file == '' && preg_match('/<title>(.*)<\/title>/isU', $html, $matches)) {
+            $this->setDocFileName($matches[1].'.doc');
+        }
+        // body
+        if (preg_match('/<body[^>]+>(.*)<\/body>/isU', $html, $matches)) {
+            // <span class="line"></span>
+            $this->htmlBody = preg_replace_callback('/<span[^>]+class="line([0-9]{0,})">([^>]+)<\/span>/isuU', function ($items) {
+                $datas = array(0 => 20, 1 => 40, 2 => 60, 3 => 80, 4 => 100);
+                $text = trim(str_replace('&nbsp;', ' ', $items[2]));
+                $len = ($datas[(int) $items[1]] - mb_strlen($text)) / 2;
+                for ($i = 0; $i < $len; ++$i) {
+                    $text = '.'.$text.'.';
+                }
+
+                return ' <span> '.$text.' </span> ';
+            }, $matches[1]);
+        }
+    }
+
+    /**
      * สร้างเอกสาร DOC.
      *
      * @return string
@@ -131,39 +168,5 @@ class Htmldoc
   </body>
 </html>
 EOH;
-    }
-
-    /**
-     * Parse HTML source.
-     *
-     * @param string $html HTML Content
-     * @param string $file Document File Name
-     */
-    private function parseHtml($html, $file)
-    {
-        // remove script
-        $html = preg_replace('/<script((.|\n)*?)>((.|\n)*?)<\/script>/ims', '', $html);
-        // head
-        if (preg_match('/<head>(.*)<\/head>/isU', $html, $matches)) {
-            $this->htmlHead = preg_replace('/<title>(.*)<\/title>/isU', '', $matches[1]);
-        }
-        // file name
-        if ($file == '' && preg_match('/<title>(.*)<\/title>/isU', $html, $matches)) {
-            $this->setDocFileName($matches[1].'.doc');
-        }
-        // body
-        if (preg_match('/<body[^>]+>(.*)<\/body>/isU', $html, $matches)) {
-            // <span class="line"></span>
-            $this->htmlBody = preg_replace_callback('/<span[^>]+class="line([0-9]{0,})">([^>]+)<\/span>/isuU', function ($items) {
-                $datas = array(0 => 20, 1 => 40, 2 => 60, 3 => 80, 4 => 100);
-                $text = trim(str_replace('&nbsp;', ' ', $items[2]));
-                $len = ($datas[(int) $items[1]] - mb_strlen($text)) / 2;
-                for ($i = 0; $i < $len; ++$i) {
-                    $text = '.'.$text.'.';
-                }
-
-                return ' <span> '.$text.' </span> ';
-            }, $matches[1]);
-        }
     }
 }

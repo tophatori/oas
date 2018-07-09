@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/views/image.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Image;
@@ -56,7 +56,7 @@ class View extends \Gcms\View
             'label' => '{LNG_Company Logo}',
             'comment' => '{LNG_Select an image size 500 * 500 pixel jpg, png types}',
             'dataPreview' => 'logoImage',
-            'previewSrc' => is_file(ROOT_PATH . DATA_FOLDER . 'logo.jpg') ? WEB_URL . DATA_FOLDER . 'logo.jpg' : WEB_URL . 'skin/img/blank.gif',
+            'previewSrc' => is_file(ROOT_PATH.DATA_FOLDER.'logo.jpg') ? WEB_URL.DATA_FOLDER.'logo.jpg' : WEB_URL.'skin/img/blank.gif',
         ));
         $fieldset = $form->add('fieldset', array(
             'class' => 'submit',

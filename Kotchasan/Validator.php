@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Validator.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -20,15 +20,16 @@ namespace Kotchasan;
 class Validator extends \Kotchasan\KBase
 {
     /**
-     * ตรวจสอบความถูกของอีเมล.
-     *
-     * @param string $email
-     *
-     * @return bool คืนค่า true ถ้ารูปแบบอีเมลถูกต้อง
+     * ตรวจสอบความถูกของอีเมล
+     * คืนค่า true ถ้ารูปแบบอีเมลถูกต้อง.
      *
      * @assert ('admin@localhost.com') [==] true
      * @assert ('admin@localhost') [==] true
      * @assert ('ทดสอบ@localhost') [==] false
+     *
+     * @param string $email
+     *
+     * @return bool
      */
     public static function email($email)
     {
@@ -44,12 +45,37 @@ class Validator extends \Kotchasan\KBase
     }
 
     /**
-     * ฟังก์ชั่นตรวจสอบไฟล์อัปโหลดว่าเป็นรูปภาพหรือไม่.
+     * ฟังก์ชั่นสำหรับตรวจสอบความถูกต้องของเลขประชาชน.
+     *
+     * @assert ('0123456789016') [==] true
+     * @assert ('0123456789015') [==] false
+     *
+     * @param string $id ตัวเลข 13 หลัก
+     *
+     * @return bool คืนค่า true=ถูกต้อง และ false=ไม่ถูกต้อง
+     */
+    public static function idCard($id)
+    {
+        if (preg_match('/^[0-9]{13,13}$/', $id)) {
+            for ($i = 0, $sum = 0; $i < 12; ++$i) {
+                $sum += (int) ($id[$i]) * (13 - $i);
+            }
+            if ((11 - ($sum % 11)) % 10 == (int) ($id[12])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * ฟังก์ชั่นตรวจสอบไฟล์อัปโหลดว่าเป็นรูปภาพหรือไม่
+     * คืนค่าแอเรย์ [width, height, mime] ของรูปภาพ หรือ  false ถ้าไม่ใช่รูปภาพ.
      *
      * @param array $excepts     ชนิดของไฟล์ที่ยอมรับเช่น array('jpg', 'gif', 'png')
      * @param array $file_upload รับค่ามาจาก $_FILES
      *
-     * @return array|bool คืนค่าแอเรย์ [width, height, mime] ของรูปภาพ หรือ  false ถ้าไม่ใช่รูปภาพ
+     * @return array|bool
      */
     public static function isImage($excepts, $file_upload)
     {
@@ -71,29 +97,5 @@ class Validator extends \Kotchasan\KBase
         } else {
             return false;
         }
-    }
-
-    /**
-     * ฟังก์ชั่นสำหรับตรวจสอบความถูกต้องของเลขประชาชน.
-     *
-     * @param string $id ตัวเลข 13 หลัก
-     *
-     * @return bool คืนค่า true=ถูกต้อง และ false=ไม่ถูกต้อง
-     *
-     * @assert ('0123456789016') [==] true
-     * @assert ('0123456789015') [==] false
-     */
-    public static function idCard($id)
-    {
-        if (preg_match('/^[0-9]{13,13}$/', $id)) {
-            for ($i = 0, $sum = 0; $i < 12; ++$i) {
-                $sum += (int) ($id[$i]) * (13 - $i);
-            }
-            if ((11 - ($sum % 11)) % 10 == (int) ($id[12])) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

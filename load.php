@@ -3,16 +3,15 @@
  * load.php.
  *
  * @author Goragod Wiriya <admin@goragod.com>
- *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
-/**
+/*
  * Site root.
  */
-define('ROOT_PATH', str_replace('\\', '/', dirname(__FILE__)) . '/');
+define('ROOT_PATH', str_replace('\\', '/', dirname(__FILE__)).'/');
 /*
  * โฟลเดอร์เก็บข้อมูล
  */

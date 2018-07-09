@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Image.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan;
@@ -29,7 +29,8 @@ class Image
     /**
      * ฟังก์ชั่น ตัดรูปภาพ ตามขนาดที่กำหนด
      * รูปภาพปลายทางจะมีขนาดเท่าที่กำหนด หากรูปภาพต้นฉบับมีขนาดหรืออัตราส่วนไม่พอดีกับขนาดของภาพปลายทาง
-     * รูปภาพจะถูกตัดขอบออกหรือจะถูกขยาย เพื่อให้พอดีกับรูปภาพปลายทางที่ต้องการ.
+     * รูปภาพจะถูกตัดขอบออกหรือจะถูกขยาย เพื่อให้พอดีกับรูปภาพปลายทางที่ต้องการ
+     * สำเร็จคืนค่า true.
      *
      * @param string $source      path และชื่อไฟล์ของไฟล์รูปภาพต้นฉบับ
      * @param string $target      path และชื่อไฟล์ของไฟล์รูปภาพปลายทาง
@@ -37,7 +38,7 @@ class Image
      * @param int    $thumbheight ความสูงของรูปภาพที่ต้องการ
      * @param string $watermark   (optional) ข้อความลายน้ำ
      *
-     * @return bool สำเร็จคืนค่า true
+     * @return bool
      */
     public static function crop($source, $target, $thumbwidth, $thumbheight, $watermark = '')
     {
@@ -104,11 +105,104 @@ class Image
     }
 
     /**
+     * ฟังก์ชั่น พลิกรูปภาพ (ซ้าย-ขวา คล้ายกระจกเงา)
+     * คืนค่า resource ของรูปภาพหลังจากพลิกรูปภาพแล้ว ไม่สำเร็จคืนค่า resource ของรูปภาพต้นฉบับ.
+     *
+     * @param resource $imgsrc resource ของรูปภาพต้นฉบับ
+     *
+     * @return resource
+     */
+    public static function flip($imgsrc)
+    {
+        $width = imagesx($imgsrc);
+        $height = imagesy($imgsrc);
+        $src_x = $width - 1;
+        $src_y = 0;
+        $src_width = -$width;
+        $src_height = $height;
+        $imgdest = imagecreatetruecolor($width, $height);
+        if (imagecopyresampled($imgdest, $imgsrc, 0, 0, $src_x, $src_y, $width, $height, $src_width, $src_height)) {
+            return $imgdest;
+        }
+
+        return $imgsrc;
+    }
+
+    /**
+     * อ่านข้อมูล Exif ของรูปภาพ
+     * คืนค่า array(width, height, mime) ของรูปภาพ, false ถ้าไม่สามารถอ่านได้.
+     *
+     * @param string $src
+     *
+     * @return array|bool
+     */
+    public static function info($src)
+    {
+        // Exif
+        $info = getimagesize($src);
+        if ($info && $info[0] > 0 && $info[1] > 0) {
+            return array(
+                'width' => $info[0],
+                'height' => $info[1],
+                'mime' => $info['mime'],
+            );
+        }
+
+        return false;
+    }
+
+    /**
+     * ฟังก์ชั่น โหลดภาพ jpg และหมุนภาพอัตโนมัติจากข้อมูลของ Exif
+     * คืนค่า resource ของรูปภาพหลังจากหมุนแล้ว ถ้าไม่สนับสนุนคืนค่า resource เดิม
+     *
+     * @param resource $source resource ของรูปภาพต้นฉบับ
+     *
+     * @return resource
+     */
+    public static function orient($source)
+    {
+        $imgsrc = imageCreateFromJPEG($source);
+        if (function_exists('exif_read_data')) {
+            // read image exif and rotate
+            $exif = @exif_read_data($source);
+            if (!isset($exif['Orientation'])) {
+                return $imgsrc;
+            } elseif ($exif['Orientation'] == 2) {
+                // horizontal flip
+                $imgsrc = self::flip($imgsrc);
+            } elseif ($exif['Orientation'] == 3) {
+                // 180 rotate left
+                $imgsrc = imagerotate($imgsrc, 180, 0);
+            } elseif ($exif['Orientation'] == 4) {
+                // vertical flip
+                $imgsrc = self::flip($imgsrc);
+            } elseif ($exif['Orientation'] == 5) {
+                // vertical flip + 90 rotate right
+                $imgsrc = imagerotate($imgsrc, 270, 0);
+                $imgsrc = self::flip($imgsrc);
+            } elseif ($exif['Orientation'] == 6) {
+                // 90 rotate right
+                $imgsrc = imagerotate($imgsrc, 270, 0);
+            } elseif ($exif['Orientation'] == 7) {
+                // horizontal flip + 90 rotate right
+                $imgsrc = imagerotate($imgsrc, 90, 0);
+                $imgsrc = self::flip($imgsrc);
+            } elseif ($exif['Orientation'] == 8) {
+                // 90 rotate left
+                $imgsrc = imagerotate($imgsrc, 90, 0);
+            }
+        }
+
+        return $imgsrc;
+    }
+
+    /**
      * ฟังก์ชั่นปรับขนาดของภาพ โดยรักษาอัตราส่วนของภาพตามความกว้างที่ต้องการ
      * หากรูปภาพมีขนาดเล็กกว่าที่กำหนด จะเป็นการ copy file
      * หากรูปภาพมาความสูง หรือความกว้างมากกว่า $width
      * จะถูกปรับขนาดให้มีขนาดไม่เกิน $width (ทั้งความสูงและความกว้าง)
-     * และเปลี่ยนชนิดของภาพเป็น jpg.
+     * และเปลี่ยนชนิดของภาพเป็น jpg
+     * คืนค่าแอเรย์ [name, width, height, mime] ของรูปภาพปลายทาง หรือ false ถ้าไม่สามารถดำเนินการได้.
      *
      * @param string $source    path และชื่อไฟล์ของไฟล์รูปภาพต้นฉบับ
      * @param string $target    path ของไฟล์รูปภาพปลายทาง
@@ -116,7 +210,7 @@ class Image
      * @param int    $width     ขนาดสูงสุดของรูปภาพที่ต้องการ
      * @param string $watermark (optional) ข้อความลายน้ำ
      *
-     * @return array|bool คืนค่าแอเรย์ [name, width, height, mime] ของรูปภาพปลายทาง หรือ false ถ้าไม่สามารถดำเนินการได้
+     * @return array|bool
      */
     public static function resize($source, $target, $name, $width, $watermark = '')
     {
@@ -176,74 +270,8 @@ class Image
     }
 
     /**
-     * ฟังก์ชั่น โหลดภาพ jpg และหมุนภาพอัตโนมัติจากข้อมูลของ Exif.
-     *
-     * @param resource $source resource ของรูปภาพต้นฉบับ
-     *
-     * @return resource คืนค่า resource ของรูปภาพหลังจากหมุนแล้ว ถ้าไม่สนับสนุนคืนค่า resource เดิม
-     */
-    public static function orient($source)
-    {
-        $imgsrc = imageCreateFromJPEG($source);
-        if (function_exists('exif_read_data')) {
-            // read image exif and rotate
-            $exif = @exif_read_data($source);
-            if (!isset($exif['Orientation'])) {
-                return $imgsrc;
-            } elseif ($exif['Orientation'] == 2) {
-                // horizontal flip
-                $imgsrc = self::flip($imgsrc);
-            } elseif ($exif['Orientation'] == 3) {
-                // 180 rotate left
-                $imgsrc = imagerotate($imgsrc, 180, 0);
-            } elseif ($exif['Orientation'] == 4) {
-                // vertical flip
-                $imgsrc = self::flip($imgsrc);
-            } elseif ($exif['Orientation'] == 5) {
-                // vertical flip + 90 rotate right
-                $imgsrc = imagerotate($imgsrc, 270, 0);
-                $imgsrc = self::flip($imgsrc);
-            } elseif ($exif['Orientation'] == 6) {
-                // 90 rotate right
-                $imgsrc = imagerotate($imgsrc, 270, 0);
-            } elseif ($exif['Orientation'] == 7) {
-                // horizontal flip + 90 rotate right
-                $imgsrc = imagerotate($imgsrc, 90, 0);
-                $imgsrc = self::flip($imgsrc);
-            } elseif ($exif['Orientation'] == 8) {
-                // 90 rotate left
-                $imgsrc = imagerotate($imgsrc, 90, 0);
-            }
-        }
-
-        return $imgsrc;
-    }
-
-    /**
-     * ฟังก์ชั่น พลิกรูปภาพ (ซ้าย-ขวา คล้ายกระจกเงา).
-     *
-     * @param resource $imgsrc resource ของรูปภาพต้นฉบับ
-     *
-     * @return resource คืนค่า resource ของรูปภาพหลังจากพลิกรูปภาพแล้ว ไม่สำเร็จคืนค่า resource ของรูปภาพต้นฉบับ
-     */
-    public static function flip($imgsrc)
-    {
-        $width = imagesx($imgsrc);
-        $height = imagesy($imgsrc);
-        $src_x = $width - 1;
-        $src_y = 0;
-        $src_width = -$width;
-        $src_height = $height;
-        $imgdest = imagecreatetruecolor($width, $height);
-        if (imagecopyresampled($imgdest, $imgsrc, 0, 0, $src_x, $src_y, $width, $height, $src_width, $src_height)) {
-            return $imgdest;
-        }
-
-        return $imgsrc;
-    }
-
-    /**
-     * ฟังก์ชั่น วาดลายน้ำที่เป็นตัวอักษรลงบนรูปภาพ.
+     * ฟังก์ชั่น วาดลายน้ำที่เป็นตัวอักษรลงบนรูปภาพ
+     * คืนค่า resource ของรูปภาพต้นฉบับ.
      *
      * @param resource $imgsrc    resource ของรูปภาพต้นฉบับ
      * @param string   $text      ข้อความที่จะใช้เป็นลายน้ำ
@@ -252,7 +280,7 @@ class Image
      * @param int      $font_size (optional) ขนาดตัวอักษรของลายน้ำเป็นพิกเซล (default 20px)
      * @param int      $opacity   (optional) กำหนดค่าตัวอักษรโปร่งใส 0-50 (default 50)
      *
-     * @return resource ของรูปภาพต้นฉบับ
+     * @return resource
      */
     public static function watermarkText($imgsrc, $text, $pos = '', $color = 'CCCCCC', $font_size = 20, $opacity = 50)
     {
@@ -277,27 +305,5 @@ class Image
         imagettftext($imgsrc, $font_size, 0, $x, $y, $alpha_color, $font, $text);
 
         return $imgsrc;
-    }
-
-    /**
-     * อ่านข้อมูล Exif ของรูปภาพ.
-     *
-     * @param string $src
-     *
-     * @return array|bool array(width, height, mime) ของรูปภาพ, false ถ้าไม่สามารถอ่านได้
-     */
-    public static function info($src)
-    {
-        // Exif
-        $info = getimagesize($src);
-        if ($info && $info[0] > 0 && $info[1] > 0) {
-            return array(
-                'width' => $info[0],
-                'height' => $info[1],
-                'mime' => $info['mime'],
-            );
-        }
-
-        return false;
     }
 }

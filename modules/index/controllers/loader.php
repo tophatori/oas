@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/controllers/loader.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Loader;
@@ -39,7 +39,7 @@ class Controller extends \Gcms\Controller
             Login::create();
             // สมาชิก
             $login = Login::isMember();
-            // template ที่กำลังใช้งานอยู่
+            // กำหนด skin ให้กับ template
             Template::init(self::$cfg->skin);
             // View
             self::$view = new \Gcms\View();
@@ -49,7 +49,7 @@ class Controller extends \Gcms\Controller
             $className = \Index\Main\Controller::parseModule($request, self::$menus->home());
             if ($className === null || !$login) {
                 // ถ้าไม่พบหน้าที่เรียก หรือไม่ได้เข้าระบบ แสดงหน้า 404
-                include APP_PATH . 'modules/index/controllers/error.php';
+                include APP_PATH.'modules/index/controllers/error.php';
                 $className = 'Index\Error\Controller';
             }
             // create Controller

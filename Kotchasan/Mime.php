@@ -1006,13 +1006,14 @@ class Mime
     }
 
     /**
-     * Get the MIME type for a file extension.
+     * Get the MIME type for a file extension
+     * คืนค่า null ถ้าไม่พบ.
      *
      * @param string|array $exts
      * @assert (array('jpg','gif','png')) [==]  array('jpg' => 'image/jpeg', 'gif' => 'image/gif', 'png' => 'image/png')
      * @assert ('jpg') [==] 'image/jpeg'
      *
-     * @return string|array|null คืนค่า null ถ้าไม่พบ
+     * @return string|array|null
      */
     public static function get($exts)
     {
@@ -1035,13 +1036,14 @@ class Mime
 
     /**
      * ฟังก์ชั่น ตรวจสอบ $typies ว่าตรงกับ $mime หรือไม่
-     * ใช้สำหรับการตรวจสอบไฟล์อัปโหลด.
+     * ใช้สำหรับการตรวจสอบไฟล์อัปโหลด
+     * คืนค่า true หาก $mime และ $typies สอดคล้องกัน.
      *
      * @param array  $typies ชนิดของไฟล์ที่ยอมรับ เช่น array(jpg, gif, png)
      * @param string $mime   ชนิดของไฟล์ที่ต้องการตรวจสอบ เช่น image/png ซึ่งปกติจะได้จากการอัปโหลด เช่น $file[mime]
      * @assert (array('jpg','gif','png'), 'image/png') [==] true
      *
-     * @return bool คืนค่า true หาก $mime และ $typies สอดคล้องกัน
+     * @return bool
      */
     public static function check($typies, $mime)
     {
@@ -1056,12 +1058,13 @@ class Mime
     }
 
     /**
-     * ฟังก์ชั่น อ่าน mimetype ของไฟล์ สำหรับส่งให้ input ชนิด file.
+     * ฟังก์ชั่น อ่าน mimetype ของไฟล์ สำหรับส่งให้ input ชนิด file
+     * คืนค่า mimetype ของไฟล์ คั่นแต่ละรายการด้วย , เช่น image/jpeg,image/png,image/gif.
      *
      * @param array $typies ชนิดของไฟล์ เช่น array(jpg, gif, png)
      * @assert (array('jpg','gif','png')) [==] "image/jpeg,image/gif,image/png"
      *
-     * @return string คืนค่า mimetype ของไฟล์ คั่นแต่ละรายการด้วย , เช่น image/jpeg,image/png,image/gif
+     * @return string
      */
     public static function getAccept($typies)
     {

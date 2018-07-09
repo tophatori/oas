@@ -2,10 +2,10 @@
 /**
  * @filesource Kotchasan/Http/AbstractRequest.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Kotchasan\Http;
@@ -23,117 +23,19 @@ use Psr\Http\Message\UriInterface;
 class AbstractRequest extends AbstractMessage implements RequestInterface
 {
     /**
-     * @var Uri
-     */
-    protected $uri;
-    /**
      * @var string
      */
     protected $method = null;
+
     /**
      * @var string
      */
     protected $requestTarget;
 
     /**
-     * อ่านค่า request target.
-     *
-     * @return string
+     * @var Uri
      */
-    public function getRequestTarget()
-    {
-        if ($this->requestTarget === null) {
-            $this->requestTarget = $this->uri;
-        }
-
-        return $this->requestTarget;
-    }
-
-    /**
-     * กำหนดค่า request target.
-     *
-     * @param mixed $requestTarget
-     *
-     * @return \static
-     */
-    public function withRequestTarget($requestTarget)
-    {
-        $clone = clone $this;
-        $clone->requestTarget = $requestTarget;
-
-        return $clone;
-    }
-
-    /**
-     * อ่านค่า HTTP method.
-     *
-     * @return string returns the request method
-     */
-    public function getMethod()
-    {
-        if ($this->method === null) {
-            $this->method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
-            if ($this->method === 'POST' && isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
-                $this->method = strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
-            }
-        }
-
-        return $this->method;
-    }
-
-    /**
-     * กำหนดค่า HTTP method.
-     *
-     * @param string $method
-     *
-     * @return \static
-     */
-    public function withMethod($method)
-    {
-        $clone = clone $this;
-        $clone->method = $method;
-
-        return $clone;
-    }
-
-    /**
-     * อ่าน Uri.
-     *
-     * @return Uri
-     */
-    public function getUri()
-    {
-        if ($this->uri === null) {
-            $this->uri = Uri::createFromGlobals();
-        }
-
-        return $this->uri;
-    }
-
-    /**
-     * กำหนดค่า Uri.
-     *
-     * @param Uri  $uri
-     * @param bool $preserveHost
-     *
-     * @return \static
-     */
-    public function withUri(UriInterface $uri, $preserveHost = false)
-    {
-        $clone = clone $this;
-        $clone->uri = $uri;
-        if (!$preserveHost) {
-            if ($uri->getHost() !== '') {
-                $clone->headers['Host'] = $uri->getHost();
-            }
-        } else {
-            if ($this->uri->getHost() !== '' && (!$this->hasHeader('Host') || $this->getHeader('Host') === null)) {
-                $clone->headers['Host'] = $uri->getHost();
-            }
-        }
-
-        return $clone;
-    }
+    protected $uri;
 
     /**
      * สร้างคลาสจากลิงค์ และ รวมค่าที่มาจาก $_GET ด้วย.
@@ -147,25 +49,6 @@ class AbstractRequest extends AbstractMessage implements RequestInterface
     {
         $query = array();
         self::map($query, $_GET, $exclude);
-        if (!empty($query)) {
-            $uri .= (strpos($uri, '?') === false ? '?' : '&').http_build_query($query);
-        }
-
-        return Uri::createFromUri($uri);
-    }
-
-    /**
-     * สร้างคลาสจากลิงค์ และ รวมค่าที่มาจาก $_POST ด้วย.
-     *
-     * @param string $uri     ค่าเริ่มต้นคือ index.php
-     * @param array  $exclude รายการแอเรย์ของ $_POST ที่ไม่ต้องการให้รวมอยู่ใน URL
-     *
-     * @return \static
-     */
-    public static function createUriWithPost($uri = 'index.php', $exclude = array())
-    {
-        $query = array();
-        self::map($query, $_POST, $exclude);
         if (!empty($query)) {
             $uri .= (strpos($uri, '?') === false ? '?' : '&').http_build_query($query);
         }
@@ -194,6 +77,71 @@ class AbstractRequest extends AbstractMessage implements RequestInterface
     }
 
     /**
+     * สร้างคลาสจากลิงค์ และ รวมค่าที่มาจาก $_POST ด้วย.
+     *
+     * @param string $uri     ค่าเริ่มต้นคือ index.php
+     * @param array  $exclude รายการแอเรย์ของ $_POST ที่ไม่ต้องการให้รวมอยู่ใน URL
+     *
+     * @return \static
+     */
+    public static function createUriWithPost($uri = 'index.php', $exclude = array())
+    {
+        $query = array();
+        self::map($query, $_POST, $exclude);
+        if (!empty($query)) {
+            $uri .= (strpos($uri, '?') === false ? '?' : '&').http_build_query($query);
+        }
+
+        return Uri::createFromUri($uri);
+    }
+
+    /**
+     * อ่านค่า HTTP method
+     * returns the request method.
+     *
+     * @return string
+     */
+    public function getMethod()
+    {
+        if ($this->method === null) {
+            $this->method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
+            if ($this->method === 'POST' && isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
+                $this->method = strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
+            }
+        }
+
+        return $this->method;
+    }
+
+    /**
+     * อ่านค่า request target.
+     *
+     * @return string
+     */
+    public function getRequestTarget()
+    {
+        if ($this->requestTarget === null) {
+            $this->requestTarget = $this->uri;
+        }
+
+        return $this->requestTarget;
+    }
+
+    /**
+     * อ่าน Uri.
+     *
+     * @return Uri
+     */
+    public function getUri()
+    {
+        if ($this->uri === null) {
+            $this->uri = Uri::createFromGlobals();
+        }
+
+        return $this->uri;
+    }
+
+    /**
      * รวมแอเรย์ $_GET $_POST เป็นข้อมูลเดียวกัน.
      *
      * @param array $result  ตัวแปรเก็บผลลัพท์ สำหรับนำไปใช้งานต่อ
@@ -213,5 +161,60 @@ class AbstractRequest extends AbstractMessage implements RequestInterface
                 }
             }
         }
+    }
+
+    /**
+     * กำหนดค่า HTTP method.
+     *
+     * @param string $method
+     *
+     * @return \static
+     */
+    public function withMethod($method)
+    {
+        $clone = clone $this;
+        $clone->method = $method;
+
+        return $clone;
+    }
+
+    /**
+     * กำหนดค่า request target.
+     *
+     * @param mixed $requestTarget
+     *
+     * @return \static
+     */
+    public function withRequestTarget($requestTarget)
+    {
+        $clone = clone $this;
+        $clone->requestTarget = $requestTarget;
+
+        return $clone;
+    }
+
+    /**
+     * กำหนดค่า Uri.
+     *
+     * @param Uri  $uri
+     * @param bool $preserveHost
+     *
+     * @return \static
+     */
+    public function withUri(UriInterface $uri, $preserveHost = false)
+    {
+        $clone = clone $this;
+        $clone->uri = $uri;
+        if (!$preserveHost) {
+            if ($uri->getHost() !== '') {
+                $clone->headers['Host'] = $uri->getHost();
+            }
+        } else {
+            if ($this->uri->getHost() !== '' && (!$this->hasHeader('Host') || $this->getHeader('Host') === null)) {
+                $clone->headers['Host'] = $uri->getHost();
+            }
+        }
+
+        return $clone;
     }
 }

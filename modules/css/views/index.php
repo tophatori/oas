@@ -2,10 +2,10 @@
 /**
  * @filesource modules/css/views/index.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Css\Index;
@@ -25,20 +25,20 @@ class View extends \Kotchasan\KBase
     public function index()
     {
         // โหลด css หลัก
-        $data = preg_replace('/url\(([\'"])?fonts\//isu', 'url(\\1' . WEB_URL . 'skin/fonts/', file_get_contents(ROOT_PATH . 'skin/fonts.css'));
-        $data .= file_get_contents(ROOT_PATH . 'skin/gcss.css');
+        $data = preg_replace('/url\(([\'"])?fonts\//isu', 'url(\\1'.WEB_URL.'skin/fonts/', file_get_contents(ROOT_PATH.'skin/fonts.css'));
+        $data .= file_get_contents(ROOT_PATH.'skin/gcss.css');
         // css ของ template
-        $data2 = file_get_contents(ROOT_PATH . self::$cfg->skin . '/style.css');
-        $data2 = preg_replace('/url\(([\'"])?(img|fonts)\//isu', 'url(\\1' . WEB_URL . self::$cfg->skin . '/\\2/', $data2);
+        $data2 = file_get_contents(ROOT_PATH.self::$cfg->skin.'/style.css');
+        $data2 = preg_replace('/url\(([\'"])?(img|fonts)\//isu', 'url(\\1'.WEB_URL.self::$cfg->skin.'/\\2/', $data2);
         // โหลด css ของ module
-        $dir = ROOT_PATH . 'modules/';
+        $dir = ROOT_PATH.'modules/';
         $f = @opendir($dir);
         if ($f) {
             while (false !== ($text = readdir($f))) {
                 if ($text != '.' && $text != '..') {
-                    if (is_dir($dir . $text)) {
-                        if (is_file($dir . $text . '/style.css')) {
-                            $data2 .= preg_replace('/url\(img\//isu', 'url(' . WEB_URL . 'modules/' . $text . '/img/', file_get_contents($dir . $text . '/style.css'));
+                    if (is_dir($dir.$text)) {
+                        if (is_file($dir.$text.'/style.css')) {
+                            $data2 .= preg_replace('/url\(img\//isu', 'url('.WEB_URL.'modules/'.$text.'/img/', file_get_contents($dir.$text.'/style.css'));
                         }
                     }
                 }
@@ -46,22 +46,25 @@ class View extends \Kotchasan\KBase
             closedir($f);
         }
         foreach (self::$cfg->color_status as $key => $value) {
-            $data2 .= '.status' . $key . '{color:' . $value . '}';
+            $data2 .= '.status'.$key.'{color:'.$value.'}';
         }
         // compress css
-        $data = self::compress($data . $data2);
+        $data = self::compress($data.$data2);
         // Response
         $response = new \Kotchasan\Http\Response();
         $response->withHeaders(array(
             'Content-type' => 'text/css; charset=utf-8',
             'Cache-Control' => 'public',
             // cache 1 month
-            'Expires' => gmdate('D, d M Y H:i:s', strtotime('+1 month')) . ' GMT',
+            'Expires' => gmdate('D, d M Y H:i:s', strtotime('+1 month')).' GMT',
         ))
             ->withContent($data)
             ->send();
     }
 
+    /**
+     * @param $css
+     */
     public static function compress($css)
     {
         return preg_replace(array('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '/[\s]{0,}([:;,>\{\}])[\s]{0,}/', '/[\r\n\t]/s', '/[\s]{2,}/s', '/;}/'), array('', '\\1', '', ' ', '}'), $css);

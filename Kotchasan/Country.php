@@ -287,11 +287,12 @@ class Country
     }
 
     /**
-     * อ่านชื่อประเทศจาก ISO ตามภาษา (ถ้าไม่มีใช้ภาษาอังกฤษ).
+     * อ่านชื่อประเทศจาก ISO ตามภาษา (ถ้าไม่มีใช้ภาษาอังกฤษ)
+     * คืนค่าว่างถ้าไม่พบ.
      *
      * @param int $iso
      *
-     * @return string คืนค่าว่างถ้าไม่พบ
+     * @return string
      * @assert ('TH') [==] 'ไทย'
      */
     public static function get($iso)

@@ -2,13 +2,13 @@
 /**
  * @filesource Kotchasan/load.php
  *
- * @see http://www.kotchasan.com/
+ * ไฟล์หลักสำหรับกำหนดค่าเริ่มต้นให้กับคชสารในการโหลดเฟรมเวิร์ค
+ * ต้อง include ไฟล์นี้ก่อนเสมอ
  *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
  *
- * ไฟล์หลักสำหรับกำหนดค่าเริ่มต้นให้กับคชสารในการโหลดเฟรมเวิร์ค
- * ต้อง include ไฟล์นี้ก่อนเสมอ
+ * @see http://www.kotchasan.com/
  */
 /**
  * การแสดงข้อผิดพลาด

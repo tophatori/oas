@@ -2,10 +2,10 @@
 /**
  * @filesource modules/index/models/company.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Index\Company;
@@ -36,7 +36,7 @@ class Model extends \Kotchasan\KBase
         if ($request->initSession() && $request->isSafe() && $login = Login::checkPermission(Login::isMember(), 'can_config')) {
             if (empty($login['fb'])) {
                 // โหลด config
-                $config = Config::load(ROOT_PATH . 'settings/config.php');
+                $config = Config::load(ROOT_PATH.'settings/config.php');
                 // รับค่าจากการ POST
                 $config->type = $request->post('company_type')->toInt();
                 $config->tax_id = $request->post('company_tax_id')->number();
@@ -67,7 +67,7 @@ class Model extends \Kotchasan\KBase
                 }
                 if (empty($ret)) {
                     // save config
-                    if (Config::save($config, ROOT_PATH . 'settings/config.php')) {
+                    if (Config::save($config, ROOT_PATH.'settings/config.php')) {
                         // คืนค่า
                         $ret['alert'] = Language::get('Saved successfully');
                         $ret['location'] = 'reload';
