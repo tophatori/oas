@@ -34,12 +34,18 @@
 - api.php/product/<id> ข้อมูลสินค้ารายการที่เลือก (id)
 - api.php/search/<q>/<page> ค้นหาสินค้าจาก q แสดงหน้าที่เลือก (page) (ถ้าไม่ระบุหน้าจะแสดงหน้าแรก)
 
-ในการใช้งาน API หากเป็นการเรียกใช้งานจากนอก Server อาจต้องเปิดการใช้งาน Access-Control-Allow-Origin ด้วย ให้แก้ไขไฟล์ .htaccess ลบ # หน้าบรรทัดเหล่านี้ออก
+ในการใช้งาน API หากเป็นการเรียกใช้งานจากนอก Server อาจต้องเปิดการใช้งาน Access-Control-Allow-Origin ด้วย โดยการสร้างไฟล์ .htaccess (หรือถ้ามีอยู่แล้วให้เปิดไฟล์มาแก้ไข) โดยการใส่โค้ดเหล่านี้ลงไป
 
 ```
-#Header add Access-Control-Allow-Origin "*"
-#Header add Access-Control-Allow-Headers "origin, x-requested-with, content-type"
-#Header add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
+RewriteEngine On
+
+# Cross domain access for API
+Header add Access-Control-Allow-Origin "*"
+Header add Access-Control-Allow-Headers "origin, x-requested-with, content-type"
+Header add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php [QSA,L]
 ```
 
 ## ข้อตกลงการนำไปใช้งาน
