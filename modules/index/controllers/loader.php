@@ -49,24 +49,22 @@ class Controller extends \Gcms\Controller
             $className = \Index\Main\Controller::parseModule($request, self::$menus->home());
             if ($className === null || !$login) {
                 // ถ้าไม่พบหน้าที่เรียก หรือไม่ได้เข้าระบบ แสดงหน้า 404
-                include APP_PATH.'modules/index/controllers/error.php';
                 $className = 'Index\Error\Controller';
             }
             // create Controller
             $controller = new $className();
+            $controller->detail = $controller->render($request);
             // เนื้อหา
             self::$view->setContents(array(
-                '/{CONTENT}/' => $controller->render($request),
+                '/{CONTENT}/' => $controller->detail(),
             ));
-            // output เป็น HTML
-            $ret = array(
+            // คืนค่า JSON
+            echo json_encode(array(
                 'detail' => self::$view->renderHTML(Template::load('', '', 'loader')),
                 'menu' => $controller->menu(),
-                'topic' => $controller->title(),
-                'to' => $request->post('to', 'scroll-to')->filter('a-z0-9_'),
-            );
-            // คืนค่า JSON
-            echo json_encode($ret);
+                'title' => $controller->title(),
+                'to' => $request->post('to', 'scroll-to')->filter('a-z0-9_\-'),
+            ));
         }
     }
 }

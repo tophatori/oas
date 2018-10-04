@@ -88,7 +88,7 @@ class Login extends \Kotchasan\KBase implements LoginInterface
      * ตรวจสอบการ login เมื่อมีการเรียกใช้ class new Login
      * action=logout ออกจากระบบ
      * มาจากการ submit ตรวจสอบการ login
-     * ถ้าไม่มีทั้งสองส่วนด้านบน จะตรวจสอบการ login จาก session และ cookie ตามลำดับ.
+     * ถ้าไม่มีทั้งสองส่วนด้านบน จะตรวจสอบการ login จาก session.
      *
      * @return \static
      */
@@ -96,37 +96,30 @@ class Login extends \Kotchasan\KBase implements LoginInterface
     {
         // create class
         $login = new static();
-        // การเข้ารหัส
-        $pw = new Password(self::$cfg->password_key);
         // ชื่อฟิลด์สำหรับการรับค่าเป็นรายการแรกของ login_fields
         $field_name = reset(self::$cfg->login_fields);
         // อ่านข้อมูลจากฟอร์ม login ฟิลด์ login_username
         self::$login_params['username'] = self::$request->post('login_username')->toString();
         if (empty(self::$login_params['username'])) {
             if (isset($_SESSION['login']) && isset($_SESSION['login'][$field_name])) {
-                // from session
+                // session
                 self::$login_params['username'] = $_SESSION['login'][$field_name];
             } else {
-                // from cookie
-                $datas = self::$request->getCookieParams();
-                self::$login_params['username'] = isset($datas['login_username']) ? $pw->decode($datas['login_username']) : null;
+                self::$login_params['username'] = null;
             }
             self::$from_submit = false;
         } else {
             self::$from_submit = true;
         }
         self::$login_params['username'] = Text::username(self::$login_params['username']);
-        self::$login_params['password'] = self::get('password', $pw);
-        $login_remember = self::get('remember') == 1 ? 1 : 0;
+        self::$login_params['password'] = self::get('password');
+        $action = self::$request->get('action')->toString();
         // ตรวจสอบการ login
-        if (self::$request->get('action')->toString() === 'logout' && !self::$from_submit) {
+        if ($action === 'logout' && !self::$from_submit) {
             // logout ลบ session และ cookie
             unset($_SESSION['login']);
-            $time = time();
-            setcookie('login_username', '', $time, '/', null, null, true);
-            setcookie('login_password', '', $time, '/', null, null, true);
             self::$login_message = Language::get('Logout successful');
-        } elseif (self::$request->post('action')->toString() === 'forgot') {
+        } elseif ($action === 'forgot') {
             // ขอรหัสผ่านใหม่
             return $login->forgot(self::$request);
         } else {
@@ -148,13 +141,6 @@ class Login extends \Kotchasan\KBase implements LoginInterface
                     // save login session
                     $login_result['password'] = self::$login_params['password'];
                     $_SESSION['login'] = $login_result;
-                    // save login cookie
-                    $time = time() + 2592000;
-                    if ($login_remember == 1) {
-                        setcookie('login_username', $pw->encode(self::$login_params['username']), $time, '/', null, null, true);
-                        setcookie('login_password', $pw->encode(self::$login_params['password']), $time, '/', null, null, true);
-                        setcookie('login_remember', $login_remember, $time, '/', null, null, true);
-                    }
                 } else {
                     if (is_string($login_result)) {
                         // ข้อความผิดพลาด
@@ -163,9 +149,6 @@ class Login extends \Kotchasan\KBase implements LoginInterface
                     }
                     // logout ลบ session และ cookie
                     unset($_SESSION['login']);
-                    $time = time();
-                    setcookie('login_username', '', $time, '/', null, null, true);
-                    setcookie('login_password', '', $time, '/', null, null, true);
                 }
             }
 
@@ -206,30 +189,24 @@ class Login extends \Kotchasan\KBase implements LoginInterface
     }
 
     /**
-     * อ่านข้อมูลจาก POST, SESSION และ COOKIE ตามลำดับ
+     * อ่านข้อมูลจาก POST, SESSION ตามลำดับ
      * เจออันไหนก่อนใช้อันนั้น
      * คืนค่าข้อความ ไม่พบคืนค่า null.
      *
-     * @param string        $name
-     * @param null|Password $pw
+     * @param string $name
      *
      * @return string|null
      */
-    protected static function get($name, $pw = null)
+    protected static function get($name)
     {
-        $datas = self::$request->getParsedBody();
-        if (isset($datas['login_'.$name])) {
+        if (self::$request->post('login_'.$name)->exists()) {
             self::$from_submit = true;
 
-            return (string) $datas['login_'.$name];
+            return self::$request->post('login_'.$name)->toString();
         } elseif (isset($_SESSION['login']) && isset($_SESSION['login'][$name])) {
             return (string) $_SESSION['login'][$name];
         }
-        $datas = self::$request->getCookieParams();
-        if ($pw instanceof Password) {
-            return isset($datas['login_'.$name]) ? $pw->decode($datas['login_'.$name]) : null;
-        } else {
-            return isset($datas['login_'.$name]) ? $datas['login_'.$name] : null;
-        }
+
+        return null;
     }
 }

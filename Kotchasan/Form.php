@@ -59,7 +59,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function antispam($attributes = array())
     {
@@ -82,7 +82,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function button($attributes = array())
     {
@@ -102,7 +102,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function checkbox($attributes = array())
     {
@@ -117,7 +117,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function color($attributes = array())
     {
@@ -133,7 +133,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function currency($attributes = array())
     {
@@ -149,7 +149,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function date($attributes = array())
     {
@@ -164,7 +164,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function email($attributes = array())
     {
@@ -179,7 +179,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function file($attributes = array())
     {
@@ -218,7 +218,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function hidden($attributes = array())
     {
@@ -233,7 +233,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function number($attributes = array())
     {
@@ -248,7 +248,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function password($attributes = array())
     {
@@ -263,7 +263,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function radio($attributes = array())
     {
@@ -278,7 +278,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function range($attributes = array())
     {
@@ -292,17 +292,18 @@ class Form extends \Kotchasan\KBase
 
     /**
      * ฟังก์ชั่นสร้าง Form Element.
-     *
-     *                        id, name, type property ต่างๆของinput
-     *                        label : ข้อความแสดงใน label ของ input
-     *                        labelClass : class ของ label
-     *                        comment : ถ้ากำหนดจะแสดงคำอธิบายของ input
-     *                        ถ้าไม่กำหนดทั้ง label และ labelClass จะเป็นการสร้าง input อย่างเดียว
-     *                        array('name1' => 'value1', 'name2' => 'value2', ....)
+     * id, name, type property ต่างๆของinput
+     * label : ข้อความแสดงใน label ของ input
+     * labelClass : class ของ label
+     * comment : ถ้ากำหนดจะแสดงคำอธิบายของ input
+     * ถ้าไม่กำหนดทั้ง label และ labelClass จะเป็นการสร้าง input อย่างเดียว
+     * array('name1' => 'value1', 'name2' => 'value2', ....).
      *
      * @param string $tag
      * @param array  $param   property ของ Input
      * @param string $options ตัวเลือก options ของ select
+     *
+     * @return string
      */
     public function render()
     {
@@ -498,7 +499,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function reset($attributes = array())
     {
@@ -524,7 +525,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function select($attributes = array())
     {
@@ -538,7 +539,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function submit($attributes = array())
     {
@@ -564,7 +565,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function tel($attributes = array())
     {
@@ -578,13 +579,12 @@ class Form extends \Kotchasan\KBase
 
     /**
      * สร้าง input, select, textarea สำหรับใส่ลงในฟอร์ม
-     *
-     *                          id, name, type property ต่างๆของinput
-     *                          options สำหรับ select เท่านั้น เช่น array('value1'=> 'name1', 'value2'=>'name2', ...)
-     *                          label ข้อความแสดงใน label ของ input
-     *                          labelClass class ของ label
-     *                          comment ถ้ากำหนดจะแสดงคำอธิบายของ input
-     *                          ถ้าไม่กำหนดทั้ง label และ labelClass จะเป็นการสร้าง input อย่างเดียว
+     * id, name, type property ต่างๆของinput
+     * options สำหรับ select เท่านั้น เช่น array('value1'=> 'name1', 'value2'=>'name2', ...)
+     * label ข้อความแสดงใน label ของ input
+     * labelClass class ของ label
+     * comment ถ้ากำหนดจะแสดงคำอธิบายของ input
+     * ถ้าไม่กำหนดทั้ง label และ labelClass จะเป็นการสร้าง input อย่างเดียว.
      *
      * @param array $attributes property ของ Input
      */
@@ -601,7 +601,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function textarea($attributes = array())
     {
@@ -615,7 +615,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function time($attributes = array())
     {
@@ -630,7 +630,7 @@ class Form extends \Kotchasan\KBase
     /**
      * @param array $attributes
      *
-     * @return mixed
+     * @return \static
      */
     public static function url($attributes = array())
     {

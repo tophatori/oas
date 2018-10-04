@@ -91,10 +91,11 @@ class View extends \Kotchasan\View
      */
     public static function showPhone($phone_number)
     {
-        if (preg_match('/^([0-9\-\s]{9,})(.*)$/', $phone_number, $match)) {
-            return '<a href="tel:'.trim($match[1]).'">'.$phone_number.'</a>';
+        $result = array();
+        foreach (explode(',', $phone_number) as $phone) {
+            $result[] = '<a href="tel:'.$phone.'">'.$phone.'</a>';
         }
 
-        return $phone_number;
+        return empty($result) ? '' : implode(', ', $result);
     }
 }

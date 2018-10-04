@@ -169,13 +169,14 @@ class Currency
      * คืนค่าข้อความจำนวนเงิน.
      *
      * @param float  $amount        จำนวนเงิน
+     * @param int    $digit         จำนวนทศนิยม (optional) ค่าเริ่มต้น 2 หลัก
      * @param string $thousands_sep (optional) เครื่องหมายหลักพัน (default ,)
      *
      * @return string
      */
-    public static function format($amount, $thousands_sep = ',')
+    public static function format($amount, $digit = 2, $thousands_sep = ',')
     {
-        return number_format((float) $amount, 2, '.', $thousands_sep);
+        return number_format((float) $amount, $digit, '.', $thousands_sep);
     }
 
     /**

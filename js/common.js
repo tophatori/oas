@@ -1,5 +1,5 @@
 /**
- * Javascript Libraly for Ajax Front-end and Back-end
+ * Javascript Library for Ajax Front-end and Back-end
  *
  * @filesource js/common.js
  * @link http://www.kotchasan.com/
@@ -22,7 +22,7 @@ var hideModal = function() {
     modal.hide();
   }
 };
-function showModal(src, qstr, doClose) {
+function showModal(src, qstr, doClose, className) {
   send(src, qstr, function(xhr) {
     var ds = xhr.responseText.toJSON();
     var detail = "";
@@ -38,7 +38,7 @@ function showModal(src, qstr, doClose) {
     if (detail != "") {
       modal = new GModal({
         onclose: doClose
-      }).show(detail);
+      }).show(detail, className);
       detail.evalScript();
     }
   });
@@ -588,10 +588,18 @@ function initWeb(module) {
       var c = this.viewport.getscrollTop() > toTop;
       if (_scrolltop != c) {
         _scrolltop = c;
-        if (c) {
-          document.body.addClass("toTop");
+        if ($E("body")) {
+          if (c) {
+            $E("body").className = "toTop";
+          } else {
+            $E("body").className = "";
+          }
         } else {
-          document.body.removeClass("toTop");
+          if (c) {
+            document.body.addClass("toTop");
+          } else {
+            document.body.removeClass("toTop");
+          }
         }
         document.callEvent("toTopChange");
       }
@@ -646,7 +654,7 @@ function initWeb(module) {
               $K.init(content);
               value.evalScript();
             });
-          } else if (prop == "topic") {
+          } else if (prop == "title") {
             document.title = value.unentityify();
           } else if (prop == "menu") {
             selectMenu(value);
@@ -662,8 +670,8 @@ function initWeb(module) {
         if ($E(scroll_to)) {
           window.scrollTo(0, $G(scroll_to).getTop() - 10);
         }
-      } else {
-        content.setHTML(xhr.responseText);
+      } else if (xhr.responseText != "") {
+        console.log(xhr.responseText);
       }
     },
     null,

@@ -164,9 +164,6 @@ CKEDITOR.on('instanceReady', function (ev) {
           }
           delete element.attributes.width;
           delete element.attributes.height;
-        } else if (element.name == 'a') {
-          // add rel=nofollow
-          element.attributes.rel = 'nofollow';
         } else if (element.name == 'iframe') {
           var style = element.attributes.style || '';
           if (element.attributes.width) {

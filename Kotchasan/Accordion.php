@@ -53,13 +53,15 @@ class Accordion
      *
      * @param string $title
      * @param string $detail
-     * @param bool   $select true แสดงรายการนี้, ค่าเริ่มต้นคือไม่ (false)
+     * @param bool   $select    true แสดงรายการนี้, ค่าเริ่มต้นคือไม่ (false)
+     * @param string $className คลาสส่วนห่อหุ้มข้อมูล ถ้าไม่ระบใช้ค่าเริ่มต้น article
      */
-    public function add($title, $detail, $select = false)
+    public function add($title, $detail, $select = false, $className = 'article')
     {
         $this->datas[$title] = array(
             'detail' => $detail,
             'select' => $select,
+            'className' => $className,
         );
     }
 
@@ -76,7 +78,7 @@ class Accordion
             $html .= '<div class="item">';
             $html .= '<input id="'.$this->id.$n.'" name="'.$this->id.'" type="'.$this->type.'"'.($item['select'] ? ' checked' : '').'>';
             $html .= '<label for="'.$this->id.$n.'">'.$title.'</label>';
-            $html .= '<div class="body"><div class="article">'.$item['detail'].'</div></div>';
+            $html .= '<div class="body"><div class="'.$item['className'].'">'.$item['detail'].'</div></div>';
             $html .= '</div>';
             ++$n;
         }

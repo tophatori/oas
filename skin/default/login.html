@@ -2,10 +2,10 @@
   <h1>
     <a href="{WEBURL}index.php" id=logo title="{WEBTITLE}">{LOGO}</a>
   </h1>
-  <form id=login_frm method=post autocomplete=off action="{WEBURL}index.php?action=login">
+  <form id=login_frm method=post autocomplete=off action="{URL}">
     <h2 class="table fullwidth">
       <span class="td icon-signin">{LNG_Sign in}</span>
-      <span class="td icon-language language-menu" title="{LNG_change language}">
+      <span class="td icon-language language-menu" title="{LNG_Change language}">
         <ul>{LANGUAGES}</ul>
       </span>
     </h2>
@@ -23,9 +23,7 @@
       </p>
       <p class="table fullwidth collapse">
         <a class="td" href="index.php?action=forgot">{LNG_Forgot}</a>
-        <label class="td right">{LNG_Remember me}&nbsp;
-          <input type="checkbox" name="login_remember" value="1">
-        </label>
+        <input type="hidden" name="token" id="token" value="{TOKEN}">
       </p>
     </fieldset>
     <fieldset>
@@ -35,12 +33,16 @@
           <span class="icon-facebook">Login with Facebook</span>
         </button>
       </FACEBOOK>
+      <GOOGLE>
+        <button type=button class="button google wide margin-top" id=google_login>
+          <span class="icon-google">Login with Google</span>
+        </button>
+      </GOOGLE>
     </fieldset>
   </form>
   <script>
     new GForm('login_frm');
-    if ($E('facebook_login')) {
-      callClick('facebook_login', fbLogin);
-    }
+    initFacebookButton('facebook_login');
+    initGoogleButton('google_login');
   </script>
 </article>

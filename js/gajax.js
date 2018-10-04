@@ -1,5 +1,5 @@
 /**
- * Javascript Libraly for Kotchasan Framework
+ * Javascript Library for Kotchasan Framework
  *
  * @filesource js/gajax.js
  * @link http://www.kotchasan.com/
@@ -22,7 +22,8 @@ window.$K = (function() {
     init: function(element) {
       forEach(element.querySelectorAll("input,textarea"), function(elem) {
         var tagName = $G(elem).tagName.toLowerCase(),
-          type = elem.type ? elem.type.toLowerCase() : "";
+          type = elem.get("type"),
+          type = type ? type.toLowerCase() : "";
         if (
           elem.initObj !== true &&
           (tagName == "textarea" ||
@@ -96,54 +97,7 @@ window.$K = (function() {
             var autofocus = elem.get("autofocus");
             var text = elem;
             if (obj.type == "date") {
-              var o = {
-                type: "hidden",
-                name: elem.name,
-                id: elem.id,
-                disabled: obj.disabled
-              };
-              var hidden = $G(text.parentNode).create("input", o);
-              text = document.createElement("input");
-              text.setAttribute("type", "text");
-              if (obj.title != "") {
-                text.title = obj.title;
-              }
-              text.className = elem.className;
-              var src = new GCalendar(text, function() {
-                hidden.value = this.getDateFormat("y-m-d");
-                hidden.calendar = this;
-                hidden.callEvent("change");
-              });
-              if (obj.min) {
-                src.minDate(obj.min);
-              }
-              if (obj.max) {
-                src.maxDate(obj.max);
-              }
-              if (elem.placeholder) {
-                text.placeholder = elem.placeholder;
-              }
-              hidden.value = elem.get("value");
-              hidden.timer = window.setInterval(function() {
-                if ($E(hidden)) {
-                  if (hidden.value != src.old) {
-                    src.old = hidden.value;
-                    src.setDate(hidden.value);
-                  }
-                  if (hidden.disabled != text.disabled) {
-                    text.disabled = hidden.disabled ? true : false;
-                  }
-                  if (hidden.readOnly != text.readOnly) {
-                    text.readOnly = hidden.readOnly ? true : false;
-                  }
-                } else {
-                  window.clearInterval(hidden.timer);
-                }
-              }, 100);
-              hidden.display = text;
-              text.calendar = src;
-              text.initObj = true;
-              elem.replace(text);
+              new GCalendar(text);
             } else if (
               obj.type == "number" ||
               obj.type == "integer" ||
@@ -392,6 +346,21 @@ window.$K = (function() {
       return val;
     }
   };
+  window.debug = function(val) {
+    var p = document.createElement("p"),
+      div = $E("gdebug");
+    if (!div) {
+      div = document.createElement("div");
+      div.id = "gdebug";
+      document.body.appendChild(div);
+      div.style.cssText =
+        "left:0;bottom:0;width:100%;height:100px;color:#F00;background-color:#FFF;position:fixed;line-height:1;padding:10px;overflow:auto;";
+    }
+    p.style.cssText = "margin:0;";
+    p.innerText = val;
+    div.appendChild(p);
+    div.scrollTop = div.scrollHeight;
+  };
   Function.prototype.bind = function(o) {
     var __method = this;
     return function() {
@@ -424,6 +393,8 @@ window.$K = (function() {
         return (this.getMonth() + 1).toString().leftPad(2, "0");
       case "M":
         return Date.monthNames[this.getMonth()];
+      case "F":
+        return Date.longMonthNames[this.getMonth()];
       case "H":
         return this.getHours()
           .toString()
@@ -500,13 +471,13 @@ window.$K = (function() {
       month = d.getMonth();
       year = d.getFullYear();
     }
-    var dateStr = this.getDate();
-    var monthStr = this.getMonth();
-    var yearStr = this.getFullYear();
-    var theYear = yearStr - year;
-    var theMonth = monthStr - month;
-    var theDate = dateStr - date;
-    var days = "";
+    var dateStr = this.getDate(),
+      monthStr = this.getMonth(),
+      yearStr = this.getFullYear(),
+      theYear = yearStr - year,
+      theMonth = monthStr - month,
+      theDate = dateStr - date,
+      days = 0;
     if (
       monthStr == 0 ||
       monthStr == 2 ||
@@ -549,11 +520,12 @@ window.$K = (function() {
     } else if (date == dateStr) {
       inDays = 0;
     }
-    var result = ["day", "month", "year"];
-    result.day = inDays;
-    result.month = inMonths;
-    result.year = inYears;
-    return result;
+    return {
+      day: inDays,
+      month: inMonths,
+      year: inYears,
+      days: Math.round((this - d) / 86400000)
+    };
   };
   Date.monthNames = [
     "Jan.",
@@ -602,7 +574,8 @@ window.$K = (function() {
       .replace(/\\/g, "&#92;")
       .replace(/&/g, "&amp;")
       .replace(/\{/g, "&#x007B;")
-      .replace(/\}/g, "&#x007D;");
+      .replace(/\}/g, "&#x007D;")
+      .replace(/\//g, "&#47;");
   };
   String.prototype.unentityify = function() {
     return this.replace(/&lt;/g, "<")
@@ -612,7 +585,8 @@ window.$K = (function() {
       .replace(/&#92;/g, "\\")
       .replace(/&amp;/g, "&")
       .replace(/&#x007B;/g, "{")
-      .replace(/&#x007D;/g, "}");
+      .replace(/&#x007D;/g, "}")
+      .replace(/&#47;/g, "/");
   };
   String.prototype.toJSON = function() {
     try {
@@ -1176,7 +1150,7 @@ window.$K = (function() {
     },
     center: function() {
       var size = this.getDimensions();
-      if (this.style.position == "fixed") {
+      if (this.getStyle("position") == "fixed") {
         this.style.top =
           (document.viewport.getHeight() - size.height) / 2 + "px";
         this.style.left =
@@ -2191,9 +2165,6 @@ window.$K = (function() {
       if (!$E(container_div)) {
         var div = doc.createElement("div");
         div.id = container_div;
-        div.style.left = "-1000px";
-        div.style.top = "-1000px";
-        div.style.position = "absolute";
         doc.body.appendChild(div);
         var c = doc.createElement("div");
         div.appendChild(c);
@@ -2208,51 +2179,41 @@ window.$K = (function() {
       }
       this.div = $G(container_div);
       this.body = $G(this.div.firstChild);
-      this.body.style.overflow = "auto";
     },
     content: function() {
       return this.body;
     },
-    show: function(value) {
-      this.body.style.height = "auto";
-      this.body.style.width = "auto";
+    show: function(value, className) {
       this.body.setHTML(value);
       this.overlay();
-      this.div.style.display = "block";
+      if (className) {
+        this.div.className = className + " show";
+      } else {
+        this.div.className = "show";
+      }
       var self = this;
       window.setTimeout(function() {
-        var dm = self.body.getDimensions();
-        var hOffset =
-          dm.height -
-          self.body.getClientHeight() +
-          parseInt(self.body.getStyle("marginTop")) +
-          parseInt(self.body.getStyle("marginBottom")) +
-          40;
-        var wOffset =
-          dm.width -
-          self.body.getClientWidth() +
-          parseInt(self.body.getStyle("marginLeft")) +
-          parseInt(self.body.getStyle("marginRight")) +
-          20;
-        var h = document.viewport.getHeight() - hOffset;
+        var dm = self.body.getDimensions(),
+          hOffset =
+            dm.height -
+            self.body.getClientHeight() +
+            parseInt(self.body.getStyle("marginTop")) +
+            parseInt(self.body.getStyle("marginBottom")) +
+            40,
+          h = document.viewport.getHeight() - hOffset;
         if (dm.height > h) {
-          self.body.style.height = h + "px";
+          self.div.style.height = h + "px";
         }
-        var w = document.viewport.getWidth() - wOffset;
-        if (dm.width > w) {
-          self.body.style.width = w + "px";
-        }
-        self.div.style.zIndex = 1000;
-        var size = self.div.getDimensions();
-        self.div.style.width = size.width + "px";
         self.div.center();
-        self.div.fadeIn();
       }, 1);
       return this;
     },
     hide: function() {
+      this.div.style.height = null;
+      this.div.style.width = null;
+      this.div.style.top = "-100%";
+      this.div.className = "";
       var self = this;
-      this.div.fadeOut();
       this.iframe.fadeOut(function() {
         self._hide.call(self);
       });
@@ -2288,9 +2249,7 @@ window.$K = (function() {
       return this;
     },
     _hide: function() {
-      this.div.style.width = "auto";
       this.iframe.style.display = "none";
-      this.div.style.display = "none";
       this.body.innerHTML = "";
       if (Object.isFunction(this.onclose)) {
         this.onclose.call(this);
@@ -2983,6 +2942,7 @@ window.$K = (function() {
           self.mouse_click = true;
           self.input.focus();
           GEvent.stop(e);
+          return false;
         });
       });
       var vpo = this.input.viewportOffset(),
@@ -3116,9 +3076,11 @@ window.$K = (function() {
         this.panel.style.display = "none";
         this.panel.style.zIndex = 1001;
         this.input.readOnly = true;
-        this.input.addEvent("click", function() {
+        this.input.addEvent("click", function(e) {
           self.input.select();
           self._draw();
+          GEvent.stop(e);
+          return false;
         });
         $G(document.body).addEvent("click", function(e) {
           if (!$G(GEvent.element(e)).hasClass("ginput")) {
@@ -3239,10 +3201,19 @@ window.$K = (function() {
   };
   window.GCalendar = GClass.create();
   GCalendar.prototype = {
-    initialize: function(id, onchanged) {
-      this.input = $G(id);
-      this.input.addClass("gcalendar");
-      this.onchanged = onchanged || $K.emptyFunction;
+    initialize: function(id) {
+      this.hidden = $E(id);
+      this.input = $G(document.createElement("div"));
+      this.hidden.parentNode.insertBefore(this.input, this.hidden);
+      this.placeholder = document.createElement("div");
+      this.placeholder.className = "placeholder";
+      this.placeholder.style.position = "absolute";
+      this.input.appendChild(this.placeholder);
+      this.display = document.createElement("div");
+      this.input.appendChild(this.display);
+      this.input.tabIndex = 0;
+      this.input.style.cursor = "pointer";
+      this.hidden_value = null;
       this.mdate = null;
       this.xdate = null;
       this.mode = 0;
@@ -3258,12 +3229,13 @@ window.$K = (function() {
       this.calendar.style.position = "absolute";
       this.calendar.style.display = "none";
       this.calendar.style.zIndex = 1001;
-      this._dochanged();
       var self = this;
-      this.input.addEvent("click", function() {
+      this.input.addEvent("click", function(e) {
         self.mode = 0;
         self.cdate.setTime(self.date ? self.date.valueOf() : new Date());
         self._draw();
+        GEvent.stop(e);
+        return false;
       });
       this.input.addEvent("keydown", function(e) {
         var key = GEvent.keyCode(e);
@@ -3292,14 +3264,51 @@ window.$K = (function() {
           GEvent.stop(e);
         }
       });
-      this.input.addEvent("paste", function(e) {
-        GEvent.stop(e);
-      });
       $G(document.body).addEvent("click", function(e) {
-        if (!$G(GEvent.element(e)).hasClass("gcalendar")) {
+        if (
+          !(
+            $G(GEvent.element(e)).hasClass("input-gcalendar") ||
+            $G(GEvent.element(e).parentNode).hasClass("input-gcalendar")
+          )
+        ) {
           self.calendar.style.display = "none";
         }
       });
+      this.hidden.calendar = this;
+      this.hidden.setAttribute("type", "hidden");
+      if (this.hidden.min) {
+        this.minDate(this.hidden.min);
+      }
+      if (this.hidden.max) {
+        this.maxDate(this.hidden.max);
+      }
+      this.timer = window.setInterval(function() {
+        if ($E(self.hidden)) {
+          if (self.hidden.value != self.hidden_value) {
+            self.hidden_value = self.hidden.value;
+            self.setDate(self.hidden.value);
+          }
+          var cls = ["input-gcalendar"];
+          if (self.hidden.className != "") {
+            cls.push(self.hidden.className);
+          }
+          if (self.hidden.disabled) {
+            cls.push("disabled");
+          }
+          cls = cls.join(" ");
+          if (cls != self.input.className) {
+            self.input.className = cls;
+          }
+          if (self.hidden.title != self.input.title) {
+            self.input.title = self.hidden.title;
+          }
+          if (self.hidden.placeholder != self.placeholder.innerHTML) {
+            self.placeholder.innerHTML = self.hidden.placeholder;
+          }
+        } else {
+          window.clearInterval(self.timer);
+        }
+      }, 100);
     },
     _dochanged: function() {
       if (this.xdate && this.date && this.date > this.xdate) {
@@ -3309,12 +3318,17 @@ window.$K = (function() {
       }
       if (this.date) {
         this.cdate.setTime(this.date.valueOf());
-        this.input.value = this.date.format(this.format);
+        this.display.innerHTML = this.date.format(this.format);
+        this.hidden_value = this.date.format("y-m-d");
       } else {
         this.cdate.setTime(new Date());
-        this.input.value = "";
+        this.display.innerHTML = "";
+        this.hidden_value = "";
       }
-      this.onchanged.call(this);
+      this.placeholder.style.display =
+        this.hidden_value == "" ? "block" : "none";
+      this.hidden.value = this.hidden_value;
+      this.hidden.callEvent("change");
     },
     _toogle: function(e) {
       if (this.calendar.style.display == "block") {
@@ -3331,278 +3345,297 @@ window.$K = (function() {
       GEvent.stop(e);
     },
     _draw: function() {
-      var self = this;
-      this.calendar.innerHTML = "";
-      var div = document.createElement("div");
-      this.calendar.appendChild(div);
-      div.className = "gcalendar";
-      var p = document.createElement("p");
-      div.appendChild(p);
-      var a = document.createElement("a");
-      p.appendChild(a);
-      a.innerHTML = "&larr;";
-      $G(a).addEvent("click", function(e) {
-        self._move(e, -1);
-      });
-      if (this.mode < 2) {
+      if (this.hidden.readOnly == false) {
+        var self = this;
+        this.calendar.innerHTML = "";
+        var div = document.createElement("div");
+        this.calendar.appendChild(div);
+        div.className = "gcalendar";
+        var p = document.createElement("p");
+        div.appendChild(p);
+        var a = document.createElement("a");
+        p.appendChild(a);
+        a.innerHTML = "&larr;";
+        a.style.cursor = "pointer";
+        $G(a).addEvent("click", function(e) {
+          self._move(e, -1);
+          GEvent.stop(e);
+          return false;
+        });
+        if (this.mode < 2) {
+          a = document.createElement("a");
+          a.innerHTML = this.cdate.format(this.mode == 1 ? "Y" : "M Y");
+          $G(a).addEvent("click", function(e) {
+            self.mode++;
+            self._draw();
+            GEvent.stop(e);
+            return false;
+          });
+        } else {
+          var start_year = this.cdate.getFullYear() - 6;
+          a = document.createElement("span");
+          a.appendChild(
+            document.createTextNode(
+              start_year +
+                Date.yearOffset +
+                "-" +
+                (start_year + 11 + Date.yearOffset)
+            )
+          );
+        }
+        p.appendChild(a);
+        a.style.cursor = "pointer";
         a = document.createElement("a");
         p.appendChild(a);
-        a.innerHTML = this.cdate.format(this.mode == 1 ? "Y" : "M Y");
+        a.innerHTML = "&rarr;";
+        a.style.cursor = "pointer";
         $G(a).addEvent("click", function(e) {
-          self.mode++;
-          self._draw();
+          self._move(e, 1);
           GEvent.stop(e);
+          return false;
         });
-      } else {
-        var start_year = this.cdate.getFullYear() - 6;
-        a = document.createElement("span");
-        p.appendChild(a);
-        a.appendChild(
-          document.createTextNode(
-            start_year +
-              Date.yearOffset +
-              "-" +
-              (start_year + 11 + Date.yearOffset)
-          )
-        );
-      }
-      a = document.createElement("a");
-      p.appendChild(a);
-      a.innerHTML = "&rarr;";
-      $G(a).addEvent("click", function(e) {
-        self._move(e, 1);
-      });
-      var table = document.createElement("table");
-      div.appendChild(table);
-      var thead = document.createElement("thead");
-      table.appendChild(thead);
-      var tbody = document.createElement("tbody");
-      table.appendChild(tbody);
-      var intmonth = this.cdate.getMonth() + 1;
-      var intyear = this.cdate.getFullYear();
-      var cls = "";
-      var today = new Date();
-      var today_month = today.getMonth() + 1;
-      var today_year = today.getFullYear();
-      var today_date = today.getDate();
-      var sel_month = this.date ? this.date.getMonth() + 1 : today_month;
-      var sel_year = this.date ? this.date.getFullYear() : today_year;
-      var sel_date = this.date ? this.date.getDate() : today_date;
-      var r = 0;
-      var c = 0;
-      var bg, row, cell;
-      if (this.mode == 2) {
-        for (var i = start_year; i < start_year + 12; i++) {
-          c = (i - start_year) % 4;
-          if (c == 0) {
-            row = tbody.insertRow(r);
-            bg = bg == "bg1" ? "bg2" : "bg1";
-            row.className = "gcalendar_" + bg;
-            r++;
-          }
-          cell = row.insertCell(c);
-          cls = "month";
-          if (i == sel_year) {
-            cls = cls + " select";
-          }
-          if (i == today_year) {
-            cls = cls + " today";
-          }
-          cell.className = cls;
-          cell.appendChild(document.createTextNode(i + Date.yearOffset));
-          cell.oDate = new Date(i, 1, 1, 12, 0, 0, 0);
-          $G(cell).addEvent("click", function(e) {
-            self.cdate.setTime(this.oDate.valueOf());
-            self.mode--;
-            self._draw();
-            GEvent.stop(e);
-          });
-        }
-      } else if (this.mode == 1) {
-        forEach(Date.monthNames, function(month, i) {
-          c = i % 4;
-          if (c == 0) {
-            row = tbody.insertRow(r);
-            bg = bg == "bg1" ? "bg2" : "bg1";
-            row.className = "gcalendar_" + bg;
-            r++;
-          }
-          cell = row.insertCell(c);
-          cls = "month";
-          if (intyear == sel_year && i + 1 == sel_month) {
-            cls = cls + " select";
-          }
-          if (intyear == today_year && i + 1 == today_month) {
-            cls = cls + " today";
-          }
-          cell.className = cls;
-          cell.appendChild(document.createTextNode(month));
-          cell.oDate = new Date(intyear, i, 1, 0, 0, 0, 0);
-          $G(cell).addEvent("click", function(e) {
-            self.cdate.setTime(this.oDate.valueOf());
-            self.mode--;
-            self._draw();
-            GEvent.stop(e);
-          });
-        });
-      } else {
-        row = thead.insertRow(0);
-        forEach(Date.dayNames, function(item, i) {
-          cell = document.createElement("th");
-          row.appendChild(cell);
-          cell.appendChild(document.createTextNode(item));
-        });
-        var tmp_prev_month = intmonth - 1;
-        var tmp_next_month = intmonth + 1;
-        var tmp_next_year = intyear;
-        var tmp_prev_year = intyear;
-        if (tmp_prev_month == 0) {
-          tmp_prev_month = 12;
-          tmp_prev_year--;
-        }
-        if (tmp_next_month == 13) {
-          tmp_next_month = 1;
-          tmp_next_year++;
-        }
-        var initial_day = 1;
-        var tmp_init = new Date(intyear, intmonth, 1, 0, 0, 0, 0).dayOfWeek();
-        var max_prev = new Date(
-          tmp_prev_year,
-          tmp_prev_month,
-          0,
-          0,
-          0,
-          0,
-          0
-        ).daysInMonth();
-        var max_this = new Date(intyear, intmonth, 0, 0, 0, 0, 0).daysInMonth();
-        if (tmp_init !== 0) {
-          initial_day = max_prev - (tmp_init - 1);
-        }
-        tmp_next_year = tmp_next_year.toString();
-        tmp_prev_year = tmp_prev_year.toString();
-        tmp_next_month = tmp_next_month.toString();
-        tmp_prev_month = tmp_prev_month.toString();
-        var pointer = initial_day;
-        var flag_init = initial_day == 1 ? 1 : 0;
-        var tmp_month = initial_day == 1 ? intmonth : parseInt(tmp_prev_month);
-        var tmp_year = initial_day == 1 ? intyear : parseInt(tmp_prev_year);
-        if (this.mdate !== null) {
-          var min_month = this.mdate.getMonth() + 1;
-          var min_year = this.mdate.getFullYear();
-          var min_date = this.mdate.getDate();
-        }
-        if (this.xdate !== null) {
-          var max_month = this.xdate.getMonth() + 1;
-          var max_year = this.xdate.getFullYear();
-          var max_date = this.xdate.getDate();
-        }
-        var flag_end = 0;
-        r = 0;
-        for (var x = 0; x < 42; x++) {
-          if (tmp_init !== 0 && pointer > max_prev && flag_init == 0) {
-            flag_init = 1;
-            pointer = 1;
-            tmp_month = intmonth;
-            tmp_year = intyear;
-          }
-          if (flag_init == 1 && flag_end == 0 && pointer > max_this) {
-            flag_end = 1;
-            pointer = 1;
-            tmp_month = parseInt(tmp_next_month);
-            tmp_year = parseInt(tmp_next_year);
-          }
-          c = x % 7;
-          if (c == 0) {
-            row = tbody.insertRow(r);
-            r++;
-          }
-          cell = row.insertCell(c);
-          cell.oDate = new Date(tmp_year, tmp_month - 1, pointer, 0, 0, 0, 0);
-          cell.title = cell.oDate.format(self.format);
-          cell.appendChild(document.createTextNode(pointer));
-          var canclick = true;
-          if (this.mdate !== null && this.xdate !== null) {
-            canclick =
-              tmp_year == min_year &&
-              tmp_month == min_month &&
-              pointer >= min_date;
-            canclick =
-              canclick ||
-              (tmp_year == max_year &&
-                tmp_month == max_month &&
-                pointer <= max_date);
-          } else if (this.mdate !== null) {
-            canclick =
-              tmp_year > min_year ||
-              (tmp_year == min_year && tmp_month > min_month);
-            canclick =
-              canclick ||
-              (tmp_year == min_year &&
-                tmp_month == min_month &&
-                pointer >= min_date);
-          } else if (this.xdate !== null) {
-            canclick =
-              tmp_year < max_year ||
-              (tmp_year == max_year && tmp_month < max_month);
-            canclick =
-              canclick ||
-              (tmp_year == max_year &&
-                tmp_month == max_month &&
-                pointer <= max_date);
-          }
-          if (canclick) {
+        var table = document.createElement("table");
+        div.appendChild(table);
+        var thead = document.createElement("thead");
+        table.appendChild(thead);
+        var tbody = document.createElement("tbody");
+        table.appendChild(tbody);
+        var intmonth = this.cdate.getMonth() + 1;
+        var intyear = this.cdate.getFullYear();
+        var cls = "";
+        var today = new Date();
+        var today_month = today.getMonth() + 1;
+        var today_year = today.getFullYear();
+        var today_date = today.getDate();
+        var sel_month = this.date ? this.date.getMonth() + 1 : today_month;
+        var sel_year = this.date ? this.date.getFullYear() : today_year;
+        var sel_date = this.date ? this.date.getDate() : today_date;
+        var r = 0;
+        var c = 0;
+        var bg, row, cell;
+        if (this.mode == 2) {
+          for (var i = start_year; i < start_year + 12; i++) {
+            c = (i - start_year) % 4;
+            if (c == 0) {
+              row = tbody.insertRow(r);
+              bg = bg == "bg1" ? "bg2" : "bg1";
+              row.className = "gcalendar_" + bg;
+              r++;
+            }
+            cell = row.insertCell(c);
+            cls = "month";
+            if (i == sel_year) {
+              cls = cls + " select";
+            }
+            if (i == today_year) {
+              cls = cls + " today";
+            }
+            cell.className = cls;
+            cell.appendChild(document.createTextNode(i + Date.yearOffset));
+            cell.oDate = new Date(i, 1, 1, 12, 0, 0, 0);
             $G(cell).addEvent("click", function(e) {
-              if (self.date === null) {
-                self.date = new Date();
-              }
-              self.date.setTime(this.oDate.valueOf());
-              self._dochanged();
-              var input = $E(self.input);
-              input.focus();
-              input.select();
+              self.cdate.setTime(this.oDate.valueOf());
+              self.mode--;
+              self._draw();
+              GEvent.stop(e);
+              return false;
             });
-            cls = tmp_month == intmonth ? "curr" : "ex";
-          } else {
-            cls = "ex";
           }
-          if (
-            tmp_year == sel_year &&
-            tmp_month == sel_month &&
-            pointer == sel_date
-          ) {
-            cls = cls + " select";
+        } else if (this.mode == 1) {
+          forEach(Date.monthNames, function(month, i) {
+            c = i % 4;
+            if (c == 0) {
+              row = tbody.insertRow(r);
+              bg = bg == "bg1" ? "bg2" : "bg1";
+              row.className = "gcalendar_" + bg;
+              r++;
+            }
+            cell = row.insertCell(c);
+            cls = "month";
+            if (intyear == sel_year && i + 1 == sel_month) {
+              cls = cls + " select";
+            }
+            if (intyear == today_year && i + 1 == today_month) {
+              cls = cls + " today";
+            }
+            cell.className = cls;
+            cell.appendChild(document.createTextNode(month));
+            cell.oDate = new Date(intyear, i, 1, 0, 0, 0, 0);
+            $G(cell).addEvent("click", function(e) {
+              self.cdate.setTime(this.oDate.valueOf());
+              self.mode--;
+              self._draw();
+              GEvent.stop(e);
+              return false;
+            });
+          });
+        } else {
+          row = thead.insertRow(0);
+          forEach(Date.dayNames, function(item, i) {
+            cell = document.createElement("th");
+            row.appendChild(cell);
+            cell.appendChild(document.createTextNode(item));
+          });
+          var tmp_prev_month = intmonth - 1;
+          var tmp_next_month = intmonth + 1;
+          var tmp_next_year = intyear;
+          var tmp_prev_year = intyear;
+          if (tmp_prev_month == 0) {
+            tmp_prev_month = 12;
+            tmp_prev_year--;
           }
-          if (
-            tmp_year == today_year &&
-            tmp_month == today_month &&
-            pointer == today_date
-          ) {
-            cls = cls + " today";
+          if (tmp_next_month == 13) {
+            tmp_next_month = 1;
+            tmp_next_year++;
           }
-          cell.className = cls;
-          pointer++;
+          var initial_day = 1;
+          var tmp_init = new Date(intyear, intmonth, 1, 0, 0, 0, 0).dayOfWeek();
+          var max_prev = new Date(
+            tmp_prev_year,
+            tmp_prev_month,
+            0,
+            0,
+            0,
+            0,
+            0
+          ).daysInMonth();
+          var max_this = new Date(
+            intyear,
+            intmonth,
+            0,
+            0,
+            0,
+            0,
+            0
+          ).daysInMonth();
+          if (tmp_init !== 0) {
+            initial_day = max_prev - (tmp_init - 1);
+          }
+          tmp_next_year = tmp_next_year.toString();
+          tmp_prev_year = tmp_prev_year.toString();
+          tmp_next_month = tmp_next_month.toString();
+          tmp_prev_month = tmp_prev_month.toString();
+          var pointer = initial_day;
+          var flag_init = initial_day == 1 ? 1 : 0;
+          var tmp_month =
+            initial_day == 1 ? intmonth : parseInt(tmp_prev_month);
+          var tmp_year = initial_day == 1 ? intyear : parseInt(tmp_prev_year);
+          if (this.mdate !== null) {
+            var min_month = this.mdate.getMonth() + 1;
+            var min_year = this.mdate.getFullYear();
+            var min_date = this.mdate.getDate();
+          }
+          if (this.xdate !== null) {
+            var max_month = this.xdate.getMonth() + 1;
+            var max_year = this.xdate.getFullYear();
+            var max_date = this.xdate.getDate();
+          }
+          var flag_end = 0;
+          r = 0;
+          for (var x = 0; x < 42; x++) {
+            if (tmp_init !== 0 && pointer > max_prev && flag_init == 0) {
+              flag_init = 1;
+              pointer = 1;
+              tmp_month = intmonth;
+              tmp_year = intyear;
+            }
+            if (flag_init == 1 && flag_end == 0 && pointer > max_this) {
+              flag_end = 1;
+              pointer = 1;
+              tmp_month = parseInt(tmp_next_month);
+              tmp_year = parseInt(tmp_next_year);
+            }
+            c = x % 7;
+            if (c == 0) {
+              row = tbody.insertRow(r);
+              r++;
+            }
+            cell = row.insertCell(c);
+            cell.oDate = new Date(tmp_year, tmp_month - 1, pointer, 0, 0, 0, 0);
+            cell.title = cell.oDate.format(self.format);
+            cell.appendChild(document.createTextNode(pointer));
+            var canclick = true;
+            if (this.mdate !== null && this.xdate !== null) {
+              canclick =
+                tmp_year == min_year &&
+                tmp_month == min_month &&
+                pointer >= min_date;
+              canclick =
+                canclick ||
+                (tmp_year == max_year &&
+                  tmp_month == max_month &&
+                  pointer <= max_date);
+            } else if (this.mdate !== null) {
+              canclick =
+                tmp_year > min_year ||
+                (tmp_year == min_year && tmp_month > min_month);
+              canclick =
+                canclick ||
+                (tmp_year == min_year &&
+                  tmp_month == min_month &&
+                  pointer >= min_date);
+            } else if (this.xdate !== null) {
+              canclick =
+                tmp_year < max_year ||
+                (tmp_year == max_year && tmp_month < max_month);
+              canclick =
+                canclick ||
+                (tmp_year == max_year &&
+                  tmp_month == max_month &&
+                  pointer <= max_date);
+            }
+            if (canclick) {
+              $G(cell).addEvent("click", function(e) {
+                if (self.date === null) {
+                  self.date = new Date();
+                }
+                self.date.setTime(this.oDate.valueOf());
+                self._dochanged();
+                var input = $E(self.input);
+                input.focus();
+              });
+              cls = tmp_month == intmonth ? "curr" : "ex";
+            } else {
+              cls = "ex";
+            }
+            if (
+              tmp_year == sel_year &&
+              tmp_month == sel_month &&
+              pointer == sel_date
+            ) {
+              cls = cls + " select";
+            }
+            if (
+              tmp_year == today_year &&
+              tmp_month == today_month &&
+              pointer == today_date
+            ) {
+              cls = cls + " today";
+            }
+            cell.className = cls;
+            pointer++;
+          }
         }
+        var vpo = this.input.viewportOffset(),
+          t = vpo.top + this.input.getHeight() + 5,
+          dm = this.calendar.getDimensions();
+        if (
+          t + dm.height + 5 >=
+          document.viewport.getHeight() + document.viewport.getscrollTop()
+        ) {
+          this.calendar.style.top = Math.max(vpo.top - dm.height - 5, 0) + "px";
+        } else {
+          this.calendar.style.top = t + "px";
+        }
+        var l = Math.max(
+          vpo.left + dm.width > document.viewport.getWidth()
+            ? vpo.left + this.input.getWidth() - dm.width
+            : vpo.left,
+          document.viewport.getscrollLeft() + 5
+        );
+        this.calendar.style.left = l + "px";
+        this.calendar.style.display = "block";
       }
-      var vpo = this.input.viewportOffset(),
-        t = vpo.top + this.input.getHeight() + 5,
-        dm = this.calendar.getDimensions();
-      if (
-        t + dm.height + 5 >=
-        document.viewport.getHeight() + document.viewport.getscrollTop()
-      ) {
-        this.calendar.style.top = vpo.top - dm.height - 5 + "px";
-      } else {
-        this.calendar.style.top = t + "px";
-      }
-      var l = Math.max(
-        vpo.left + dm.width > document.viewport.getWidth()
-          ? vpo.left + this.input.getWidth() - dm.width
-          : vpo.left,
-        document.viewport.getscrollLeft() + 5
-      );
-      this.calendar.style.left = l + "px";
-      this.calendar.style.display = "block";
     },
     _move: function(e, value) {
       if (this.mode == 2) {
@@ -3645,7 +3678,7 @@ window.$K = (function() {
       return this;
     },
     setDate: function(date) {
-      if (date === "" || date === null) {
+      if (date === null || !/[0-9]{2,4}\-[0-9]{1,2}\-[0-9]{1,2}/.test(date)) {
         this.date = null;
       } else {
         this.date = this._toDate(date);
@@ -3691,7 +3724,7 @@ window.$K = (function() {
       return this;
     },
     setText: function(value) {
-      this.input.value = value;
+      this.display.innerHTML = value;
     },
     _toDate: function(date) {
       var d = null;
@@ -3927,13 +3960,14 @@ window.$K = (function() {
       this.ddcolor.style.zIndex = 1001;
       this.ddcolor.className = "gddcolor";
       var self = this;
-      var _doPreview = function() {
+      this.input.addEvent("click", function(e) {
         self.createColors();
         self._draw();
         self.showDemo(self.color);
         self.pickColor(self.color);
-      };
-      this.input.addEvent("click", _doPreview);
+        GEvent.stop(e);
+        return false;
+      });
       new GMask(this.input, function(e) {
         return /[0-9a-fA-F]/.test(e.key);
       });
@@ -3944,6 +3978,7 @@ window.$K = (function() {
           self._draw();
           self.ddcolor.firstChild.firstChild.focus();
           GEvent.stop(e);
+          return false;
         }
       });
       if (this.input.type == "text") {
@@ -4097,6 +4132,7 @@ window.$K = (function() {
             self.pickColor(this.title);
           }
           GEvent.stop(e);
+          return false;
         });
         a.addEvent("mouseover", function() {
           self.showDemo(this.title);
@@ -4310,23 +4346,29 @@ window.$K = (function() {
       }
     },
     show: function(obj, fullscreen) {
-      this.overlay();
-      this.zoom.className = fullscreen ? "btnnav zoomin" : "btnnav zoomout";
-      this.zoom.title = trans(fullscreen ? "fit screen" : "full image");
       var img,
         title,
         self = this;
+      if (obj.href) {
+        img = obj.href;
+        title = obj.title;
+      } else if (obj.src) {
+        img = obj.src;
+        title = obj.alt;
+      } else {
+        img = obj.style.backgroundImage.substr(
+          5,
+          obj.style.backgroundImage.length - 7
+        );
+        title = obj.title;
+      }
+      this.overlay();
+      this.zoom.className = fullscreen ? "btnnav zoomin" : "btnnav zoomout";
+      this.zoom.title = trans(fullscreen ? "fit screen" : "full image");
       this.loading.className = this.loadingClass + " show";
       this.prev.className = this.currentId == 0 ? "hidden" : "btnnav prev";
       this.next.className =
         this.currentId == this.imgs.length - 1 ? "hidden" : "btnnav next";
-      if (obj.href) {
-        img = obj.href;
-        title = obj.title;
-      } else {
-        img = obj.src;
-        title = obj.alt;
-      }
       new preload(img, function() {
         self.loading.className = self.loadingClass;
         self.img.src = this.src;
@@ -4442,9 +4484,8 @@ window.$K = (function() {
   window.callClick = function(input, func) {
     var doKeyDown = function(e) {
       if (GEvent.keyCode(e) == 13 || e.key == "Enter") {
-        var tmp = e;
         if (func.call(this, e) !== true) {
-          GEvent.stop(tmp);
+          GEvent.stop(e);
           return false;
         }
       }

@@ -76,7 +76,7 @@ class View extends \Gcms\View
             $row .= '<div>&nbsp;</div>';
         }
         $row .= '<div><span id="list_color_'.$id.'" class="icon-color" title="'.$color.'"></span></div>';
-        $row .= '<div><span id="list_name_'.$id.'" title="{LNG_click to edit}" class="editinplace">'.$item.'</span></div>';
+        $row .= '<div><span id="list_name_'.$id.'" title="{LNG_Click to edit}" class="editinplace">'.$item.'</span></div>';
         if ($id == 1) {
             $row .= '<div class="right comment">{LNG_Administrator status It is of utmost importance to do everything}</div>';
         } elseif ($id == 0) {

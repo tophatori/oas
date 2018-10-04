@@ -39,7 +39,7 @@ class View extends \Gcms\View
         $this->tax_status = Language::get('TAX_STATUS');
         $this->categories = \Inventory\Category\Model::categories();
         // URL สำหรับส่งให้ตาราง
-        $uri = $request->createUriWithGlobals(WEB_URL . 'index.php');
+        $uri = $request->createUriWithGlobals(WEB_URL.'index.php');
         // ตาราง
         $table = new DataTable(array(
             /* Uri */
@@ -69,7 +69,7 @@ class View extends \Gcms\View
                     ),
                 ),
                 array(
-                    'class' => 'button green icon-plus',
+                    'class' => 'button pink icon-plus',
                     'href' => $uri->createBackUri(array('module' => 'inventory-write', 'id' => '0')),
                     'text' => '{LNG_Add New} {LNG_Product}',
                 ),
@@ -143,8 +143,8 @@ class View extends \Gcms\View
             ),
         ));
         // save cookie
-        setcookie('setup_perPage', $table->perPage, time() + 2592000, '/', null, null, true);
-        setcookie('setup_sort', $table->sort, time() + 2592000, '/', null, null, true);
+        setcookie('setup_perPage', $table->perPage, time() + 2592000, '/', null, HOST, true);
+        setcookie('setup_sort', $table->sort, time() + 2592000, '/', null, HOST, true);
 
         return $table->render();
     }

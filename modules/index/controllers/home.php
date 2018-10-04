@@ -34,9 +34,9 @@ class Controller extends \Gcms\Controller
      */
     public function render(Request $request)
     {
-        // ข้อความ title bar
+        // ไตเติล
         $this->title = Language::get('Dashboard');
-        // เลือกเมนู
+        // เมนู
         $this->menu = 'home';
         // แสดงผล
         $section = Html::create('section', array(

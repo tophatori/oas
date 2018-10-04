@@ -38,7 +38,7 @@ class Inputs implements \Iterator
      */
     public function __call($name, $arguments)
     {
-        if (method_exists('\Kotchasan\InputItem', $name)) {
+        if (method_exists('Kotchasan\InputItem', $name)) {
             $result = array();
             foreach ($this->datas as $key => $item) {
                 $result[$key] = $this->collectInputs($item, $name, $arguments);
@@ -70,7 +70,9 @@ class Inputs implements \Iterator
     }
 
     /**
-     * @return InputItem
+     * คืนค่า InputItem รายการปัจจุบัน.
+     *
+     * @return \Kotchasan\InputItem
      */
     public function current()
     {
@@ -84,7 +86,7 @@ class Inputs implements \Iterator
      *
      * @param string|int $key รายการที่ต้องการ
      *
-     * @return InputItem
+     * @return \Kotchasan\InputItem
      */
     public function get($key)
     {
@@ -92,6 +94,8 @@ class Inputs implements \Iterator
     }
 
     /**
+     * คืนค่าคีย์หรือลำดับของ InputItem ในลิสต์รายการ.
+     *
      * @return string
      */
     public function key()
@@ -102,7 +106,9 @@ class Inputs implements \Iterator
     }
 
     /**
-     * @return InputItem
+     * คืนค่า InputItem รายการถัดไป.
+     *
+     * @return \Kotchasan\InputItem
      */
     public function next()
     {

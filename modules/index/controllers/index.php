@@ -68,38 +68,37 @@ class Controller extends \Gcms\Controller
                 closedir($f);
             }
             // Controller หลัก
-            $main = new \Index\Main\Controller();
+            $page = createClass('Index\Main\Controller')->execute($request);
             $bodyclass = 'mainpage';
         } else {
             // forgot, login, register
-            $main = new \Index\Welcome\Controller();
+            $page = createClass('Index\Welcome\Controller')->execute($request);
             $bodyclass = 'loginpage';
         }
-        $languages = array();
-        $uri = $request->getUri();
+        $languages = '';
         foreach (Language::installedLanguage() as $item) {
-            $languages[$item] = '<li><a id=lang_'.$item.' href="'.$uri->withParams(array('lang' => $item), true).'" title="{LNG_Language} '.strtoupper($item).'" style="background-image:url('.WEB_URL.'language/'.$item.'.gif)" tabindex=1>&nbsp;</a></li>';
+            $languages .= '<li><a id=lang_'.$item.' href="'.$page->canonical()->withParams(array('lang' => $item), true).'" title="{LNG_Language} '.strtoupper($item).'" style="background-image:url('.WEB_URL.'language/'.$item.'.gif)" tabindex=1>&nbsp;</a></li>';
         }
-        if ($bodyclass == 'loginpage' && is_file(ROOT_PATH.self::$cfg->skin.'/bg_image.jpg')) {
-            $bg_image = WEB_URL.self::$cfg->skin.'/bg_image.jpg';
+        if ($bodyclass == 'loginpage' && is_file(ROOT_PATH.DATA_FOLDER.'bg_image.png')) {
+            $bg_image = WEB_URL.DATA_FOLDER.'bg_image.png';
         } else {
             $bg_image = '';
         }
-        if (is_file(ROOT_PATH.self::$cfg->skin.'/logo.png')) {
-            $logo = '<img src="'.WEB_URL.self::$cfg->skin.'/logo.png" alt="{WEBTITLE}">';
+        if (is_file(ROOT_PATH.DATA_FOLDER.'logo.png')) {
+            $logo = '<img src="'.WEB_URL.DATA_FOLDER.'logo.png" alt="{WEBTITLE}">&nbsp;{WEBTITLE}';
         } else {
-            $logo = '<span class="icon-office">{WEBTITLE}</span>';
+            $logo = '<span class="icon-billing">{WEBTITLE}</span>';
         }
         // เนื้อหา
         self::$view->setContents(array(
             // main template
-            '/{MAIN}/' => $main->execute($request),
+            '/{MAIN}/' => $page->detail(),
             // โลโก
             '/{LOGO}/' => $logo,
             // language menu
-            '/{LANGUAGES}/' => implode('', $languages),
+            '/{LANGUAGES}/' => $languages,
             // title
-            '/{TITLE}/' => $main->title(),
+            '/{TITLE}/' => $page->title(),
             // class สำหรับ body
             '/{BODYCLASS}/' => $bodyclass,
             // รูปภาพพื้นหลัง
@@ -108,13 +107,16 @@ class Controller extends \Gcms\Controller
         if ($login) {
             self::$view->setContents(array(
                 // เมนู
-                '/{MENUS}/' => self::$menus->render($main->menu(), $login),
+                '/{MENUS}/' => self::$menus->render($page->menu(), $login),
                 // แสดงชื่อคน Login
                 '/{LOGINNAME}/' => empty($login['name']) ? $login['username'] : $login['name'],
             ));
         }
         // ส่งออก เป็น HTML
         $response = new Response();
+        if ($page->status() == 404) {
+            $response = $response->withStatus(404)->withAddedHeader('Status', '404 Not Found');
+        }
         $response->withContent(self::$view->renderHTML())->send();
     }
 }

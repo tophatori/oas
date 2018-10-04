@@ -10,7 +10,6 @@
 
 namespace Index\Forgot;
 
-use Kotchasan\Email;
 use Kotchasan\Language;
 
 /**
@@ -26,18 +25,19 @@ class Model extends \Kotchasan\KBase
      * ฟังก์ชั่นส่งอีเมลขอรหัสผ่านใหม่.
      *
      * @param int    $id
-     * @param string $password
      * @param string $username
      *
      * @return string
      */
-    public static function execute($id, $password, $username)
+    public static function execute($id, $username)
     {
+        // รหัสผ่านใหม่
+        $password = \Kotchasan\Text::rndname(6);
         // ข้อมูลอีเมล
-        $subject = Language::get('Get new password').' '.self::$cfg->web_title;
+        $subject = '['.self::$cfg->web_title.'] '.Language::get('Get new password');
         $msg = $username.' '.Language::get('Your new password is').' : '.$password;
         // send mail
-        $err = Email::send($username, self::$cfg->noreply_email, $subject, $msg);
+        $err = \Kotchasan\Email::send($username, self::$cfg->noreply_email, $subject, $msg);
         if ($err->error()) {
             // คืนค่า error
             return $err->getErrorMessage();

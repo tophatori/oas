@@ -9,7 +9,7 @@
  * @see http://www.kotchasan.com/
  */
 /*
- * Site root.
+ * Site root
  */
 define('ROOT_PATH', str_replace('\\', '/', dirname(__FILE__)).'/');
 /*

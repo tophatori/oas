@@ -527,6 +527,8 @@ class DataTable extends \Kotchasan\KBase
                 }
                 $this->uri = $this->uri->withParams(array('search' => $search));
             }
+            $form[] = '</div>';
+            $form[] = '<div class="table_search">';
             $form[] = '<fieldset class=search>';
             $form[] = '<label accesskey=f><input type=text name=search value="'.$search.'" placeholder="'.Language::get('Search').'"></label>';
             $form[] = '<button type=submit>&#xe607;</button>';
@@ -534,7 +536,7 @@ class DataTable extends \Kotchasan\KBase
             $form[] = '</fieldset>';
         }
         if (!$this->explain && !empty($form)) {
-            $content[] = '<form class="table_nav" method="get" action="'.$this->uri.'">'.implode('', $form).'</form>';
+            $content[] = '<form class="table_nav" method="get" action="'.$this->uri.'"><div>'.implode('', $form).'</div></form>';
         }
         if (isset($this->model)) {
             if ($this->explain) {
@@ -1098,7 +1100,7 @@ class DataTable extends \Kotchasan\KBase
                     $prop[$key] = $key.'="'.$value.'"';
                 }
             }
-            $row = '<fieldset><label>'.$item['text'].' <input '.implode(' ', $prop).'></label></fieldset>';
+            $row = '<fieldset><label>'.(isset($item['text']) ? $item['text'] : '').' <input '.implode(' ', $prop).'></label></fieldset>';
         } else {
             $prop = array();
             foreach ($item as $key => $value) {
@@ -1106,7 +1108,7 @@ class DataTable extends \Kotchasan\KBase
                     $prop[$key] = $key.'="'.$value.'"';
                 }
             }
-            $row = '<fieldset><label>'.$item['text'].' <select '.implode(' ', $prop).'>';
+            $row = '<fieldset><label>'.(isset($item['text']) ? $item['text'] : '').' <select '.implode(' ', $prop).'>';
             if (!empty($item['options'])) {
                 foreach ($item['options'] as $key => $text) {
                     $sel = isset($item['value']) && (string) $key == $item['value'] ? ' selected' : '';

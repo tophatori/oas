@@ -58,7 +58,7 @@ class Controller extends \Gcms\Controller
 
             return $section->render();
         }
-        // 404.html
-        return \Index\Error\Controller::page404();
+        // 404
+        return \Index\Error\Controller::execute($this);
     }
 }

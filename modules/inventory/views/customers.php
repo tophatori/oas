@@ -2,10 +2,10 @@
 /**
  * @filesource modules/inventory/views/customers.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Inventory\Customers;
@@ -32,7 +32,7 @@ class View extends \Gcms\View
     public function render(Request $request)
     {
         // URL สำหรับส่งให้ตาราง
-        $uri = $request->createUriWithGlobals(WEB_URL . 'index.php');
+        $uri = $request->createUriWithGlobals(WEB_URL.'index.php');
         // ตาราง
         $table = new DataTable(array(
             /* Uri */
@@ -61,7 +61,7 @@ class View extends \Gcms\View
                     ),
                 ),
                 array(
-                    'class' => 'button green icon-plus',
+                    'class' => 'button pink icon-plus',
                     'href' => $uri->createBackUri(array('module' => 'inventory-customer', 'id' => '0')),
                     'text' => '{LNG_Add New} {LNG_Customer}/{LNG_Supplier}',
                 ),
@@ -97,8 +97,8 @@ class View extends \Gcms\View
             ),
         ));
         // save cookie
-        setcookie('customer_perPage', $table->perPage, time() + 2592000, '/', null, null, true);
-        setcookie('customer_sort', $table->sort, time() + 2592000, '/', null, null, true);
+        setcookie('customer_perPage', $table->perPage, time() + 2592000, '/', null, HOST, true);
+        setcookie('customer_sort', $table->sort, time() + 2592000, '/', null, HOST, true);
 
         return $table->render();
     }
@@ -114,7 +114,7 @@ class View extends \Gcms\View
      */
     public function onRow($item, $o, $prop)
     {
-        $item['email'] = empty($item['email']) ? '' : '<a href="mailto:' . $item['email'] . '">' . $item['email'] . '</a>';
+        $item['email'] = empty($item['email']) ? '' : '<a href="mailto:'.$item['email'].'">'.$item['email'].'</a>';
         $item['phone'] = self::showPhone($item['phone']);
 
         return $item;

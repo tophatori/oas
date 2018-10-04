@@ -53,6 +53,7 @@ class QueryBuilder extends \Kotchasan\Database\Query
      * ฟังก์ชั่นสร้างคำสั่ง WHERE ถ้ามีข้อมูล Where ก่อนหน้าจะ AND กับข้อมูลก่อนหน้า.
      *
      * @assert where(array('U.id', 1))->andWhere(array('U.id', 2))->text() [==] " WHERE (U.`id` = 1) AND (U.`id` = 2)"
+     * @assert where(array('U.id', 1))->andWhere(array(Sql::BETWEEN('id', 0, 1), Sql::BETWEEN('id', 0, 1)), 'OR')->text() [==] " WHERE (U.`id` = 1) AND (`id` BETWEEN 0 AND 1 OR `id` BETWEEN 0 AND 1)"
      *
      * @param mixed  $condition query string หรือ array
      * @param string $oprator   defaul AND
@@ -460,6 +461,7 @@ class QueryBuilder extends \Kotchasan\Database\Query
      * ฟังก์ชั่นสร้างคำสั่ง WHERE ถ้ามีข้อมูล Where ก่อนหน้าจะ OR กับข้อมูลก่อนหน้า.
      *
      * @assert where(array('U.id', 1))->orWhere(array('U.id', 2))->text() [==] " WHERE (U.`id` = 1) OR (U.`id` = 2)"
+     * @assert where(array('U.id', 1))->orWhere(array(Sql::BETWEEN('id', 0, 1), Sql::BETWEEN('id', 0, 1)), 'OR')->text() [==] " WHERE (U.`id` = 1) OR (`id` BETWEEN 0 AND 1 OR `id` BETWEEN 0 AND 1)"
      *
      * @param mixed  $condition query string หรือ array
      * @param string $oprator   defaul AND
@@ -742,7 +744,10 @@ class QueryBuilder extends \Kotchasan\Database\Query
      * @assert where(array('ip', 'NOT IN', array('', '192.168.1.104')))->text() [==] " WHERE `ip` NOT IN ('', '192.168.1.104')"
      * @assert where(array('U.id', '(SELECT CASE END)'))->text() [==] " WHERE U.`id` = '(SELECT CASE END)'"
      * @assert where(array(array(Sql::YEAR('create_date'), Sql::YEAR('S.`create_date`'))))->text() [==] " WHERE YEAR(`create_date`) = YEAR(S.`create_date`)"
-     * @assert where(array('U.id', Sql::strValue('G.id')))->text('U.`id`') [==] " WHERE U.`id` = 'G.id'"
+     * @assert where(array('U.id', Sql::strValue('G.id')))->text() [==] " WHERE U.`id` = 'G.id'"
+     * @assert where(Sql::ISNULL('U.id'))->text() [==] " WHERE U.`id` IS NULL"
+     * @assert where(array(array('create_date', 'A'), Sql::BETWEEN('id', 'ทดสอบ', 'ทดสอบ')))->text() [==] " WHERE `create_date` = 'A' AND `id` BETWEEN 'ทดสอบ' AND 'ทดสอบ'"
+     * @assert where(array(array(Sql::BETWEEN('id', 0, 1), 'OR', Sql::BETWEEN('id', 0, 1)), array(Sql::BETWEEN('id', 0, 1), 'OR', Sql::BETWEEN('id', 0, 1))), 'OR')->text() [==] " WHERE `id` BETWEEN 0 AND 1 OR `id` BETWEEN 0 AND 1 OR `id` BETWEEN 0 AND 1 OR `id` BETWEEN 0 AND 1"
      *
      * @param mixed  $condition query string หรือ array
      * @param string $oprator   defaul AND

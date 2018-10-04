@@ -62,7 +62,7 @@ class Model extends \Kotchasan\KBase
                     if ($match[1] == 'add') {
                         // เพิ่มสถานะสมาชิกใหม่
                         $i = sizeof($config->member_status);
-                        $config->member_status[$i] = Language::get('click to edit');
+                        $config->member_status[$i] = Language::get('Click to edit');
                         $config->color_status[$i] = '#000000';
                         // คืนค่าแถวใหม่
                         $ret['data'] = Language::trans(\Index\Memberstatus\View::createRow($i, $config->member_status[$i], $config->color_status[$i]));

@@ -10,8 +10,6 @@
 
 namespace Kotchasan\Http;
 
-use Psr\Http\Message\UriInterface;
-
 /**
  * Class สำหรับจัดการ Uri (PSR-7).
  *
@@ -19,7 +17,7 @@ use Psr\Http\Message\UriInterface;
  *
  * @since 1.0
  */
-class Uri extends \Kotchasan\KBase implements UriInterface
+class Uri extends \Kotchasan\KBase implements \Psr\Http\Message\UriInterface
 {
     /**
      * Uri fragment หลัง  #.
@@ -444,6 +442,28 @@ class Uri extends \Kotchasan\KBase implements UriInterface
         }
 
         return $this->withQuery($this->paramsToQuery($qs, $encode));
+    }
+
+    /**
+     * ฟังก์ลบ Query params ออกจาก URL.
+     *
+     * @param string|array $names  ชื่อของ attributes ที่ต้องการลบ
+     * @param bool         $encode false (default) เชื่อม Querystring ด้วย &, true เชื่อม Querystring ด้วย &amp;
+     *
+     * @return \static
+     */
+    public function withoutParams($names, $encode = false)
+    {
+        $attributes = $this->parseQueryParams($this->query);
+        if (is_array($names)) {
+            foreach ($names as $name) {
+                unset($attributes[$name]);
+            }
+        } else {
+            unset($attributes[$names]);
+        }
+
+        return $this->withQuery($this->paramsToQuery($attributes, $encode));
     }
 
     /**

@@ -58,6 +58,13 @@ class Config extends \Kotchasan\Config
     public $facebook_appId = '';
 
     /**
+     * Client ID สำหรับการเข้าระบบโดย Google.
+     *
+     * @var string
+     */
+    public $google_client_id = '';
+
+    /**
      * สถานะของบัญชีที่นับสต๊อก (ซื้อ).
      *
      * @var int

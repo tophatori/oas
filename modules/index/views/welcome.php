@@ -37,15 +37,17 @@ class View extends \Kotchasan\View
         $template = Template::create('', '', 'login');
         $template->add(array(
             '/<FACEBOOK>(.*)<\/FACEBOOK>/s' => empty(self::$cfg->facebook_appId) ? '' : '\\1',
+            '/<GOOGLE>(.*)<\/GOOGLE>/s' => empty(self::$cfg->google_client_id) ? '' : '\\1',
             '/{TOKEN}/' => $request->createToken(),
             '/{EMAIL}/' => Login::$login_params['username'],
             '/{PASSWORD}/' => Login::$login_params['password'],
             '/{MESSAGE}/' => Login::$login_message,
             '/{CLASS}/' => empty(Login::$login_message) ? 'hidden' : (empty(Login::$login_input) ? 'message' : 'error'),
+            '/{URL}/' => $request->getUri()->withoutParams('action'),
         ));
 
         return (object) array(
-            'content' => $template->render(),
+            'detail' => $template->render(),
             'title' => Language::get('Login with an existing account'),
         );
     }
@@ -69,7 +71,7 @@ class View extends \Kotchasan\View
         ));
 
         return (object) array(
-            'content' => $template->render(),
+            'detail' => $template->render(),
             'title' => Language::get('Get new password'),
         );
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * @filesource modules/index/models/fblogin.php
+ * @filesource modules/index/models/gglogin.php
  *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
@@ -8,13 +8,13 @@
  * @see http://www.kotchasan.com/
  */
 
-namespace Index\Fblogin;
+namespace Index\Gglogin;
 
 use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * Facebook Login.
+ * Google Login.
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -52,14 +52,13 @@ class Model extends \Kotchasan\Model
                 } else {
                     $permissions = array();
                 }
-                $name = trim($request->post('first_name')->topic().' '.$request->post('last_name')->topic());
                 $save = \Index\Register\Model::execute($this, array(
                     'username' => $username,
                     'password' => $password,
-                    'name' => $name,
+                    'name' => $request->post('name')->topic(),
                     'email' => $request->post('email')->url(),
-                    // Facebook
-                    'social' => 1,
+                    // Google
+                    'social' => 2,
                     'visited' => 1,
                     'lastvisited' => time(),
                     // โหมดตัวอย่างเป็นแอดมิน, ไม่ใช่เป็นสมาชิกทั่วไป
@@ -70,7 +69,7 @@ class Model extends \Kotchasan\Model
                     $ret['alert'] = Language::get('Unable to complete the transaction');
                     $ret['isMember'] = 0;
                 }
-            } elseif ($search['social'] == 1) {
+            } elseif ($search['social'] == 2) {
                 // facebook เคยเยี่ยมชมแล้ว อัปเดทการเยี่ยมชม
                 $save = $search;
                 ++$save['visited'];

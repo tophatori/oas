@@ -25,7 +25,6 @@ class Sql
      * @var string
      */
     protected $sql;
-
     /**
      * ตัวแปรเก็บพารามิเตอร์สำหรับการ bind.
      *
@@ -52,18 +51,20 @@ class Sql
     /**
      * สร้างคำสั่ง BETWEEN ... AND ...
      *
-     * @assert ('create_date', 'U.create_date')->text() [==] "BETWEEN `create_date` AND U.`create_date`"
-     * @assert ('table_name.field_name', 'U.`create_date`')->text() [==] "BETWEEN `table_name`.`field_name` AND U.`create_date`"
-     * @assert ('`database`.`table`', '12-1-1')->text() [==] "BETWEEN `database`.`table` AND '12-1-1'"
+     * @assert ('create_date', 'create_date', 'U.create_date')->text() [==] "`create_date` BETWEEN `create_date` AND U.`create_date`"
+     * @assert ('create_date', 'table_name.field_name', 'U.`create_date`')->text() [==] "`create_date` BETWEEN `table_name`.`field_name` AND U.`create_date`"
+     * @assert ('create_date', '`database`.`table`', '12-1-1')->text() [==] "`create_date` BETWEEN `database`.`table` AND '12-1-1'"
+     * @assert ('create_date', 0, 1)->text() [==] "`create_date` BETWEEN 0 AND 1"
      *
-     * @param string $column_name1
-     * @param string $column_name2
+     * @param string $column_name
+     * @param string $min
+     * @param string $max
      *
      * @return \self
      */
-    public static function BETWEEN($column_name1, $column_name2)
+    public static function BETWEEN($column_name, $min, $max)
     {
-        return self::create('BETWEEN '.self::fieldName($column_name1).' AND '.self::fieldName($column_name2));
+        return self::create(self::fieldName($column_name).' BETWEEN '.self::fieldName($min).' AND '.self::fieldName($max));
     }
 
     /**
@@ -524,7 +525,7 @@ class Sql
      * @assert WHERE(array(array('id', array('', 'th'))))->text() [==] "`id` IN ('', 'th')"
      * @assert WHERE(array(Sql::YEAR('create_date'), Sql::YEAR('`create_date`')))->text() [==] "YEAR(`create_date`) = YEAR(`create_date`)"
      * @assert WHERE(array('ip', 'NOT IN', array('', '192.168.1.2')))->text() [==] "`ip` NOT IN ('', '192.168.1.2')"
-     * @assert (array(1, 1))->text() [==] "1 = 1"
+     * @assert WHERE(array(1, 1))->text() [==] "1 = 1"
      *
      * @param mixed  $condition
      * @param string $operator  (optional) เช่น AND หรือ OR
@@ -778,32 +779,68 @@ class Sql
     private function buildWhere($condition, &$values, $operator, $id)
     {
         if (is_array($condition)) {
+            $qs = array();
+            $ps = array();
             if (is_array($condition[0])) {
-                $qs = array();
-                foreach ($condition as $items) {
-                    $qs[] = $this->buildWhere($items, $values, $operator, $id);
+                foreach ($condition as $n => $item) {
+                    if ($item instanceof QueryBuilder) {
+                        $qs[] = '('.$item->text().')';
+                        $values = $item->getValues($values);
+                    } elseif ($item instanceof self) {
+                        $qs[] = $item->text();
+                        $values = $item->getValues($values);
+                    } else {
+                        $qs[] = $this->buildWhere($item, $values, $operator, $id);
+                    }
                 }
                 $sql = implode(' '.$operator.' ', $qs);
             } else {
+                if ($condition[0] instanceof QueryBuilder) {
+                    $key = '('.$condition[0]->text().')';
+                    $values = $condition[0]->getValues($values);
+                } elseif ($condition[0] instanceof self) {
+                    $key = $condition[0]->text();
+                    $values = $condition[0]->getValues($values);
+                } else {
+                    $key = self::fieldName($condition[0]);
+                }
                 if (sizeof($condition) == 2) {
-                    $operator = '=';
-                    $value = $condition[1];
+                    if ($condition[1] instanceof QueryBuilder) {
+                        $operator = '=';
+                        $value = '('.$condition[1]->text().')';
+                        $values = $condition[1]->getValues($values);
+                    } elseif ($condition[1] instanceof self) {
+                        $operator = '=';
+                        $value = $condition[1]->text();
+                        $values = $condition[1]->getValues($values);
+                    } else {
+                        $operator = '=';
+                        if (is_array($condition[1]) && $operator == '=') {
+                            $operator = 'IN';
+                        }
+                        $value = self::quoteValue($key, $condition[1], $values);
+                    }
+                } elseif ($condition[2] instanceof QueryBuilder) {
+                    $operator = trim($condition[1]);
+                    $value = '('.$condition[2]->text().')';
+                    $values = $condition[2]->getValues($values);
+                } elseif ($condition[2] instanceof self) {
+                    $operator = trim($condition[1]);
+                    $value = $condition[2]->text();
+                    $values = $condition[2]->getValues($values);
                 } else {
                     $operator = trim($condition[1]);
-                    $value = $condition[2];
+                    if (is_array($condition[2]) && $operator == '=') {
+                        $operator = 'IN';
+                    }
+                    $value = self::quoteValue($key, $condition[2], $values);
                 }
-                $key = self::fieldName($condition[0]);
-                if (is_array($value) && $operator == '=') {
-                    $operator = 'IN';
-                }
-                $sql = $key.' '.$operator.' '.self::quoteValue($key, $value, $values);
+                $sql = $key.' '.$operator.' '.$value;
             }
         } elseif ($condition instanceof QueryBuilder) {
-            // QueryBuilder ไม่มี column_name
-            $sql = $condition->text();
+            $sql = '('.$condition->text().')';
             $values = $condition->getValues($values);
         } elseif ($condition instanceof self) {
-            // Sql ไม่มี column_name
             $sql = $condition->text();
             $values = $condition->getValues($values);
         } else {

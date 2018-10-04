@@ -29,10 +29,8 @@ class Router extends \Kotchasan\KBase
         '/^[a-z0-9]+\.php\/([a-z]+)\/(model)(\/([\/a-z0-9_]+)\/([a-z0-9_]+))?$/i' => array('module', '_mvc', '', '_dir', '_method'),
         // index/model/_dir
         '/([a-z]+)\/(model|controller|view)\/([a-z0-9_]+)/i' => array('module', '_mvc', '_dir'),
-        // module/cat/id
-        '/^([a-z]+)\/([0-9]+)\/([0-9]+)$/' => array('module', 'cat', 'id'),
-        // module/cat module/alias, module/cat/alias
-        '/^([a-z]+)(\/([0-9]+))?(\/(.*))?$/' => array('module', '', 'cat', '', 'alias'),
+        // module/alias
+        '/^([a-z]+)\/(.*)$/' => array('module', 'alias'),
         // module, module.php
         '/^([a-z0-9_]+)(\.php)?$/' => array('module'),
         // alias
@@ -86,14 +84,10 @@ class Router extends \Kotchasan\KBase
      * @assert ('/index/model/updateprofile.php', array()) [==] array( '_mvc' => 'model', '_dir' => 'updateprofile', 'module' => 'index')
      * @assert ('/index.php/alias/model/admin/settings/save', array()) [==] array('module' => 'alias', '_mvc' => 'model', '_dir' => 'admin/settings', '_method' => 'save')
      * @assert ('/css/view/index.php', array()) [==] array('module' => 'css', '_mvc' => 'view', '_dir' => 'index')
-     * @assert ('/module/1/2.html', array()) [==] array('module' => 'module', 'cat' => 1, 'id' => 2)
-     * @assert ('/module/1.html', array()) [==] array('module' => 'module', 'cat' => 1)
      * @assert ('/module/ทดสอบ.html', array()) [==] array('alias' => 'ทดสอบ', 'module' => 'module')
      * @assert ('/module.html', array()) [==] array('module' => 'module')
      * @assert ('/ทดสอบ.html', array()) [==] array('alias' => 'ทดสอบ')
      * @assert ('/ทดสอบ.html', array('module' => 'test')) [==] array('alias' => 'ทดสอบ', 'module' => 'test')
-     * @assert ('/docs/1/ทดสอบ.html', array('module' => 'test')) [==] array('alias' => 'ทดสอบ', 'module' => 'docs', 'cat' => 1)
-     * @assert ('/docs/1/ทดสอบ.html', array()) [==] array('alias' => 'ทดสอบ', 'module' => 'docs', 'cat' => 1)
      * @assert ('/index.php', array('_action' => 'one')) [==] array('_action' => 'one')
      * @assert ('/admin_index.php', array('_action' => 'one')) [==] array('_action' => 'one', 'module' => 'admin_index')
      *
@@ -117,10 +111,7 @@ class Router extends \Kotchasan\KBase
                 if (preg_match($patt, $my_path, $match)) {
                     foreach ($items as $i => $key) {
                         if (!empty($key) && isset($match[$i + 1])) {
-                            $value = $match[$i + 1];
-                            if (!empty($value)) {
-                                $modules[$key] = $value;
-                            }
+                            $modules[$key] = $match[$i + 1];
                         }
                     }
                     break;

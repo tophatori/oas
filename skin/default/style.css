@@ -397,7 +397,7 @@ fieldset.item {
 .setup_frm > fieldset > legend > span,
 main h3 {
   display: block;
-  padding: 10px 10px;
+  padding: 10px;
   font-size: 1.625em;
 }
 main h3 select {
@@ -419,6 +419,14 @@ span.icon-sex:before,
 .icon-check:before,
 .icon-uncheck:before {
   color: #000;
+}
+.icon-facebook:before {
+  color: #3b5998;
+  margin-left: 0;
+}
+.icon-google:before {
+  color: #eb4132;
+  margin-left: 0;
 }
 td.icons a.icon-plus,
 td.icons a.icon-minus {

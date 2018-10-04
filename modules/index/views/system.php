@@ -11,6 +11,7 @@
 namespace Index\System;
 
 use Kotchasan\Html;
+use Kotchasan\Language;
 
 /**
  * module=system.
@@ -75,6 +76,57 @@ class View extends \Gcms\View
             'comment' => '{LNG_Settings the timing of the server to match the local time}',
             'options' => $datas,
             'value' => isset($config->timezone) ? $config->timezone : self::$cfg->timezone,
+        ));
+        $fieldset = $form->add('fieldset', array(
+            'title' => '{LNG_Style}',
+        ));
+        // bg_image
+        if (is_file(ROOT_PATH.DATA_FOLDER.'bg_image.png')) {
+            $img = WEB_URL.DATA_FOLDER.'bg_image.png';
+        } else {
+            $img = WEB_URL.'skin/img/blank.gif';
+        }
+        // bg_image
+        $fieldset->add('file', array(
+            'id' => 'bg_image',
+            'labelClass' => 'g-input icon-image',
+            'itemClass' => 'item',
+            'label' => '{LNG_Background image}',
+            'comment' => Language::replace('Upload :type files no larger than :size', array(':type' => 'jpg, jpeg, png', ':size' => \Kotchasan\Http\UploadedFile::getUploadSize())),
+            'accept' => array('jpg', 'jpeg', 'png'),
+            'dataPreview' => 'bgImage',
+            'previewSrc' => $img,
+        ));
+        // delete_bg_image
+        $fieldset->add('checkbox', array(
+            'id' => 'delete_bg_image',
+            'itemClass' => 'subitem',
+            'label' => '{LNG_Remove} {LNG_Background image}',
+            'value' => 1,
+        ));
+        // logo
+        if (is_file(ROOT_PATH.DATA_FOLDER.'logo.png')) {
+            $img = WEB_URL.DATA_FOLDER.'logo.png';
+        } else {
+            $img = WEB_URL.'skin/img/blank.gif';
+        }
+        // logo
+        $fieldset->add('file', array(
+            'id' => 'logo',
+            'labelClass' => 'g-input icon-image',
+            'itemClass' => 'item',
+            'label' => '{LNG_Logo}',
+            'comment' => Language::replace('Browse image uploaded, type :type size :width*:height pixel', array(':type' => 'jpg, jpeg, png', ':width' => 144, ':height' => 51)),
+            'accept' => array('jpg', 'jpeg', 'png'),
+            'dataPreview' => 'logoImage',
+            'previewSrc' => $img,
+        ));
+        // delete_logo
+        $fieldset->add('checkbox', array(
+            'id' => 'delete_logo',
+            'itemClass' => 'subitem',
+            'label' => '{LNG_Remove} {LNG_Logo}',
+            'value' => 1,
         ));
         $fieldset = $form->add('fieldset', array(
             'class' => 'submit',

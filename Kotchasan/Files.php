@@ -44,7 +44,9 @@ class Files implements \Iterator
     }
 
     /**
-     * @return UploadedFile
+     * คืนค่า UploadedFile รายการปัจจุบัน.
+     *
+     * @return \Kotchasan\Http\UploadedFile
      */
     public function current()
     {
@@ -58,7 +60,7 @@ class Files implements \Iterator
      *
      * @param string|int $key รายการที่ต้องการ
      *
-     * @return UploadedFile
+     * @return \Kotchasan\Http\UploadedFile
      */
     public function get($key)
     {
@@ -66,6 +68,8 @@ class Files implements \Iterator
     }
 
     /**
+     * คืนค่าคีย์หรือลำดับของ UploadedFile ในลิสต์รายการ.
+     *
      * @return string
      */
     public function key()
@@ -76,7 +80,9 @@ class Files implements \Iterator
     }
 
     /**
-     * @return UploadedFile
+     * คืนค่า UploadedFile รายการถัดไป.
+     *
+     * @return \Kotchasan\Http\UploadedFile
      */
     public function next()
     {

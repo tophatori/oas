@@ -72,54 +72,6 @@
         this.menu = ul;
       }
       this.id = "GDDmenu" + GDDMenus.length;
-      var _dokeydown = function(e) {
-        var li = $G(GEvent.element(e).parentNode);
-        var key = GEvent.keyCode(e);
-        if (li.hasClass("toplevelmenu")) {
-          if (key == 37) {
-            self.select(self.currItem, -1, true);
-            GEvent.stop(e);
-          } else if (key == 39) {
-            self.select(self.currItem, 1, true);
-            GEvent.stop(e);
-          } else if (key == 40) {
-            li = li.getElementsByTagName("li")[0];
-            if (li) {
-              self.select(li, 0, true);
-              GEvent.stop(e);
-            }
-          }
-        } else {
-          if (key == 9) {
-            self.selectTop(li, 1, true);
-            GEvent.stop(e);
-          } else if (key == 37) {
-            li = li.parentNode.parentNode;
-            if (li) {
-              if ($G(li).hasClass("toplevelmenu")) {
-                self.select(li, -1, true);
-              } else {
-                self.select(li, 0, true);
-              }
-              GEvent.stop(e);
-            }
-          } else if (key == 38) {
-            self.select(li, -1, true);
-            GEvent.stop(e);
-          } else if (key == 39) {
-            var lis = li.getElementsByTagName("li");
-            if (lis.length > 0) {
-              self.select(lis[0], 0, true);
-            } else {
-              self.selectTop(li, 1, true);
-            }
-            GEvent.stop(e);
-          } else if (key == 40) {
-            self.select(li, 1, true);
-            GEvent.stop(e);
-          }
-        }
-      };
       var _dofocus = function(e) {
         window.clearTimeout(self.blurTime);
         self.select(this.parentNode, 0, true);
@@ -163,7 +115,56 @@
       }
       initMenu(this.menu, 1, this.id);
       this.menu.tabIndex = 0;
-      this.menu.addEvent("keydown", _dokeydown);
+      this.menu.addEvent("keydown", function(e) {
+        var li = $G(GEvent.element(e).parentNode);
+        var key = GEvent.keyCode(e);
+        if (key == 13) {
+          self.clearSelect();
+        } else if (li.hasClass("toplevelmenu")) {
+          if (key == 37) {
+            self.select(self.currItem, -1, true);
+            GEvent.stop(e);
+          } else if (key == 39) {
+            self.select(self.currItem, 1, true);
+            GEvent.stop(e);
+          } else if (key == 40) {
+            li = li.getElementsByTagName("li")[0];
+            if (li) {
+              self.select(li, 0, true);
+              GEvent.stop(e);
+            }
+          }
+        } else {
+          if (key == 9) {
+            self.selectTop(li, 1, true);
+            GEvent.stop(e);
+          } else if (key == 37) {
+            li = li.parentNode.parentNode;
+            if (li) {
+              if ($G(li).hasClass("toplevelmenu")) {
+                self.select(li, -1, true);
+              } else {
+                self.select(li, 0, true);
+              }
+              GEvent.stop(e);
+            }
+          } else if (key == 38) {
+            self.select(li, -1, true);
+            GEvent.stop(e);
+          } else if (key == 39) {
+            var lis = li.getElementsByTagName("li");
+            if (lis.length > 0) {
+              self.select(lis[0], 0, true);
+            } else {
+              self.selectTop(li, 1, true);
+            }
+            GEvent.stop(e);
+          } else if (key == 40) {
+            self.select(li, 1, true);
+            GEvent.stop(e);
+          }
+        }
+      });
       this.menu.addEvent("click", function(e) {
         var a = GEvent.element(e).parentNode;
         if (
@@ -171,6 +172,7 @@
           (a.href != "" || a.parentNode.getElementsByTagName("li").length == 0)
         ) {
           _toggleMenu(false);
+          self.clearSelect();
           if (Object.isFunction(self.onClick)) {
             self.onClick.call(a);
           }
@@ -185,6 +187,11 @@
         m = m.parentNode.parentNode;
       }
       this.select(li, v, s);
+    },
+    clearSelect: function() {
+      forEach(this.menu.getElementsByTagName("li"), function() {
+        this.removeClass("hover focus");
+      });
     },
     select: function(m, v, s) {
       var n,

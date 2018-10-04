@@ -43,7 +43,7 @@ class View extends \Gcms\View
             $years[$y] = $y + $year_offset;
         }
         // URL สำหรับส่งให้ตาราง
-        $uri = $request->createUriWithGlobals(WEB_URL . 'index.php');
+        $uri = $request->createUriWithGlobals(WEB_URL.'index.php');
         // ตาราง
         $table = new DataTable(array(
             /* Uri */
@@ -73,9 +73,9 @@ class View extends \Gcms\View
                     ),
                 ),
                 array(
-                    'class' => 'button green icon-plus',
+                    'class' => 'button pink icon-plus',
                     'href' => $uri->createBackUri(array('module' => 'inventory-sell', 'id' => '0', 'typ' => $owner->status)),
-                    'text' => '{LNG_Add New} ' . $owner->typies[$owner->status],
+                    'text' => '{LNG_Add New} '.$owner->typies[$owner->status],
                 ),
             ),
             /* ตัวเลือกด้านบนของตาราง ใช้จำกัดผลลัพท์การ query */
@@ -124,7 +124,7 @@ class View extends \Gcms\View
             'buttons' => array(
                 array(
                     'class' => 'icon-print button brown notext',
-                    'href' => WEB_URL . 'export.php?module=inventory-export&typ=print&amp;id=:id',
+                    'href' => WEB_URL.'export.php?module=inventory-export&typ=print&amp;id=:id',
                     'target' => '_export',
                     'title' => '{LNG_Print}',
                 ),
@@ -136,8 +136,8 @@ class View extends \Gcms\View
             ),
         ));
         // save cookie
-        setcookie('outward_perPage', $table->perPage, time() + 2592000, '/', null, null, true);
-        setcookie('outward_sort', $table->sort, time() + 2592000, '/', null, null, true);
+        setcookie('outward_perPage', $table->perPage, time() + 2592000, '/', null, HOST, true);
+        setcookie('outward_sort', $table->sort, time() + 2592000, '/', null, HOST, true);
 
         return $table->render();
     }

@@ -10,6 +10,8 @@
 
 namespace Index\Error;
 
+use Kotchasan\Http\Request;
+use Kotchasan\Language;
 use Kotchasan\Template;
 
 /**
@@ -22,25 +24,68 @@ use Kotchasan\Template;
 class Controller extends \Gcms\Controller
 {
     /**
-     * แสดงหน้า 404.html.
-     *
-     * @return string
+     * init Class.
      */
-    public function render()
+    public function __construct()
     {
-        // คืนค่า 404.html
-        return Template::create('', '', '404')->render();
+        // ค่าเริ่มต้นของ Controller
+        $this->title = static::getMessage();
+        $this->menu = 'home';
+        $this->status = 404;
     }
 
     /**
-     * แสดงหน้า 404.html (static).
+     * แสดงข้อผิดพลาด (เช่น 404 page not found)
+     * สำหรับการเรียกโดย GLoader.
+     *
+     * @param Request $request
      *
      * @return string
      */
-    public static function page404()
+    public function render(Request $request)
     {
-        $obj = new static();
+        $template = Template::create('', '', '404');
+        $template->add(array(
+            '/{TOPIC}/' => $this->title,
+            '/{DETAIL}/' => $this->title,
+        ));
 
-        return $obj->render();
+        return $template->render();
+    }
+
+    /**
+     * แสดงข้อผิดพลาด (เช่น 404 page not found).
+     *
+     * @param string $menu
+     * @param int    $status
+     * @param string $message ข้อความที่จะแสดง ถ้าไม่กำหนดจะใช้ข้อความของระบบ
+     *
+     * @return \Gcms\Controller
+     */
+    public static function execute(\Gcms\Controller $controller, $status = 404, $message = '')
+    {
+        $template = Template::create($controller->menu, '', '404');
+        $message = static::getMessage($message);
+        $template->add(array(
+            '/{TOPIC}/' => $message,
+            '/{DETAIL}/' => $message,
+        ));
+        $controller->title = strip_tags($message);
+        $controller->menu = $controller->menu;
+        $controller->status = $status;
+
+        return $template->render();
+    }
+
+    /**
+     * คืนค่าข้อความ error.
+     *
+     * @param string $message
+     *
+     * @return string
+     */
+    private static function getMessage($message = '')
+    {
+        return Language::get($message == '' ? 'Sorry, cannot find a page called Please check the URL or try the call again.' : $message);
     }
 }

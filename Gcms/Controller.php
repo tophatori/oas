@@ -10,6 +10,8 @@
 
 namespace Gcms;
 
+use Kotchasan\Http\Uri;
+
 /**
  * Controller base class.
  *
@@ -25,27 +27,44 @@ class Controller extends \Kotchasan\Controller
      * @var \Gcms\View
      */
     public static $view;
-
     /**
      * เก็บคลาสของเมนูที่เลือก
      *
      * @var string
      */
-    protected $menu;
-
+    public $menu;
+    /**
+     * ข้อความไตเติลบาร์.
+     *
+     * @var string
+     */
+    public $title;
+    /**
+     * เนื้อหา.
+     *
+     * @var string
+     */
+    public $detail;
+    /**
+     * URL หน้าที่เรียก
+     *
+     * @var \Kotchasan\Http\Uri
+     */
+    public $canonical = null;
+    /**
+     * สถานะของเพจ
+     * 200 ปกติ
+     * 404 ไม่พบ.
+     *
+     * @var int
+     */
+    public $status = 200;
     /**
      * Menu Controller.
      *
      * @var \Index\Menu\Controller
      */
     protected static $menus;
-
-    /**
-     * ข้อความไตเติลบาร์.
-     *
-     * @var string
-     */
-    protected $title;
 
     /**
      * init Class.
@@ -105,5 +124,39 @@ class Controller extends \Kotchasan\Controller
     public function title()
     {
         return $this->title;
+    }
+
+    /**
+     * คืนค่า URL ของหน้าที่เลือก
+     *
+     * @return \Kotchasan\Http\Uri
+     */
+    public function canonical()
+    {
+        if ($this->canonical === null) {
+            $this->canonical = Uri::createFromGlobals();
+        }
+
+        return $this->canonical;
+    }
+
+    /**
+     * คืนค่าสถานะของเพจ เช่น
+     * 200 สำเร็จ
+     * 404 ไม่พบ.
+     *
+     * @return int
+     */
+    public function status()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function detail()
+    {
+        return $this->detail;
     }
 }

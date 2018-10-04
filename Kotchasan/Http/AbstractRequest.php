@@ -10,9 +10,6 @@
 
 namespace Kotchasan\Http;
 
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\UriInterface;
-
 /**
  * Class สำหรับจัดการ URL.
  *
@@ -20,7 +17,7 @@ use Psr\Http\Message\UriInterface;
  *
  * @since 1.0
  */
-class AbstractRequest extends AbstractMessage implements RequestInterface
+class AbstractRequest extends AbstractMessage implements \Psr\Http\Message\RequestInterface
 {
     /**
      * @var string
@@ -33,7 +30,7 @@ class AbstractRequest extends AbstractMessage implements RequestInterface
     protected $requestTarget;
 
     /**
-     * @var Uri
+     * @var \Kotchasan\Http\Uri
      */
     protected $uri;
 
@@ -130,7 +127,7 @@ class AbstractRequest extends AbstractMessage implements RequestInterface
     /**
      * อ่าน Uri.
      *
-     * @return Uri
+     * @return \Kotchasan\Http\Uri
      */
     public function getUri()
     {
@@ -196,12 +193,12 @@ class AbstractRequest extends AbstractMessage implements RequestInterface
     /**
      * กำหนดค่า Uri.
      *
-     * @param Uri  $uri
-     * @param bool $preserveHost
+     * @param \Kotchasan\Http\UriInterface $uri
+     * @param bool                         $preserveHost
      *
      * @return \static
      */
-    public function withUri(UriInterface $uri, $preserveHost = false)
+    public function withUri(\Psr\Http\Message\UriInterface $uri, $preserveHost = false)
     {
         $clone = clone $this;
         $clone->uri = $uri;

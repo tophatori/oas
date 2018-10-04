@@ -34,11 +34,12 @@ class Controller extends \Gcms\Controller
         $action = $request->get('action')->toString();
         // ตรวจสอบ method ที่กำหนดไว่เท่านั้น
         $action = $action == 'forgot' ? 'forgot' : 'login';
-        // เรียก method ที่ส่งมา
-        $view = \Index\Welcome\View::$action($request);
-        // คืนค่า
-        $this->title = $view->title;
+        // ประมวลผลหน้าที่เรียก
+        $page = \Index\Welcome\View::$action($request);
+        // ไตเติลจากและเนื้อหาจาก View
+        $this->title = $page->title;
+        $this->detail = $page->detail;
 
-        return $view->content;
+        return $this;
     }
 }

@@ -22,14 +22,14 @@ use Kotchasan\Database;
 abstract class Db extends \Kotchasan\KBase
 {
     /**
-     * database connection
+     * database connection.
      *
      * @var \Kotchasan\Database\Driver
      */
     protected $db;
 
     /**
-     * Class constructor
+     * Class constructor.
      *
      * @param string $conn ชื่อของการเชื่อมต่อ ถ้าไม่ระบุจะไม่มีการเชื่อมต่อ database
      */
@@ -39,7 +39,7 @@ abstract class Db extends \Kotchasan\KBase
     }
 
     /**
-     * อ่าน database connection
+     * อ่าน database connection.
      *
      * @return \Kotchasan\Database\Driver
      */
@@ -49,9 +49,10 @@ abstract class Db extends \Kotchasan\KBase
     }
 
     /**
-     * อ่านค่ากำหนดของฐานข้อมูล
+     * อ่านค่ากำหนดของฐานข้อมูล.
      *
-     * @param  string  $key
+     * @param string $key
+     *
      * @return mixed
      */
     public function getSetting($key)

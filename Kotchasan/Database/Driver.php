@@ -148,7 +148,7 @@ abstract class Driver extends Query
     /**
      * ฟังก์ชั่นสร้าง query builder.
      *
-     * @return QueryBuilder
+     * @return \Kotchasan\Database\QueryBuilder
      */
     public function createQuery()
     {

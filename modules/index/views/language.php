@@ -128,8 +128,8 @@ class View extends \Gcms\View
             $table->headers[$lng]['sort'] = $lng;
         }
         // save cookie
-        setcookie('language_perPage', $table->perPage, time() + 2592000, '/', null, null, true);
-        setcookie('language_sort', $table->sort, time() + 2592000, '/', null, null, true);
+        setcookie('language_perPage', $table->perPage, time() + 2592000, '/', null, HOST, true);
+        setcookie('language_sort', $table->sort, time() + 2592000, '/', null, HOST, true);
         // Javascript
         $table->script('initLanguageTable("language_table");');
         // คืนค่า HTML

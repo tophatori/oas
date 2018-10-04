@@ -294,7 +294,7 @@ class Html extends \Kotchasan\KBase
      *
      * @param array $attributes
      *
-     * @return HtmlTable
+     * @return \Kotchasan\HtmlTable
      */
     public static function table($attributes = array())
     {
@@ -323,8 +323,8 @@ class Html extends \Kotchasan\KBase
     }
 
     /**
-     * @param $tag
-     * @param $attributes
+     * @param  $tag
+     * @param  $attributes
      *
      * @return mixed
      */
@@ -346,8 +346,8 @@ class Html extends \Kotchasan\KBase
     }
 
     /**
-     * @param $tag
-     * @param $attributes
+     * @param  $tag
+     * @param  $attributes
      *
      * @return mixed
      */
@@ -370,8 +370,8 @@ class Html extends \Kotchasan\KBase
     }
 
     /**
-     * @param $tag
-     * @param $attributes
+     * @param  $tag
+     * @param  $attributes
      *
      * @return mixed
      */
@@ -432,7 +432,7 @@ class Html extends \Kotchasan\KBase
     }
 
     /**
-     * @param $attributes
+     * @param  $attributes
      *
      * @return mixed
      */
@@ -512,7 +512,7 @@ class Html extends \Kotchasan\KBase
     }
 
     /**
-     * @param $attributes
+     * @param  $attributes
      *
      * @return mixed
      */
@@ -568,8 +568,8 @@ class Html extends \Kotchasan\KBase
     }
 
     /**
-     * @param $tag
-     * @param $attributes
+     * @param  $tag
+     * @param  $attributes
      *
      * @return mixed
      */

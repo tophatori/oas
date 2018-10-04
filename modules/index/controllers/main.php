@@ -88,23 +88,20 @@ class Controller extends \Gcms\Controller
     {
         // โมดูลจาก URL ถ้าไม่มีใช้เมนูรายการแรก
         $className = self::parseModule($request, self::$menus->home());
-        if ($className) {
-            // create Class
-            $controller = new $className();
-            // tempalate
-            $template = Template::create('', '', 'main');
-            $template->add(array(
-                '/{CONTENT}/' => $controller->render($request),
-            ));
-            // ข้อความ title bar
-            $this->title = $controller->title();
-            // เมนูที่เลือก
-            $this->menu = $controller->menu();
-
-            return $template->render();
+        if (!$className) {
+            // 404
+            $className = 'Index\Error\Controller';
         }
-        // ไม่พบหน้าที่เรียก
+        // create Class
+        $controller = new $className();
+        // main.html
+        $template = Template::create('', '', 'main');
+        $template->add(array(
+            '/{CONTENT}/' => $controller->render($request),
+        ));
+        // คืนค่า controller
+        $controller->detail = $template->render();
 
-        return \Index\Error\Controller::page404();
+        return $controller;
     }
 }

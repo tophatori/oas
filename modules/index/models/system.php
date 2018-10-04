@@ -47,6 +47,35 @@ class Model extends \Kotchasan\KBase
                 }
                 $config->timezone = $request->post('timezone')->text();
                 if (empty($ret)) {
+                    // อัปโหลดไฟล์
+                    foreach ($request->getUploadedFiles() as $item => $file) {
+                        if (in_array($item, array('logo', 'bg_image'))) {
+                            /* @var $file \Kotchasan\Http\UploadedFile */
+                            if ($request->post('delete_'.$item)->toBoolean() == 1) {
+                                // ลบ
+                                if (is_file(ROOT_PATH.DATA_FOLDER.$item.'.png')) {
+                                    unlink(ROOT_PATH.DATA_FOLDER.$item.'.png');
+                                }
+                            } elseif ($file->hasUploadFile()) {
+                                if (!$file->validFileExt(array('jpg', 'jpeg', 'png'))) {
+                                    // ชนิดของไฟล์ไม่รองรับ
+                                    $ret['ret_'.$item] = Language::get('The type of file is invalid');
+                                } else {
+                                    try {
+                                        $file->moveTo(ROOT_PATH.DATA_FOLDER.$item.'.png');
+                                    } catch (\Exception $exc) {
+                                        // ไม่สามารถอัปโหลดได้
+                                        $ret['ret_'.$item] = Language::get($exc->getMessage());
+                                    }
+                                }
+                            } elseif ($file->hasError()) {
+                                // ข้อผิดพลาดการอัปโหลด
+                                $ret['ret_'.$item] = Language::get($file->getErrorMessage());
+                            }
+                        }
+                    }
+                }
+                if (empty($ret)) {
                     // save config
                     if (Config::save($config, ROOT_PATH.'settings/config.php')) {
                         $ret['alert'] = Language::get('Saved successfully');

@@ -13,7 +13,7 @@ namespace Index\Menu;
 use Gcms\Login;
 
 /**
- * รายการเมนู.
+ * คลาสสำหรับโหลดรายการเมนู.
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *

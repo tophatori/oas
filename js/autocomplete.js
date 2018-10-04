@@ -263,7 +263,7 @@ function initAutoComplete(id, link, displayFields, icon, options) {
       );
       return (
         '<p><span class="icon-' +
-        (icon || "search") +
+        (icon || this.icon || "search") +
         '">' +
         row +
         "</span></p>"

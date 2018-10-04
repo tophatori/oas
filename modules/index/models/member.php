@@ -31,7 +31,7 @@ class Model extends \Kotchasan\Model
     public static function toDataTable()
     {
         return static::createQuery()
-            ->select('id', 'username', 'name', 'active', 'fb', 'phone', 'status', 'create_date', 'lastvisited', 'visited', 'website')
+            ->select('id', 'username', 'name', 'active', 'social', 'phone', 'status', 'create_date', 'lastvisited', 'visited', 'website')
             ->from('user');
     }
 
@@ -82,28 +82,24 @@ class Model extends \Kotchasan\Model
                             ->where(array(
                                 array('id', $match[1]),
                                 array('id', '!=', 1),
-                                array('fb', '0'),
+                                array('social', 0),
                                 array('username', '!=', ''),
                             ))
                             ->toArray();
                         $msgs = array();
                         foreach ($query->execute() as $item) {
-                            // สุ่มรหัสผ่านใหม่
-                            $password = \Kotchasan\Text::rndname(6);
                             // ส่งอีเมลขอรหัสผ่านใหม่
-                            $err = \Index\Forgot\Model::execute($item['id'], $password, $item['username']);
+                            $err = \Index\Forgot\Model::execute($item['id'], $item['username']);
                             if ($err != '') {
                                 $msgs[] = $err;
                             }
                         }
-                        if (isset($password)) {
-                            if (empty($msgs)) {
-                                // ส่งอีเมล สำเร็จ
-                                $ret['alert'] = Language::get('Your message was sent successfully');
-                            } else {
-                                // มีข้อผิดพลาด
-                                $ret['alert'] = implode("\n", $msgs);
-                            }
+                        if (empty($msgs)) {
+                            // ส่งอีเมล สำเร็จ
+                            $ret['alert'] = Language::get('Your message was sent successfully');
+                        } else {
+                            // มีข้อผิดพลาด
+                            $ret['alert'] = implode("\n", $msgs);
                         }
                     } elseif (preg_match('/active_([01])/', $action, $match2)) {
                         // สถานะการเข้าระบบ

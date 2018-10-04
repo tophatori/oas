@@ -34,7 +34,7 @@ class Model extends \Kotchasan\KBase
         $ret = array();
         // session, token, can_config
         if ($request->initSession() && $request->isSafe() && $login = Login::checkPermission(Login::isMember(), 'can_config')) {
-            if (empty($login['fb'])) {
+            if (empty($login['social'])) {
                 // ไดเร็คทอรี่ของ user
                 $dir = ROOT_PATH.DATA_FOLDER;
                 // อัปโหลดไฟล์
