@@ -574,8 +574,7 @@ window.$K = (function() {
       .replace(/\\/g, "&#92;")
       .replace(/&/g, "&amp;")
       .replace(/\{/g, "&#x007B;")
-      .replace(/\}/g, "&#x007D;")
-      .replace(/\//g, "&#47;");
+      .replace(/\}/g, "&#x007D;");
   };
   String.prototype.unentityify = function() {
     return this.replace(/&lt;/g, "<")
@@ -585,8 +584,7 @@ window.$K = (function() {
       .replace(/&#92;/g, "\\")
       .replace(/&amp;/g, "&")
       .replace(/&#x007B;/g, "{")
-      .replace(/&#x007D;/g, "}")
-      .replace(/&#47;/g, "/");
+      .replace(/&#x007D;/g, "}");
   };
   String.prototype.toJSON = function() {
     try {

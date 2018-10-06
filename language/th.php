@@ -294,7 +294,7 @@ return array(
   'Mail program' => 'โปรแกรมส่งอีเมล',
   'Mail server' => 'เซิร์ฟเวอร์อีเมล',
   'Mail server port number (default is 25, for GMail used 465, 587 for DirectAdmin).' => 'หมายเลขพอร์ตของเมล์เซิร์ฟเวอร์ (ค่าปกติคือ 25, สำหรับ gmail ใช้ 465, 587 สำหรับ DirectAdmin)',
-  'Mail Server Settings' => 'ค่ากำหนดของเมล์เซิร์ฟเวอร์',
+  'Mail server settings' => 'ค่ากำหนดของเมล์เซิร์ฟเวอร์',
   'MAIL_PROGRAMS' => array(
     0 => 'ส่งจดหมายด้วย PHP',
     1 => 'ส่งจดหมายด้วย PHPMailer (แนะนำ)'

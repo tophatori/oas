@@ -74,7 +74,7 @@ class View extends \Gcms\View
         ));
         // ตั้งค่า mail server
         $fieldset = $form->add('fieldset', array(
-            'title' => '{LNG_Mail Server Settings}',
+            'title' => '{LNG_Mail server settings}',
         ));
         // email_Host
         $fieldset->add('text', array(
