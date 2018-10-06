@@ -75,7 +75,7 @@ class View extends \Kotchasan\KBase
         $js[] = 'Date.dayNames = ["'.implode('", "', $languages['DATE_SHORT']).'"];';
         $js[] = 'Date.yearOffset = '.(int) $languages['YEAR_OFFSET'].';';
         if (!empty(self::$cfg->facebook_appId)) {
-            $js[] = 'initFacebook("'.self::$cfg->facebook_appId.'", "'.Language::name().'");';
+            $js[] = 'initFacebook("'.self::$cfg->facebook_appId.'", "'.$lng.'");';
         }
         if (!empty(self::$cfg->google_client_id)) {
             $js[] = 'initGooleSignin("'.self::$cfg->google_client_id.'");';

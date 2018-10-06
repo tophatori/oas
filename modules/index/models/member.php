@@ -94,12 +94,14 @@ class Model extends \Kotchasan\Model
                                 $msgs[] = $err;
                             }
                         }
-                        if (empty($msgs)) {
-                            // ส่งอีเมล สำเร็จ
-                            $ret['alert'] = Language::get('Your message was sent successfully');
-                        } else {
-                            // มีข้อผิดพลาด
-                            $ret['alert'] = implode("\n", $msgs);
+                        if (isset($err)) {
+                            if (empty($msgs)) {
+                                // ส่งอีเมล สำเร็จ
+                                $ret['alert'] = Language::get('Your message was sent successfully');
+                            } else {
+                                // มีข้อผิดพลาด
+                                $ret['alert'] = implode("\n", $msgs);
+                            }
                         }
                     } elseif (preg_match('/active_([01])/', $action, $match2)) {
                         // สถานะการเข้าระบบ

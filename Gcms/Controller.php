@@ -153,7 +153,7 @@ class Controller extends \Kotchasan\Controller
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function detail()
     {
