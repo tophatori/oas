@@ -2,7 +2,7 @@
 /**
  * @filesource Kotchasan/load.php
  *
- * ไฟล์หลักสำหรับกำหนดค่าเริ่มต้นให้กับคชสารในการโหลดเฟรมเวิร์ค
+ * ไฟล์หลักสำหรับกำหนดค่าเริ่มต้นในการโหลดเฟรมเวิร์ค
  * ต้อง include ไฟล์นี้ก่อนเสมอ
  *
  * @copyright 2016 Goragod.com
@@ -54,17 +54,28 @@ if (DIRECTORY_SEPARATOR != '/') {
     $vendorDir = str_replace('\\', '/', $vendorDir);
 }
 define('VENDOR_DIR', $vendorDir);
-
+/*
+ * พาธของ Server ตั้งแต่ระดับราก เช่น D:/htdocs/Somtum/
+ */
+$docRoot = dirname($vendorDir);
+if (!defined('ROOT_PATH')) {
+    define('ROOT_PATH', $docRoot.'/');
+}
 /**
  *  document root (Server).
  */
 $contextPrefix = '';
 if (isset($_SERVER['APPL_PHYSICAL_PATH'])) {
     $docRoot = rtrim(realpath($_SERVER['APPL_PHYSICAL_PATH']), DIRECTORY_SEPARATOR);
+    if (DIRECTORY_SEPARATOR != '/' && $docRoot != '') {
+        $docRoot = str_replace('\\', '/', $docRoot);
+    }
 } elseif (strpos($_SERVER['SCRIPT_FILENAME'], $_SERVER['DOCUMENT_ROOT']) !== false) {
     $docRoot = rtrim(realpath($_SERVER['DOCUMENT_ROOT']), DIRECTORY_SEPARATOR);
+    if (DIRECTORY_SEPARATOR != '/' && $docRoot != '') {
+        $docRoot = str_replace('\\', '/', $docRoot);
+    }
 } else {
-    $docRoot = dirname($vendorDir);
     $dir = basename($docRoot);
     $ds = explode($dir, dirname($_SERVER['SCRIPT_NAME']), 2);
     if (sizeof($ds) > 1) {
@@ -81,9 +92,6 @@ if (isset($_SERVER['APPL_PHYSICAL_PATH'])) {
         define('BASE_PATH', $contextPrefix.$appPath.'/');
     }
 }
-if (DIRECTORY_SEPARATOR != '/' && $docRoot != '') {
-    $docRoot = str_replace('\\', '/', $docRoot);
-}
 /*
  * พาธของ Application เช่น D:/htdocs/kotchasan/
  */
@@ -93,12 +101,6 @@ if (!defined('APP_PATH')) {
         $appPath = str_replace('\\', '/', $appPath);
     }
     define('APP_PATH', rtrim($docRoot.$appPath, '/').'/');
-}
-/*
- * พาธของ Server ตั้งแต่ระดับราก เช่น D:/htdocs/kotchasan/
- */
-if (!defined('ROOT_PATH')) {
-    define('ROOT_PATH', APP_PATH);
 }
 /*
  *  http หรือ https
@@ -228,35 +230,22 @@ if (DEBUG != 2) {
  */
 function getClassPath($className)
 {
-    $className = str_replace('\\', '/', $className);
-    if (preg_match('/^Kotchasan\/([a-zA-Z]+)Interface$/', $className, $match)) {
-        if (is_file(VENDOR_DIR.'Interfaces/'.$match[1].'Interface.php')) {
-            return VENDOR_DIR.'Interfaces/'.$match[1].'Interface.php';
-        }
-    } elseif (preg_match('/^Kotchasan\/([\/a-zA-Z]+)$/', $className, $match)) {
-        if (is_file(VENDOR_DIR.$match[1].'.php')) {
-            return VENDOR_DIR.$match[1].'.php';
-        }
-    } elseif (preg_match('/^([\/a-zA-Z0-9]+)$/', $className)) {
-        if (is_file(VENDOR_DIR.$className.'.php')) {
-            return VENDOR_DIR.$className.'.php';
-        } elseif (is_file(APP_PATH.$className.'.php')) {
-            return APP_PATH.$className.'.php';
-        } elseif (is_file(ROOT_PATH.$className.'.php')) {
-            return ROOT_PATH.$className.'.php';
-        } else {
-            $match = explode('/', strtolower($className));
-            if (isset($match[2])) {
-                if (isset($match[3])) {
-                    $module = "modules/{$match[0]}/{$match[3]}s/{$match[1]}/{$match[2]}.php";
-                } else {
-                    $module = "modules/{$match[0]}/{$match[2]}s/{$match[1]}.php";
-                }
-                if (is_file(APP_PATH.$module)) {
-                    return APP_PATH.$module;
-                } elseif (is_file(ROOT_PATH.$module)) {
-                    return ROOT_PATH.$module;
-                }
+    if (preg_match_all('/([\/\\])([a-zA-Z]+)/', $className, $match)) {
+        $className = implode(DIRECTORY_SEPARATOR, $match[1]).'.php';
+        if (is_file(ROOT_PATH.$className)) {
+            return ROOT_PATH.$className;
+        } elseif (is_file(VENDOR_DIR.$className)) {
+            return VENDOR_DIR.$className;
+        } elseif (isset($match[1][2])) {
+            if (isset($match[1][3])) {
+                $className = strtolower('modules'.DIRECTORY_SEPARATOR.$match[1][0].DIRECTORY_SEPARATOR.$match[1][3].'s'.DIRECTORY_SEPARATOR.$match[1][1].DIRECTORY_SEPARATOR.$match[1][2].'.php');
+            } else {
+                $className = strtolower('modules'.DIRECTORY_SEPARATOR.$match[1][0].DIRECTORY_SEPARATOR.$match[1][2].'s'.DIRECTORY_SEPARATOR.$match[1][1].'.php');
+            }
+            if (is_file(APP_PATH.$className)) {
+                return APP_PATH.$className;
+            } elseif (is_file(ROOT_PATH.$className)) {
+                return ROOT_PATH.$className;
             }
         }
     }
@@ -277,9 +266,16 @@ spl_autoload_register(function ($className) {
 });
 
 /**
- * load base class.
+ * โหลดคลาสเริ่มต้น.
  */
 require VENDOR_DIR.'KBase.php';
-require VENDOR_DIR.'Kotchasan.php';
 require VENDOR_DIR.'Config.php';
+require VENDOR_DIR.'Psr/Http/Message/MessageInterface.php';
+require VENDOR_DIR.'Psr/Http/Message/RequestInterface.php';
+require VENDOR_DIR.'Psr/Http/Message/UriInterface.php';
+require VENDOR_DIR.'Http/AbstractMessage.php';
+require VENDOR_DIR.'Http/AbstractRequest.php';
 require VENDOR_DIR.'Http/Request.php';
+require VENDOR_DIR.'Http/Uri.php';
+require VENDOR_DIR.'Router.php';
+require VENDOR_DIR.'Kotchasan.php';

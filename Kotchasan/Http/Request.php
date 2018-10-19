@@ -25,21 +25,29 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
     private $attributes = array();
 
     /**
+     * $_COOKIE.
+     *
      * @var array
      */
     private $cookieParams;
 
     /**
+     * $_POST.
+     *
      * @var array
      */
     private $parsedBody;
 
     /**
+     * $_GET.
+     *
      * @var array
      */
     private $queryParams;
 
     /**
+     * $_SERVER.
+     *
      * @var array
      */
     private $serverParams;
@@ -172,7 +180,7 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
     }
 
     /**
-     * คืนค่าจากตัวแปร COOKIE.
+     * คืนค่าจากตัวแปร $_COOKIE.
      *
      * @return array
      */
@@ -186,7 +194,7 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
     }
 
     /**
-     * คืนค่าจากตัวแปร POST.
+     * คืนค่าจากตัวแปร $_POST.
      *
      * @return null|array|object
      */
@@ -200,7 +208,7 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
     }
 
     /**
-     * คืนค่าจากตัวแปร GET.
+     * คืนค่าจากตัวแปร $_GET.
      *
      * @return null|array|object
      */
@@ -214,7 +222,7 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
     }
 
     /**
-     * คืนค่าจากตัวแปร SERVER.
+     * คืนค่าจากตัวแปร $_SERVER.
      *
      * @return array
      */
@@ -253,11 +261,11 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
     }
 
     /**
-     * อ่านค่าจากตัวแปร GLOBALS $_POST $_GET $_SESSION $_COOKIE ตามลำดับ.
-     * ถ้าไม่พบจะอ่านจาก $_GET และถ้าไม่พบอีกจะใช้ค่า $default
-     * คืนค่า InputItem หรือ Collection ของ InputItem.
+     * อ่านค่าจากตัวแปร GLOBALS เช่น $_POST $_GET $_SESSION $_COOKIE ตามที่ระบุใน $keys ตามลำดับ
+     * เช่น array('POST', 'GET') หมายถึงอ่านจาก $_POST ก่อน ถ้าไม่พบจะอ่านจาก $_GET
+     * และถ้าไม่พบอีกจะคืนค่า $default.
      *
-     * @param array  $keys    ชื่อตัวแปรที่ต้องการอ่าน ตัวพิมพ์ใหญ่ เช่น array('POST', 'GET') หมายถึงอ่านค่าจาก $_POST ก่อน
+     * @param array  $keys    ชื่อตัวแปรที่ต้องการอ่าน ตัวพิมพ์ใหญ่ เช่น array('POST', 'GET')
      * @param string $name    ชื่อตัวแปร
      * @param mixed  $default ค่าเริ่มต้นหากไม่พบตัวแปร
      *
@@ -363,7 +371,8 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
     }
 
     /**
-     * อ่านค่าจากตัวแปร POST
+     * อ่านค่าจากตัวแปร $_POST
+     * ถ้าไม่พบเลยคืนค่า $default
      * คืนค่า InputItem หรือ แอเรย์ของ InputItem.
      *
      * @param string $name    ชื่อตัวแปร
@@ -388,8 +397,9 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
     }
 
     /**
-     * อ่านค่าจากตัวแปร POST GET ตามลำดับ
-     * คืนค่า InputItem หรือ Collection ของ InputItem.
+     * อ่านค่าจากตัวแปร $_POST $_GET ตามลำดับ
+     * คืนค่ารายการแรกที่พบ ถ้าไม่พบเลยคืนค่า $default
+     * คืนค่า InputItem หรือ แอเรย์ของ InputItem.
      *
      * @param string $name    ชื่อตัวแปร
      * @param mixed  $default ค่าเริ่มต้นหากไม่พบตัวแปร
@@ -402,7 +412,8 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
     }
 
     /**
-     * อ่านค่าจากตัวแปร SERVER.
+     * อ่านค่าจากตัวแปร $_SERVER
+     * ถ้าไม่พบเลยคืนค่า $default.
      *
      * @param string $name    ชื่อตัวแปร
      * @param mixed  $default ค่าเริ่มต้นหากไม่พบตัวแปร
@@ -415,7 +426,8 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
     }
 
     /**
-     * อ่านค่าจากตัวแปร SESSION
+     * อ่านค่าจากตัวแปร $_SESSION
+     * ถ้าไม่พบเลยคืนค่า $default
      * คืนค่า InputItem หรือ Collection ของ InputItem.
      *
      * @param string $name    ชื่อตัวแปร
@@ -429,7 +441,7 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
     }
 
     /**
-     * กำหนดค่าตัวแปร SESSION.
+     * กำหนดค่าตัวแปร $_SESSION.
      *
      * @param string $name  ชื่อตัวแปร
      * @param mixed  $value ค่าของตัวแปร

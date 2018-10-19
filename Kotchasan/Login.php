@@ -19,7 +19,7 @@ use Kotchasan\Http\Request;
  *
  * @since 1.0
  */
-class Login extends \Kotchasan\KBase implements LoginInterface
+class Login extends \Kotchasan\KBase
 {
     /**
      * ตัวแปรบอกว่ามาจากการ submit

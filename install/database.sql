@@ -67,7 +67,7 @@ CREATE TABLE `{prefix}_customer` (
   `company` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `branch` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `idcard` varchar(13) COLLATE utf8_unicode_ci NOT NULL,
+  `idcard` varchar(13) COLLATE utf8_unicode_ci DEFAULT NULL,
   `tax_id` varchar(13) COLLATE utf8_unicode_ci NOT NULL,
   `phone` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
   `fax` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE `{prefix}_customer` (
   `bank` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `bank_name` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `bank_no` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `discount` decimal(10,2) NOT NULL
+  `discount` decimal(10,2) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --

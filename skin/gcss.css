@@ -622,7 +622,7 @@ input[type="email"],
 input[type="url"],
 input[type="color"] {
   line-height: 2.3em;
-  height: 2.287em;
+  height: 2.286em;
 }
 .grange_div {
   margin: 9px 0;
@@ -1005,7 +1005,7 @@ textarea.cke_editable {
   white-space: nowrap;
   overflow: hidden;
   line-height: 2.3em;
-  height: 2.287em;
+  height: 2.286em;
   padding: 0 0.7em;
   outline: none;
   cursor: pointer;
@@ -2651,7 +2651,7 @@ div.ginput a:hover {
   min-width: 7em;
   padding-left: 0.1em;
   padding-right: 0.1em;
-  height: 2.287em;
+  height: 2.286em;
   line-height: 2.3em;
 }
 div.gcalendar {
@@ -3814,7 +3814,7 @@ fieldset.search {
   -webkit-border-radius: 0.5em;
   border-radius: 0.5em;
   overflow: hidden;
-  height: 2.287em;
+  height: 2.286em;
 }
 fieldset.search input[type="text"] {
   -moz-border-radius: 0.5em 0 0 0.5em;

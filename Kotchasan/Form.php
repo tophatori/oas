@@ -474,7 +474,7 @@ class Form extends \Kotchasan\KBase
             }
             $input = '<div class="'.$itemClass.'"'.(empty($itemId) ? '' : ' id="'.$itemId.'"').'>';
             if (isset($type) && $type === 'checkbox') {
-                $input .= '<label'.(empty($labelClass) ? '' : ' class="'.$labelClass.'"').'>'.$element.'&nbsp;'.$label.'</label>';
+                $input .= '<label'.(empty($labelClass) ? '' : ' class="'.$labelClass.'"').'>'.$element.'&nbsp;'.(isset($label) ? $label : '').'</label>';
             } else {
                 if (isset($dataPreview)) {
                     $input .= '<div class=usericon><span><img src="'.$previewSrc.'" alt="Image preview" id='.$dataPreview.'></span></div>';

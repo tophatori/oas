@@ -737,7 +737,7 @@ class QueryBuilder extends \Kotchasan\Database\Query
      * @assert where(Sql::create('`id`=1 OR (SELECT ....)'))->text() [==] " WHERE `id`=1 OR (SELECT ....)"
      * @assert where(array('id', '=', 1))->text() [==] " WHERE `id` = 1"
      * @assert where(array('id', 'IN', array(1, 2, '3')))->text() [==] " WHERE `id` IN (1, 2, '3')"
-     * @assert where(array(array('fb', '0'), Sql::create('(...)')))->text() [==] " WHERE `fb` = '0' AND (...)"
+     * @assert where(array(array('social', '0'), Sql::create('(...)')))->text() [==] " WHERE `social` = '0' AND (...)"
      * @assert where(array(array(Sql::MONTH('create_date'), 1), array(Sql::YEAR('create_date'), 1)))->text() [==] " WHERE MONTH(`create_date`) = 1 AND YEAR(`create_date`) = 1"
      * @assert where(array(array('id', array(1, 'a')), array('id', array('G.id', 'G.`id2`'))))->text() [==] " WHERE `id` IN (1, 'a') AND `id` IN (G.`id`, G.`id2`)"
      * @assert where(array(array('id', array(1, 'a')), array('id', array('', 'th'))))->text() [==] " WHERE `id` IN (1, 'a') AND `id` IN ('', 'th')"

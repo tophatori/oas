@@ -820,22 +820,28 @@ class Sql
                         }
                         $value = self::quoteValue($key, $condition[1], $values);
                     }
-                } elseif ($condition[2] instanceof QueryBuilder) {
-                    $operator = trim($condition[1]);
-                    $value = '('.$condition[2]->text().')';
-                    $values = $condition[2]->getValues($values);
-                } elseif ($condition[2] instanceof self) {
-                    $operator = trim($condition[1]);
-                    $value = $condition[2]->text();
-                    $values = $condition[2]->getValues($values);
-                } else {
-                    $operator = trim($condition[1]);
-                    if (is_array($condition[2]) && $operator == '=') {
-                        $operator = 'IN';
+                } elseif (isset($condition[2])) {
+                    if ($condition[2] instanceof QueryBuilder) {
+                        $operator = trim($condition[1]);
+                        $value = '('.$condition[2]->text().')';
+                        $values = $condition[2]->getValues($values);
+                    } elseif ($condition[2] instanceof self) {
+                        $operator = trim($condition[1]);
+                        $value = $condition[2]->text();
+                        $values = $condition[2]->getValues($values);
+                    } else {
+                        $operator = trim($condition[1]);
+                        if (is_array($condition[2]) && $operator == '=') {
+                            $operator = 'IN';
+                        }
+                        $value = self::quoteValue($key, $condition[2], $values);
                     }
-                    $value = self::quoteValue($key, $condition[2], $values);
                 }
-                $sql = $key.' '.$operator.' '.$value;
+                if (isset($value)) {
+                    $sql = $key.' '.$operator.' '.$value;
+                } else {
+                    $sql = $key;
+                }
             }
         } elseif ($condition instanceof QueryBuilder) {
             $sql = '('.$condition->text().')';

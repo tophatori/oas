@@ -20,7 +20,7 @@ use Kotchasan\Language;
  *
  * @since 1.0
  */
-class Login extends \Kotchasan\Login implements \Kotchasan\LoginInterface
+class Login extends \Kotchasan\Login
 {
     /**
      * ฟังก์ชั่นตรวจสอบการ login และบันทึกการเข้าระบบ
