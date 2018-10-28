@@ -11,7 +11,9 @@
 namespace Kotchasan;
 
 /**
- * Password Class.
+ * Password Class
+ * คลาสสำหรับการเข้ารหัส และ ถอดรหัส อย่างง่าย
+ * สำหรับใช้ทดแทน base64.
  *
  * @setupParam '1234567890'
  *

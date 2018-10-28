@@ -34,7 +34,6 @@ class Model extends \Kotchasan\Model
     public static function get($id)
     {
         if (!empty($id)) {
-            // query ข้อมูลที่เลือก
             $user = static::createQuery()
                 ->from('user')
                 ->where(array('id', $id))

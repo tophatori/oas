@@ -99,20 +99,22 @@ class Login extends \Kotchasan\KBase
         // ชื่อฟิลด์สำหรับการรับค่าเป็นรายการแรกของ login_fields
         $field_name = reset(self::$cfg->login_fields);
         // อ่านข้อมูลจากฟอร์ม login ฟิลด์ login_username
-        self::$login_params['username'] = self::$request->post('login_username')->toString();
+        self::$login_params['username'] = self::$request->post('login_username')->username();
         if (empty(self::$login_params['username'])) {
             if (isset($_SESSION['login']) && isset($_SESSION['login'][$field_name])) {
                 // session
-                self::$login_params['username'] = $_SESSION['login'][$field_name];
+                self::$login_params['username'] = Text::username($_SESSION['login'][$field_name]);
+                if (isset($_SESSION['login']['token'])) {
+                    self::$login_params['token'] = $_SESSION['login']['token'];
+                }
             } else {
                 self::$login_params['username'] = null;
             }
             self::$from_submit = false;
-        } else {
+        } elseif (self::$request->post('login_password')->exists()) {
+            self::$login_params['password'] = self::$request->post('login_password')->password();
             self::$from_submit = true;
         }
-        self::$login_params['username'] = Text::username(self::$login_params['username']);
-        self::$login_params['password'] = self::get('password');
         $action = self::$request->get('action')->toString();
         // ตรวจสอบการ login
         if ($action === 'logout' && !self::$from_submit) {
@@ -124,22 +126,17 @@ class Login extends \Kotchasan\KBase
             return $login->forgot(self::$request);
         } else {
             // ตรวจสอบค่าที่ส่งมา
-            if (self::$login_params['username'] == '') {
-                if (self::$from_submit) {
-                    self::$login_message = Language::get('Please fill in');
-                    self::$login_input = 'login_username';
-                }
-            } elseif (self::$login_params['password'] == '') {
-                if (self::$from_submit) {
-                    self::$login_message = Language::get('Please fill in');
-                    self::$login_input = 'login_password';
-                }
+            if (self::$login_params['username'] == '' && self::$from_submit) {
+                self::$login_message = Language::get('Please fill in');
+                self::$login_input = 'login_username';
+            } elseif (empty(self::$login_params['password']) && self::$from_submit) {
+                self::$login_message = Language::get('Please fill in');
+                self::$login_input = 'login_password';
             } elseif (!self::$from_submit || (self::$from_submit && self::$request->isReferer())) {
                 // ตรวจสอบการ login กับฐานข้อมูล
                 $login_result = $login->checkLogin(self::$login_params);
                 if (is_array($login_result)) {
                     // save login session
-                    $login_result['password'] = self::$login_params['password'];
                     $_SESSION['login'] = $login_result;
                 } else {
                     if (is_string($login_result)) {
@@ -186,27 +183,5 @@ class Login extends \Kotchasan\KBase
     public static function isMember()
     {
         return empty($_SESSION['login']) ? null : $_SESSION['login'];
-    }
-
-    /**
-     * อ่านข้อมูลจาก POST, SESSION ตามลำดับ
-     * เจออันไหนก่อนใช้อันนั้น
-     * คืนค่าข้อความ ไม่พบคืนค่า null.
-     *
-     * @param string $name
-     *
-     * @return string|null
-     */
-    protected static function get($name)
-    {
-        if (self::$request->post('login_'.$name)->exists()) {
-            self::$from_submit = true;
-
-            return self::$request->post('login_'.$name)->toString();
-        } elseif (isset($_SESSION['login']) && isset($_SESSION['login'][$name])) {
-            return (string) $_SESSION['login'][$name];
-        }
-
-        return null;
     }
 }

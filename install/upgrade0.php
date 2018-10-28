@@ -36,14 +36,14 @@ if (defined('ROOT_PATH')) {
         }
     }
     echo '</ul>';
-    echo '<p><a href="index.php?step=1" class="button large pink">ตรวจสอบใหม่</a>&nbsp;<a href="index.php?step=2" class="button large save">ดำเนินการต่อ</a></p>';
+    echo '<p><a href="index.php" class="button large pink">ตรวจสอบใหม่</a>&nbsp;<a href="index.php?step=1" class="button large save">ดำเนินการต่อ</a></p>';
 }
 
 /**
- * @param string $dir
- * @param mixed  $mode
+ * @param  $dir
+ * @param  $mode
  *
- * @return bool
+ * @return mixed
  */
 function makeDirectory($dir, $mode = 0755)
 {

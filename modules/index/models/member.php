@@ -45,10 +45,9 @@ class Model extends \Kotchasan\Model
         $query = static::createQuery()
             ->selectCount()
             ->from('user')
-            ->toArray()
             ->execute();
 
-        return $query[0]['count'];
+        return $query[0]->count;
     }
 
     /**

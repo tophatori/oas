@@ -307,19 +307,11 @@ class UploadedFile implements UploadedFileInterface
     public static function getUploadSize($return_byte = false)
     {
         $val = trim(ini_get('upload_max_filesize'));
-        if ($return_byte) {
-            $last = strtolower($val[strlen($val) - 1]);
-            switch ($last) {
-                // The 'G' modifier is available since PHP 5.1.0
-                case 'g':
-                    $val *= 1024;
-                // no break
-                case 'm':
-                    $val *= 1024;
-                // no break
-                case 'k':
-                    $val *= 1024;
-            }
+        if (is_numeric($val)) {
+            return $val;
+        } elseif ($return_byte && preg_match('/^([0-9]+)([gmk])$/', strtolower($val), $match)) {
+            $units = array('k' => 1024, 'm' => 1048576, 'g' => 1073741824);
+            $val = (int) $match[1] * $units[$match[2]];
         }
 
         return $val;

@@ -82,16 +82,15 @@ abstract class Query extends \Kotchasan\Database\Db
      */
     public function text()
     {
+        $sql = '';
         if (!empty($this->sqls)) {
             $sql = $this->db->makeQuery($this->sqls);
-            foreach ($this->getValues() as $key => $value) {
+            foreach (array_reverse($this->getValues()) as $key => $value) {
                 $sql = str_replace($key, (is_string($value) ? "'$value'" : $value), $sql);
             }
-
-            return $sql;
         }
 
-        return '';
+        return $sql;
     }
 
     /**

@@ -278,8 +278,6 @@ class InputItem
     /**
      * รับค่าสำหรับ password อักขระทุกตัวไม่มีช่องว่าง.
      *
-     * @assert create(" 0\n12   34\r\r6\t5@#$&{}! ")->password() [==] '0123465@#$&{}!'
-     *
      * @return string
      */
     public function password()

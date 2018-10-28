@@ -230,7 +230,7 @@ if (DEBUG != 2) {
  */
 function getClassPath($className)
 {
-    if (preg_match_all('/([\/\\])([a-zA-Z]+)/', $className, $match)) {
+    if (preg_match_all('/([\/\\])([a-zA-Z0-9]+)/', $className, $match)) {
         $className = implode(DIRECTORY_SEPARATOR, $match[1]).'.php';
         if (is_file(ROOT_PATH.$className)) {
             return ROOT_PATH.$className;

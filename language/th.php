@@ -1,4 +1,5 @@
 <?php
+
 /* language/th.php */
 return array(
   ':username passwords' => 'รหัสผ่านของ :username',
@@ -10,7 +11,7 @@ return array(
     0 => 'หมวดหมู่สินค้า',
     1 => 'ประเภทรายรับ',
     2 => 'ประเภทรายจ่าย',
-    3 => 'หน่วยนับสินค้า'
+    3 => 'หน่วยนับสินค้า',
   ),
   'Accept this agreement' => 'ยอมรับข้อตกลงนี้',
   'Accesskey' => 'คีย์ลัด',
@@ -61,16 +62,16 @@ return array(
     'quantity' => 'จำนวน',
     'price' => 'ราคา',
     'discount' => 'ส่วนลด',
-    'amount' => 'จำนวนเงิน'
+    'amount' => 'จำนวนเงิน',
   ),
   'BILLING_TYPIES' => array(
     0 => 'ไม่ระบุ',
     1 => 'ต้นฉบับ',
-    2 => 'สำเนา'
+    2 => 'สำเนา',
   ),
   'BOOLEANS' => array(
     0 => 'ปิดใช้งาน',
-    1 => 'เปิดใช้งาน'
+    1 => 'เปิดใช้งาน',
   ),
   'Branch name' => 'ชื่อสาขา',
   'Browse file' => 'เลือกไฟล์',
@@ -79,7 +80,7 @@ return array(
   'Buy Price' => 'ราคาซื้อ',
   'BUY_TYPIES' => array(
     1 => 'ใบสั่งซื้อ',
-    6 => 'ใบรับสินค้า'
+    6 => 'ใบรับสินค้า',
   ),
   'by' => 'โดย',
   'Calculated from purchase price, excluding tax, multiplied by the number of items sold. At that time (FIFO)' => 'คำนวณจาก ราคาซื้อไม่รวมภาษี คูณด้วยจำนวนสินค้าที่ขายไปแล้ว ณ. ช่วงเวลานั้น (FIFO)',
@@ -133,7 +134,7 @@ return array(
   'Could not be saved' => 'ไม่สามารถบันทึกได้',
   'COUNT_STOCK' => array(
     0 => 'ไม่นับสต๊อก',
-    1 => 'นับสต๊อก'
+    1 => 'นับสต๊อก',
   ),
   'Country' => 'ประเทศ',
   'Create' => 'สร้าง',
@@ -145,7 +146,7 @@ return array(
   'Currency Unit' => 'สกุลเงิน',
   'CURRENCY_UNITS' => array(
     'THB' => 'บาท',
-    'USD' => 'ดอลล่าร์'
+    'USD' => 'ดอลล่าร์',
   ),
   'Customer' => 'ลูกค้า',
   'Customer details' => 'รายละเอียดของลูกค้า',
@@ -162,7 +163,7 @@ return array(
     3 => 'พุธ',
     4 => 'พฤหัสบดี',
     5 => 'ศุกร์',
-    6 => 'เสาร์'
+    6 => 'เสาร์',
   ),
   'DATE_SHORT' => array(
     0 => 'อา.',
@@ -171,7 +172,7 @@ return array(
     3 => 'พ.',
     4 => 'พฤ.',
     5 => 'ศ.',
-    6 => 'ส.'
+    6 => 'ส.',
   ),
   'Dateless' => 'ไม่มีวันหมดอายุ',
   'days' => 'วัน',
@@ -265,7 +266,7 @@ return array(
   'Inventory Adjust' => 'ปรับยอดสินค้าคงคลัง',
   'INVENTORY_STATUS' => array(
     'OUT' => 'ขาย/จ่ายออก',
-    'IN' => 'ซื้อ/รับเข้า'
+    'IN' => 'ซื้อ/รับเข้า',
   ),
   'Invitation code' => 'รหัสผู้แนะนำ',
   'Item' => 'ลำดับ',
@@ -297,7 +298,7 @@ return array(
   'Mail server settings' => 'ค่ากำหนดของเมล์เซิร์ฟเวอร์',
   'MAIL_PROGRAMS' => array(
     0 => 'ส่งจดหมายด้วย PHP',
-    1 => 'ส่งจดหมายด้วย PHPMailer (แนะนำ)'
+    1 => 'ส่งจดหมายด้วย PHPMailer (แนะนำ)',
   ),
   'Mailbox' => 'กล่องจดหมาย',
   'Member list' => 'รายชื่อสมาชิก',
@@ -327,7 +328,7 @@ return array(
     9 => 'กันยายน',
     10 => 'ตุลาคม',
     11 => 'พฤศจิกายน',
-    12 => 'ธันวาคม'
+    12 => 'ธันวาคม',
   ),
   'MONTH_SHORT' => array(
     1 => 'ม.ค.',
@@ -341,7 +342,7 @@ return array(
     9 => 'ก.ย.',
     10 => 'ต.ค.',
     11 => 'พ.ย.',
-    12 => 'ธ.ค.'
+    12 => 'ธ.ค.',
   ),
   'monthly' => 'ประจำเดือน',
   'Monthly Report' => 'รายงานประจำเดือน',
@@ -392,7 +393,7 @@ return array(
   'Permission' => 'สิทธิ์การใช้งาน',
   'PERMISSIONS' => array(
     'can_config' => 'สามารถตั้งค่าระบบได้',
-    'can_customer' => 'สามารถบริหารจัดการรายชื่อลูกค้าได้'
+    'can_customer' => 'สามารถบริหารจัดการรายชื่อลูกค้าได้',
   ),
   'Person Type' => 'ประเภทของธุรกิจ',
   'Personal information' => 'ข้อมูลสมาชิก',
@@ -423,7 +424,7 @@ return array(
   'Published' => 'เผยแพร่',
   'PUBLISHEDS' => array(
     0 => 'ระงับการเผยแพร่',
-    1 => 'เผยแพร่'
+    1 => 'เผยแพร่',
   ),
   'Purchase' => 'ซื้อสินค้า',
   'Quantity' => 'จำนวน',
@@ -470,7 +471,7 @@ return array(
   'Sell Price' => 'ราคาขาย',
   'SELL_TYPIES' => array(
     1 => 'ใบเสนอราคา',
-    6 => 'ใบเสร็จ'
+    6 => 'ใบเสร็จ',
   ),
   'Send' => 'ส่ง',
   'Send a message to the :name' => 'ส่งข้อความถึง :name',
@@ -504,7 +505,7 @@ return array(
   'skip to content' => 'ข้ามไปยังเนื้อหา',
   'SMTPSECURIES' => array(
     '' => 'การเชื่อมต่อแบบปกติ',
-    'ssl' => 'การเชื่อมต่อที่ปลอดภัย (SSL)'
+    'ssl' => 'การเชื่อมต่อที่ปลอดภัย (SSL)',
   ),
   'Some items can not be removed because it is in use' => 'บางรายการไม่สามารถลบได้เนื่องจากมีการใช้งานอยู่',
   'Sorry' => 'ขออภัย',
@@ -528,12 +529,12 @@ return array(
   'Tax ID 13 digit' => 'เลขประจำตัวผู้เสียภาษีอากร 13 หลัก',
   'TAX_PRICE' => array(
     0 => 'แยกภาษี',
-    1 => 'รวมภาษี'
+    1 => 'รวมภาษี',
   ),
   'TAX_STATUS' => array(
     0 => 'ไม่มีภาษี',
     1 => 'แยกภาษี',
-    2 => 'รวมภาษี'
+    2 => 'รวมภาษี',
   ),
   'Template' => 'แม่แบบ',
   'Templates for e-mail sent by the system' => 'แม่แบบของอีเมลสำหรับส่งโดยระบบ',
@@ -606,7 +607,7 @@ return array(
     2 => '2.0%',
     3 => '3.0%',
     5 => '5.0%',
-    10 => '10.0%'
+    10 => '10.0%',
   ),
   'When filling out the customer' => 'เมื่อมีการกรอกช่องลูกค้า',
   'Widgets' => 'ส่วนเสริม',
@@ -627,5 +628,5 @@ return array(
   'Your post is already exists. You do not need to post this.' => 'คุณได้โพสต์ความคิดเห็นนี้แล้วในวันนี้ คุณไม่จำเป็นต้องเขียนซ้ำอีก',
   'Your site&#39;s URL (exclude http://, eg www.domain.tld).' => 'เว็บไซต์ของคุณ (ไม่รวม http:// เช่น www.domain.tld)',
   'Zero means unlimited' => '0 หมายถึงไม่จำกัด',
-  'Zipcode' => 'รหัสไปรษณีย์'
+  'Zipcode' => 'รหัสไปรษณีย์',
 );

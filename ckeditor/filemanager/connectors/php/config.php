@@ -1,10 +1,11 @@
 <?php
+
 session_start();
 /*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
  * Copyright (C) 2003-2009 Frederico Caldeira Knabben
 
- * modify by กรกฎ วิริยะ http://www.goragod.com 15 กย. 2553
+ * modify by กรกฎ วิริยะ https://goragod.com 15 กย. 2553
  * สำหรับการใช้งาน multi user
  * และการจัดการ path และ ไดเร็คทอรี่ต่างๆ
 
@@ -118,8 +119,10 @@ $config['ChmodOnFolderCreate'] = 0755;
 $onfig['ImageThumbnail']['Folder'] = $config['UserFilesAbsolutePath'].'thumb/';
 $onfig['ImageThumbnail']['Size'] = 100;
 // ไฟล์อัปโหลด
-$config['AllowedExtensions']['File'] = array('7z', 'aiff', 'asf', 'avi', 'bmp', 'csv', 'doc', 'fla', 'flv', 'gif', 'gz', 'gzip', 'jpeg', 'jpg', 'mid', 'mov', 'mp3', 'mp4', 'mpc', 'mpeg', 'mpg', 'ods', 'odt', 'pdf', 'png', 'ppt', 'pxd', 'qt', 'ram', 'rar', 'rm', 'rmi', 'rmvb', 'rtf', 'sdc', 'sitd', 'swf',
-	'sxc', 'sxw', 'tar', 'tgz', 'tif', 'tiff', 'txt', 'vsd', 'wav', 'wma', 'wmv', 'xls', 'xml', 'zip');
+$config['AllowedExtensions']['File'] = array(
+  '7z', 'aiff', 'asf', 'avi', 'bmp', 'csv', 'doc', 'fla', 'flv', 'gif', 'gz', 'gzip', 'jpeg', 'jpg', 'mid', 'mov', 'mp3', 'mp4', 'mpc', 'mpeg', 'mpg', 'ods', 'odt', 'pdf', 'png', 'ppt', 'pxd', 'qt', 'ram', 'rar', 'rm', 'rmi', 'rmvb', 'rtf', 'sdc', 'sitd', 'swf',
+  'sxc', 'sxw', 'tar', 'tgz', 'tif', 'tiff', 'txt', 'vsd', 'wav', 'wma', 'wmv', 'xls', 'xml', 'zip',
+);
 $config['DeniedExtensions']['File'] = array();
 $config['FileTypesPath']['File'] = $config['UserFilesPath'].'file/';
 $config['FileTypesAbsolutePath']['File'] = ($config['UserFilesAbsolutePath'] == '') ? '' : $config['UserFilesAbsolutePath'].'file/';

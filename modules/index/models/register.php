@@ -15,7 +15,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * ลงทะเบียนสมาชิกใหม่.
+ * module=register.
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
