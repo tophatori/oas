@@ -41,6 +41,10 @@ if (defined('ROOT_PATH')) {
             }
             $conn->query("ALTER TABLE `$table` CHANGE `password` `password` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL");
             $content[] = '<li class="correct">ปรับปรุงตาราง `'.$table.'` สำเร็จ</li>';
+            // ตาราง orders
+            $table = $db_config['prefix'].'_orders';
+            $conn->query('ALTER TABLE `'.$table.'` CHANGE `comment` `comment` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL');
+            $content[] = '<li class="correct">ปรับปรุงตาราง `'.$table.'` สำเร็จ</li>';
             // บันทึก settings/config.php
             $config['version'] = $new_config['version'];
             $f = save($config, ROOT_PATH.'settings/config.php');
