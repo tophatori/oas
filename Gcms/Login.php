@@ -34,15 +34,15 @@ class Login extends \Kotchasan\Login
     {
         // ตรวจสอบสมาชิกกับฐานข้อมูล
         $login_result = self::checkMember($params);
-        if (is_string($login_result)) {
-            return $login_result;
-        } else {
+        if (is_array($login_result)) {
             // ip ที่ login
             $ip = self::$request->getClientIp();
             // current session
             $session_id = session_id();
             // token
             $login_result['token'] = sha1(uniqid());
+            // ลบ password
+            unset($login_result['password']);
             // อัปเดทการเยี่ยมชม
             if ($session_id != $login_result['session_id']) {
                 ++$login_result['visited'];
@@ -59,13 +59,11 @@ class Login extends \Kotchasan\Login
                 );
             }
             // บันทึกการเข้าระบบ
-            if (isset($save)) {
-                \Kotchasan\Model::createQuery()
-                    ->update('user')
-                    ->set($save)
-                    ->where((int) $login_result['id'])
-                    ->execute();
-            }
+            \Kotchasan\Model::createQuery()
+                ->update('user')
+                ->set($save)
+                ->where((int) $login_result['id'])
+                ->execute();
         }
 
         return $login_result;
@@ -97,11 +95,11 @@ class Login extends \Kotchasan\Login
             if (isset($params['password']) && $item['password'] == sha1($params['password'].$item['salt'])) {
                 // ตรวจสอบรหัสผ่าน
                 $login_result = $item;
-            } elseif (isset($params['token']) && $item['token'] == $item['token']) {
+            } elseif (isset($params['token']) && $params['token'] == $item['token']) {
                 // ตรวจสอบ token
                 $login_result = $item;
             }
-            if ($login_result && $login_result['status'] == 1 || $login_result['active'] == 1) {
+            if ($login_result && ($login_result['status'] == 1 || $login_result['active'] == 1)) {
                 // permission
                 $login_result['permission'] = empty($login_result['permission']) ? array() : explode(',', trim($login_result['permission'], " \t\n\r\0\x0B,"));
                 break;

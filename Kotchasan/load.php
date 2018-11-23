@@ -112,6 +112,9 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
 } else {
     $scheme = 'http://';
 }
+if (!defined('HTTPS')) {
+    define('HTTPS', $scheme == 'https://');
+}
 /*
  * host name
  */

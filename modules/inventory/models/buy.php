@@ -144,8 +144,8 @@ class Model extends \Kotchasan\Model
                             $ret['location'] = $request->getUri()->postBack('index.php', array('module' => 'inventory-inward', 'status' => $order['status'], 'id' => null));
                         }
                         // save cookie
-                        setcookie('buy_save_and_create', $save_and_create, time() + 2592000, '/', null, HOST, true);
-                        setcookie('buy_vat_status', $order['vat_status'], time() + 2592000, '/', null, HOST, true);
+                        setcookie('buy_save_and_create', $save_and_create, time() + 2592000, '/', HOST, HTTPS, true);
+                        setcookie('buy_vat_status', $order['vat_status'], time() + 2592000, '/', HOST, HTTPS, true);
                         // เคลียร์
                         $request->removeToken();
                     }

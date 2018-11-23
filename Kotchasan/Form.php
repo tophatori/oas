@@ -340,7 +340,6 @@ class Form extends \Kotchasan\KBase
                     } elseif ($v === true) {
                         $prop[$k] = $k;
                     } elseif ($v === false) {
-                        continue;
                     } elseif (preg_match('/^on([a-z]+)/', $k, $match)) {
                         $event[$match[1]] = $v;
                     } elseif (!is_array($v)) {

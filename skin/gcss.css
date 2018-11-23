@@ -3425,25 +3425,25 @@ aside.tip {
   padding-bottom: 0;
 }
 .message {
-  background-color: #80cb92;
-  border-color: #4caf50;
-  color: #255a32;
+  background-color: #9AD6A8;
+  border-color: #193D22;
+  color: #193D22;
 }
 .warning {
-  background-color: #fbdca0;
-  border-color: #ff9800;
-  color: #644405;
+  background-color: #FBE3B1;
+  border-color: #5C3F05;
+  color: #5C3F05;
 }
 .error,
 .empty {
   background-color: #df8989;
-  border-color: #f44336;
-  color: #7b2121;
+  border-color: #501616;
+  color: #501616;
 }
 .tip {
-  background-color: #85b7e7;
-  border-color: #2196f3;
-  color: #1a5186;
+  background-color: #C9DFF8;
+  border-color: #194480;
+  color: #194480;
 }
 #body_msg_div {
   z-index: 2147483646;

@@ -138,7 +138,7 @@ CREATE TABLE `{prefix}_orders` (
   `due_date` date DEFAULT NULL,
   `payment_date` datetime DEFAULT NULL,
   `payment_method` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `comment` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
+  `comment` text COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --

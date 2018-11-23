@@ -135,8 +135,8 @@ class View extends \Gcms\View
             ),
         ));
         // save cookie
-        setcookie('inward_perPage', $table->perPage, time() + 2592000, '/', null, HOST, true);
-        setcookie('inward_sort', $table->sort, time() + 2592000, '/', null, HOST, true);
+        setcookie('inward_perPage', $table->perPage, time() + 2592000, '/', HOST, HTTPS, true);
+        setcookie('inward_sort', $table->sort, time() + 2592000, '/', HOST, HTTPS, true);
 
         return $table->render();
     }

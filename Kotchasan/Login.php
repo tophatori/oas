@@ -126,9 +126,11 @@ class Login extends \Kotchasan\KBase
             return $login->forgot(self::$request);
         } else {
             // ตรวจสอบค่าที่ส่งมา
-            if (self::$login_params['username'] == '' && self::$from_submit) {
-                self::$login_message = Language::get('Please fill in');
-                self::$login_input = 'login_username';
+            if (empty(self::$login_params['username'])) {
+                if (self::$from_submit) {
+                    self::$login_message = Language::get('Please fill in');
+                    self::$login_input = 'login_username';
+                }
             } elseif (empty(self::$login_params['password']) && self::$from_submit) {
                 self::$login_message = Language::get('Please fill in');
                 self::$login_input = 'login_password';
