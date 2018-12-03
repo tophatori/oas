@@ -11,7 +11,7 @@
 namespace Kotchasan;
 
 /**
- * รายชื่อจังหวัด  ของประเทศไทย.
+ * รายชื่อจังหวัด ไทย ลาว.
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -20,14 +20,33 @@ namespace Kotchasan;
 class Province
 {
     /**
-     * list รายชื่อจังหวัดทั้งหมด  ตามภาษา (ถ้าไม่มีใช้ภาษาอังกฤษ)
-     * สามารถนำไปใช้โดย Form ได้ทันที.
+     * โหลดจังหวัดตามประเทศที่เลือก
+     * ไม่มี ใช้ประเทศไทย.
+     *
+     * @param string $country
      *
      * @return array
      */
-    public static function all()
+    private static function init($country)
     {
-        $datas = self::init();
+        if (method_exists('Kotchasan\Province', $country)) {
+            return \Kotchasan\Province::$country();
+        } else {
+            return \Kotchasan\Province::TH();
+        }
+    }
+
+    /**
+     * list รายชื่อจังหวัดทั้งหมด  ตามภาษา (ถ้าไม่มีใช้ภาษาอังกฤษ)
+     * สามารถนำไปใช้โดย Form ได้ทันที.
+     *
+     * @param string $country ค่าเริ่มต้น TH (ไทย), LA (ลาว)
+     *
+     * @return array
+     */
+    public static function all($country = 'TH')
+    {
+        $datas = self::init($country);
         $language = Language::name();
         $language = in_array($language, array_keys(reset($datas))) ? $language : 'en';
         $result = array();
@@ -42,6 +61,16 @@ class Province
     }
 
     /**
+     * คืนค่ารายการประเทศที่มีการติดดตั้ง.
+     *
+     * @return array
+     */
+    public static function countries()
+    {
+        return array('TH', 'LA');
+    }
+
+    /**
      * อ่านชื่อจังหวัดจาก ISO ตามภาษา (ถ้าไม่มีใช้ภาษาอังกฤษ)
      * คืนค่าว่างถ้าไม่พบ.
      *
@@ -52,9 +81,9 @@ class Province
      *
      * @return string
      */
-    public static function get($iso, $lang = '')
+    public static function get($iso, $lang = '', $country = 'TH')
     {
-        $datas = self::init();
+        $datas = self::init($country);
         if (empty($lang)) {
             $lang = Language::name();
         }
@@ -64,11 +93,11 @@ class Province
     }
 
     /**
-     * รายชื่อจังหวัด เรียงลำดับตามชื่อไทย.
+     * รายชื่อจังหวัด ไทย เรียงลำดับตามชื่อไทย.
      *
      * @return array
      */
-    private static function init()
+    private static function TH()
     {
         return array(
             101 => array('th' => 'กระบี่', 'en' => 'Krabi'),
@@ -148,6 +177,35 @@ class Province
             166 => array('th' => 'อุตรดิตถ์', 'en' => 'Uttaradit'),
             167 => array('th' => 'อุทัยธานี', 'en' => 'Uthaithani'),
             168 => array('th' => 'อุบลราชธานี', 'en' => 'Uboratchathani'),
+        );
+    }
+
+    /**
+     * รายชื่อจังหวัด ลาว เรียงลำดับตามชื่อไทย.
+     *
+     * @return array
+     */
+    private static function LA()
+    {
+        return array(
+            101 => array('la' => 'ນຄ.ວຽງຈັນ', 'en' => 'Vientiane Capital'),
+            102 => array('la' => 'ຜົ້ງສາລີ', 'en' => 'Phongsaly'),
+            103 => array('la' => 'ຫຼວງນ້ຳທາ', 'en' => 'Luangnamtha'),
+            104 => array('la' => 'ອຸດົມໄຊ', 'en' => 'Oudomxay'),
+            105 => array('la' => 'ບໍ່ແກ້ວ', 'en' => 'Bokeo'),
+            106 => array('la' => 'ຫຼວງພະບາງ', 'en' => 'Luangprabang'),
+            107 => array('la' => 'ຫົວພັນ', 'en' => 'Huaphanh'),
+            108 => array('la' => 'ໄຊຍະບູລີ', 'en' => 'Xayaboury'),
+            109 => array('la' => 'ຊຽງຂວາງ', 'en' => 'Xiengkhuang'),
+            110 => array('la' => 'ວຽງຈັນ', 'en' => 'Vientiane'),
+            111 => array('la' => 'ບໍລິຄຳໄຊ', 'en' => 'Borikhamxay'),
+            112 => array('la' => 'ຄຳມ່ວນ', 'en' => 'Khammuane'),
+            113 => array('la' => 'ສະຫວັນນະເຂດ', 'en' => 'Savannakhet'),
+            114 => array('la' => 'ສາລະວັນ', 'en' => 'Saravane'),
+            115 => array('la' => 'ເຊກອງ', 'en' => 'Sekong'),
+            116 => array('la' => 'ຈຳປາສັກ', 'en' => 'Champasack'),
+            117 => array('la' => 'ອັດຕະປື', 'en' => 'Attapeu'),
+            118 => array('la' => 'ໄຊສົມບູນ', 'en' => 'Xaysomboon'),
         );
     }
 }

@@ -253,7 +253,9 @@ var dataTableActionCallback = function(xhr) {
         el = $E(val);
         if (el) {
           el.className = ds.class;
-          el.title = ds.title;
+          if (ds.title) {
+            el.title = ds.title;
+          }
         }
       } else if (prop == "modal") {
         if (val == "close") {
@@ -419,7 +421,7 @@ function initEditInplace(id, model, addbtn) {
         }
         return true;
       } else if (req.responseText != "") {
-        console.log(req.responseText);
+        alert(req.responseText);
       }
       return false;
     }
@@ -473,7 +475,7 @@ function initEditInplace(id, model, addbtn) {
               alert(ds.alert);
             }
           } else if (xhr.responseText != "") {
-            console.log(xhr.responseText);
+            alert(xhr.responseText);
           }
         },
         this
@@ -553,6 +555,33 @@ function initFirstRowNumberOnly(tr) {
         return /^[0-9]+$/.test(this.value);
       });
     }
+  });
+}
+function initEditProfile(prefix, countries) {
+  prefix = prefix ? prefix + "_" : "";
+  var countryChanged = function() {
+    var province = $E(prefix + "province"),
+      provinceID = $E(prefix + "provinceID");
+    if (countries.indexOf(this.value) === -1) {
+      if (provinceID) {
+        $G(provinceID.parentNode.parentNode).addClass("hidden");
+      }
+      if (province) {
+        $G(province.parentNode.parentNode).removeClass("hidden");
+      }
+    } else {
+      if (province) {
+        $G(province.parentNode.parentNode).addClass("hidden");
+      }
+      if (provinceID) {
+        $G(provinceID.parentNode.parentNode).removeClass("hidden");
+      }
+    }
+  };
+  new GMultiSelect([prefix + "country"], {
+    action: WEB_URL + "index.php/index/model/province/toJSON",
+    prefix: prefix,
+    onchange: countryChanged
   });
 }
 var createLikeButton;
@@ -715,24 +744,7 @@ function checkEmail() {
     this.invalid(this.title);
   }
 }
-function countryChanged(prefix) {
-  var _contryChanged = function() {
-    if (this.value != "TH") {
-      $G($E(prefix + "_provinceID").parentNode.parentNode).addClass("hidden");
-      $G($E(prefix + "_province").parentNode.parentNode).removeClass("hidden");
-    } else {
-      $G($E(prefix + "_provinceID").parentNode.parentNode).removeClass(
-        "hidden"
-      );
-      $G($E(prefix + "_province").parentNode.parentNode).addClass("hidden");
-    }
-  };
-  if ($E(prefix + "_country")) {
-    $G(prefix + "_country").addEvent("change", _contryChanged);
-    _contryChanged.call($E(prefix + "_country"));
-  }
-}
-function initCompany() {
+function initCompany(countries) {
   var doChanged = function() {
     var t = $E("company_type").value;
     $E("tax_id").disabled = t == 0;
@@ -740,7 +752,7 @@ function initCompany() {
     $E("tax_id").parentNode.parentNode.className = t == 0 ? "hidden" : "item";
     $E("idcard").parentNode.parentNode.className = t == 1 ? "hidden" : "item";
   };
-  countryChanged("company");
+  initEditProfile("company", countries);
   $G("company_type").addEvent("change", doChanged);
   doChanged();
 }

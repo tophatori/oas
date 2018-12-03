@@ -4,7 +4,7 @@
  *
  * @filesource js/multiselect.js
  * @link http://www.kotchasan.com/
- * @copyright 2016 Goragod.com
+ * @copyright 2018 Goragod.com
  * @license http://www.kotchasan.com/license/
  */
 (function() {
@@ -35,7 +35,7 @@
           var qs = new Array();
           qs.push("srcItem=" + this.id.replace(self.prefix, ""));
           for (var prop in o) {
-            if (prop != "action" && prop != "onchanged") {
+            if (prop != "action" && prop != "onchange") {
               qs.push(prop + "=" + o[prop]);
             }
           }
@@ -52,11 +52,15 @@
             temp.removeClass("wait");
             var items = xhr.responseText.toJSON();
             if (items) {
+              var sel = null;
               for (var prop in items) {
-                var sel = $E(self.prefix + prop);
+                sel = $E(self.prefix + prop);
                 if (sel) {
                   $G(sel).setOptions(items[prop], sel.value);
                 }
+              }
+              if (sel && Object.isFunction(o.onchange)) {
+                o.onchange.call(temp);
               }
             }
           });
@@ -70,8 +74,6 @@
         var select = $G(item);
         if (index < l || l == 0) {
           select.addEvent("change", _dochanged);
-        } else if (Object.isFunction(self.onchanged)) {
-          select.addEvent("change", self.onchanged);
         }
         self.selects[item] = select;
       });

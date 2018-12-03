@@ -69,7 +69,9 @@ class Model extends \Kotchasan\Model
                     'id_card' => $request->post('register_id_card')->number(),
                     'address' => $request->post('register_address')->topic(),
                     'provinceID' => $request->post('register_provinceID')->number(),
+                    'province' => $request->post('register_province')->topic(),
                     'zipcode' => $request->post('register_zipcode')->number(),
+                    'country' => $request->post('register_country')->filter('A-Z'),
                     'status' => $request->post('register_status')->toInt(),
                 );
                 $permission = $request->post('register_permission', array())->topic();

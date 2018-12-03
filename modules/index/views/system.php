@@ -82,13 +82,13 @@ class View extends \Gcms\View
         ));
         // bg_image
         if (is_file(ROOT_PATH.DATA_FOLDER.'bg_image.png')) {
-            $img = WEB_URL.DATA_FOLDER.'bg_image.png';
+            $img = WEB_URL.DATA_FOLDER.'bg_image.png?'.time();
         } else {
             $img = WEB_URL.'skin/img/blank.gif';
         }
         // bg_image
         $fieldset->add('file', array(
-            'id' => 'bg_image',
+            'id' => 'file_bg_image',
             'labelClass' => 'g-input icon-image',
             'itemClass' => 'item',
             'label' => '{LNG_Background image}',
@@ -106,13 +106,13 @@ class View extends \Gcms\View
         ));
         // logo
         if (is_file(ROOT_PATH.DATA_FOLDER.'logo.png')) {
-            $img = WEB_URL.DATA_FOLDER.'logo.png';
+            $img = WEB_URL.DATA_FOLDER.'logo.png?'.time();
         } else {
             $img = WEB_URL.'skin/img/blank.gif';
         }
         // logo
         $fieldset->add('file', array(
-            'id' => 'logo',
+            'id' => 'file_logo',
             'labelClass' => 'g-input icon-image',
             'itemClass' => 'item',
             'label' => '{LNG_Logo}',

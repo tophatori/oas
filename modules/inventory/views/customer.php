@@ -2,15 +2,16 @@
 /**
  * @filesource modules/inventory/views/customer.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Inventory\Customer;
 
 use Kotchasan\Html;
+use Kotchasan\Province;
 
 /**
  * module=inventory-customer.
@@ -43,7 +44,7 @@ class View extends \Gcms\View
             'ajax' => true,
         ));
         $fieldset = $form->add('fieldset', array(
-            'title' => '{LNG_Details of} ' . $type,
+            'title' => '{LNG_Details of} '.$type,
         ));
         $groups = $fieldset->add('groups');
         // company
@@ -191,8 +192,9 @@ class View extends \Gcms\View
             'value' => MAIN_INIT,
         ));
         // Javascript
-        $form->script('countryChanged("register");');
+        $form->script('initEditProfile("register", '.json_encode(Province::countries()).');');
         // คืนค่าฟอร์ม
+
         return $form->render();
     }
 }

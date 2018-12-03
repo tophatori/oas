@@ -211,13 +211,17 @@ window.$K = (function() {
                 elem.style.height = "100%";
                 elem.style.width = "100%";
                 elem.addEvent("change", function() {
-                  display.value = this.value;
                   if (this.files) {
+                    display.value = this.value;
+                    display.callEvent("change", {
+                      value: this.value,
+                      files: this.files
+                    });
                     var preview = $E(this.get("data-preview"));
                     if (preview) {
-                      var input = this;
-                      var max = floatval(this.get("data-max"));
-                      forEach(this.files, function() {
+                      var input = this,
+                        max = floatval(input.get("data-max"));
+                      forEach(input.files, function() {
                         if (max > 0 && this.size > max) {
                           input.invalid(input.title);
                         } else if (window.FileReader) {

@@ -193,7 +193,7 @@
         $G(temp.input_search).addEvent("change", doSearchChanged);
         doSearchChanged.call(temp);
       }
-      if (loader) {
+      if (typeof loader !== "undefined") {
         forEach(this.table.querySelectorAll("form.table_nav"), function() {
           this.onsubmit = function() {
             var urls = this.action.split("?"),

@@ -49,28 +49,28 @@ class Model extends \Kotchasan\KBase
                 if (empty($ret)) {
                     // อัปโหลดไฟล์
                     foreach ($request->getUploadedFiles() as $item => $file) {
-                        if (in_array($item, array('logo', 'bg_image'))) {
+                        if (preg_match('/^file_(logo|bg_image)$/', $item, $match)) {
                             /* @var $file \Kotchasan\Http\UploadedFile */
-                            if ($request->post('delete_'.$item)->toBoolean() == 1) {
+                            if ($request->post('delete_'.$match[1])->toBoolean() == 1) {
                                 // ลบ
-                                if (is_file(ROOT_PATH.DATA_FOLDER.$item.'.png')) {
-                                    unlink(ROOT_PATH.DATA_FOLDER.$item.'.png');
+                                if (is_file(ROOT_PATH.DATA_FOLDER.$match[1].'.png')) {
+                                    unlink(ROOT_PATH.DATA_FOLDER.$match[1].'.png');
                                 }
                             } elseif ($file->hasUploadFile()) {
                                 if (!$file->validFileExt(array('jpg', 'jpeg', 'png'))) {
                                     // ชนิดของไฟล์ไม่รองรับ
-                                    $ret['ret_'.$item] = Language::get('The type of file is invalid');
+                                    $ret['ret_file_'.$match[1]] = Language::get('The type of file is invalid');
                                 } else {
                                     try {
-                                        $file->moveTo(ROOT_PATH.DATA_FOLDER.$item.'.png');
+                                        $file->moveTo(ROOT_PATH.DATA_FOLDER.$match[1].'.png');
                                     } catch (\Exception $exc) {
                                         // ไม่สามารถอัปโหลดได้
-                                        $ret['ret_'.$item] = Language::get($exc->getMessage());
+                                        $ret['ret_file_'.$match[1]] = Language::get($exc->getMessage());
                                     }
                                 }
                             } elseif ($file->hasError()) {
                                 // ข้อผิดพลาดการอัปโหลด
-                                $ret['ret_'.$item] = Language::get($file->getErrorMessage());
+                                $ret['ret_file_'.$match[1]] = Language::get($file->getErrorMessage());
                             }
                         }
                     }

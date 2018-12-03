@@ -124,7 +124,7 @@ CREATE TABLE `{prefix}_orders` (
   `customer_id` int(11) UNSIGNED NOT NULL,
   `order_date` date NOT NULL,
   `member_id` int(11) UNSIGNED NOT NULL,
-  `discount` decimal(10,2) NOT NULL,
+  `discount` decimal(10,2) DEFAULT NULL,
   `vat` decimal(10,2) NOT NULL,
   `tax` decimal(10,2) NOT NULL,
   `total` decimal(10,2) NOT NULL,
@@ -230,8 +230,15 @@ CREATE TABLE `{prefix}_user` (
   `status` tinyint(1) NOT NULL,
   `permission` text COLLATE utf8_unicode_ci NOT NULL,
   `name` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
+  `sex` varchar(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `id_card` varchar(13) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `phone` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
   `fax` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `provinceID` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `province` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `zipcode` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `country` varchar(2) COLLATE utf8_unicode_ci DEFAULT NULL,
   `visited` int(11) UNSIGNED DEFAULT '0',
   `lastvisited` int(11) DEFAULT '0',
   `session_id` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -241,12 +248,7 @@ CREATE TABLE `{prefix}_user` (
   `social` tinyint(1) NOT NULL DEFAULT '0',
   `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `website` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `type` tinyint(1) NOT NULL,
-  `sex` varchar(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `id_card` varchar(13) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `address` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `provinceID` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `zipcode` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL
+  `type` tinyint(1) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
