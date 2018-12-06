@@ -558,7 +558,7 @@ function initFirstRowNumberOnly(tr) {
   });
 }
 function initEditProfile(prefix, countries) {
-  prefix = prefix ? prefix + "_" : "";
+  prefix += prefix == "" ? "" : "_";
   var countryChanged = function() {
     var province = $E(prefix + "province"),
       provinceID = $E(prefix + "provinceID");

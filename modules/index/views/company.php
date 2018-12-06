@@ -167,7 +167,7 @@ class View extends \Gcms\View
             'class' => 'button ok large',
             'value' => '{LNG_Save}',
         ));
-        $form->script('initCompany('.json_encode(Province::countries()).');');
+        $form->script('initCompany('.json_encode(\Kotchasan\Province::countries()).');');
 
         return $form->render();
     }
