@@ -49,7 +49,7 @@
       this.tooltip.setStyle("position", "absolute");
       this.tooltip.setStyle("display", "none");
       this.tooltip.setStyle("zIndex", 1002);
-      this.tooltip.onmouseover = this.cancleHideDelay.bind(this);
+      this.tooltip.onmouseover = this.cancelHideDelay.bind(this);
       this.tooltip.onmouseout = this.delayHide.bind(this);
       this.id = GTooltips.length;
       GTooltips[this.id] = this;
@@ -166,7 +166,7 @@
       this.iframe.style.top = t - 6 + "px";
       this.iframe.style.width = 12 + this.tooltip.getWidth() + "px";
       this.iframe.style.height = 12 + this.tooltip.getHeight() + "px";
-      this.cancleHideDelay();
+      this.cancelHideDelay();
       var temp = this;
       for (var i = 0; i < GTooltips.length; i++) {
         if (i != this.id && GTooltips[i].options.autohide) {
@@ -186,7 +186,7 @@
         this.options.autohidedelay
       );
     },
-    cancleHideDelay: function() {
+    cancelHideDelay: function() {
       if (this.req) {
         this.req.abort();
       }

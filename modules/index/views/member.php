@@ -52,7 +52,7 @@ class View extends \Gcms\View
             /* ฟังก์ชั่นจัดรูปแบบการแสดงผลแถวของตาราง */
             'onRow' => array($this, 'onRow'),
             /* คอลัมน์ที่ไม่ต้องแสดงผล */
-            'hideColumns' => array('id', 'visited', 'website', 'username'),
+            'hideColumns' => array('id', 'visited', 'website'),
             /* คอลัมน์ที่สามารถค้นหาได้ */
             'searchColumns' => array('name', 'username', 'phone'),
             /* ตั้งค่าการกระทำของของตัวเลือกต่างๆ ด้านล่างตาราง ซึ่งจะใช้ร่วมกับการขีดถูกเลือกแถว */
@@ -88,6 +88,9 @@ class View extends \Gcms\View
             ),
             /* ส่วนหัวของตาราง และการเรียงลำดับ (thead) */
             'headers' => array(
+                'username' => array(
+                    'text' => '{LNG_Email}/{LNG_Username}',
+                ),
                 'name' => array(
                     'text' => '{LNG_Name}',
                     'sort' => 'name',
@@ -172,7 +175,7 @@ class View extends \Gcms\View
             $item['lastvisited'] = '-';
         }
         if ($item['social'] == 1) {
-            $item['social'] = '<a href="//'.$item['website'].'" target=_blank class="icon-facebook notext"></a>';
+            $item['social'] = '<span class="icon-facebook notext"></span>';
         } elseif ($item['social'] == 2) {
             $item['social'] = '<span class="icon-google notext"></span>';
         } else {

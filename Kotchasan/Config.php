@@ -237,6 +237,8 @@ class Config
             }
             fwrite($f, '<'."?php\n/* $match[1].php */\nreturn ".var_export((array) $config, true).';');
             fclose($f);
+            // หน่วงเวลาเล็กน้อย
+            sleep(1);
 
             return true;
         } else {

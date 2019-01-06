@@ -26,7 +26,7 @@
       for (var property in o) {
         options[property] = o[property];
       }
-      var cancleEvent = false;
+      var cancelEvent = false;
       var showing = false;
       var listindex = 0;
       var list = new Array();
@@ -109,7 +109,7 @@
         if (self.text != self.input.value) {
           options.onChanged.call(self.input);
         }
-        if (!cancleEvent && options.url) {
+        if (!cancelEvent && options.url) {
           var q = options.get.call(this);
           if (q && q != "") {
             self.input.addClass(options.loadingClass);
@@ -154,7 +154,7 @@
             _hide();
           }
         }
-        cancleEvent = false;
+        cancelEvent = false;
       };
       function _showitem(item) {
         if (item) {
@@ -171,12 +171,12 @@
         var key = GEvent.keyCode(evt);
         if (key == 40) {
           _showitem(_movehighlight(listindex + 1));
-          cancleEvent = true;
+          cancelEvent = true;
         } else if (key == 38) {
           _showitem(_movehighlight(listindex - 1));
-          cancleEvent = true;
+          cancelEvent = true;
         } else if (key == 13) {
-          cancleEvent = true;
+          cancelEvent = true;
           this.removeClass(options.loadingClass);
           forEach(list, function() {
             if (this.itemindex == listindex) {
@@ -189,10 +189,10 @@
         } else if (key == 32) {
           if (this.value == "") {
             _search();
-            cancleEvent = true;
+            cancelEvent = true;
           }
         }
-        if (cancleEvent) {
+        if (cancelEvent) {
           GEvent.stop(evt);
         }
       }

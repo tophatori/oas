@@ -60,7 +60,7 @@
     select: function() {
       this.editor.select();
     },
-    cancleEdit: function() {
+    cancelEdit: function() {
       this.src.style.display = this.oldDisplay;
       this.editor.removeEvent("blur", this._saveEdit.bind(this));
       this.editor.removeEvent("keypress", this._checkKey.bind(this));
@@ -78,13 +78,13 @@
         this.src.setValue(v);
       }
       if (ret) {
-        this.cancleEdit();
+        this.cancelEdit();
       }
     },
     _checkKey: function(e) {
       var key = GEvent.keyCode(e);
       if (key == 27) {
-        this.cancleEdit();
+        this.cancelEdit();
         GEvent.stop(e);
         return false;
       } else if (key == 13) {

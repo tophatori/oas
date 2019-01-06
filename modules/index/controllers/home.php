@@ -56,6 +56,7 @@ class Controller extends \Gcms\Controller
         // card
         $card = new Collection();
         $menu = new Collection();
+        $block = new Collection();
         // โหลด Component หน้า Home
         $dir = ROOT_PATH.'modules/';
         $f = @opendir($dir);
@@ -71,13 +72,16 @@ class Controller extends \Gcms\Controller
                         if (method_exists($className, 'addMenu')) {
                             $className::addMenu($request, $menu, $login);
                         }
+                        if (method_exists($className, 'addBlock')) {
+                            $className::addBlock($request, $block, $login);
+                        }
                     }
                 }
             }
             closedir($f);
         }
+        // แสดงจำนวนสมาชิกทั้งหมด
         if ($card->count() < 4) {
-            // จำนวนสมาชิกทั้งหมด
             self::renderCard($card, 'icon-users', '{LNG_Users}', number_format(\Index\Member\Model::getCount()), '{LNG_Member list}', 'index.php?module=member');
         }
         // dashboard
@@ -115,6 +119,12 @@ class Controller extends \Gcms\Controller
                     'innerHTML' => $item,
                 ));
                 ++$n;
+            }
+        }
+        // render block
+        if ($block->count() > 0) {
+            foreach ($block as $k => $item) {
+                $dashboard->appendChild($item);
             }
         }
 

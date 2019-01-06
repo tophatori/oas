@@ -38,7 +38,10 @@ class Model extends \Kotchasan\Model
             // table
             $user_table = $this->getTableName('user');
             // ตรวจสอบสมาชิกกับ db
-            $username = $request->post('id')->number();
+            $username = $request->post('email')->url();
+            if ($username == '') {
+                $username = $request->post('id')->number();
+            }
             $search = $db->createQuery()
                 ->from('user')
                 ->where(array('username', $username))
@@ -56,13 +59,13 @@ class Model extends \Kotchasan\Model
                     'username' => $username,
                     'password' => $password,
                     'name' => $request->post('name')->topic(),
-                    'email' => $request->post('email')->url(),
                     // Google
                     'social' => 2,
                     'visited' => 1,
                     'lastvisited' => time(),
                     // โหมดตัวอย่างเป็นแอดมิน, ไม่ใช่เป็นสมาชิกทั่วไป
                     'status' => self::$cfg->demo_mode ? 1 : 0,
+                    'token' => sha1($password.uniqid()),
                 ), $permissions);
                 if ($save === null) {
                     // ไม่สามารถบันทึก owner ได้
@@ -88,6 +91,7 @@ class Model extends \Kotchasan\Model
             }
             if (is_array($save)) {
                 // login
+                unset($save['password']);
                 $_SESSION['login'] = $save;
                 // คืนค่า
                 $ret['isMember'] = 1;

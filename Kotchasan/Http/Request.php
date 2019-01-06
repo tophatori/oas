@@ -418,7 +418,7 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
      * @param string $name    ชื่อตัวแปร
      * @param mixed  $default ค่าเริ่มต้นหากไม่พบตัวแปร
      *
-     * @return \static
+     * @return mixed
      */
     public function server($name, $default = null)
     {
@@ -475,6 +475,8 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
      * กำหนดค่า cookieParams.
      *
      * @param array $cookies
+     *
+     * @return \static
      */
     public function withCookieParams(array $cookies)
     {
@@ -487,7 +489,9 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
     /**
      * กำหนดค่า parsedBody.
      *
-     * @param null|array|object $data
+     * @param mixed $data
+     *
+     * @return \static
      */
     public function withParsedBody($data)
     {

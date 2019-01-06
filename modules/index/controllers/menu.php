@@ -54,8 +54,8 @@ class Controller
      */
     public function render($select, $login)
     {
-        // สามารถตั้งค่าระบบได้
-        if (!Login::checkPermission($login, 'can_config')) {
+        // ไม่มีเมนูตั้งค่า
+        if (empty($this->menus['settings']['submenus'])) {
             unset($this->menus['settings']);
         }
         // ไม่ใช่แอดมิน
@@ -65,6 +65,10 @@ class Controller
         // ไม่มีโมดูลติดตั้ง
         if (empty($this->menus['module']['submenus'])) {
             unset($this->menus['module']);
+        }
+        // ไม่มีเมนู report
+        if (empty($this->menus['report']['submenus'])) {
+            unset($this->menus['report']);
         }
 
         return \Kotchasan\Menu::render($this->menus, $select);

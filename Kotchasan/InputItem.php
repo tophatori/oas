@@ -117,6 +117,34 @@ class InputItem
     }
 
     /**
+     * เวลา
+     * คืนค่า null ถ้าข้อมูลเวลาว่างเปล่า หรือเท่าบ --:--.
+     *
+     * @assert create('20:20:20')->time() [==] '20:20:20'
+     * @assert create('--:--')->time() [==] null
+     * @assert create('')->time() [==] null
+     * @assert create('20:20:20')->time() [==] '20:20:20'
+     * @assert create('20:20')->time() [==] '20:20'
+     * @assert create('20:20')->time(true) [==] '20:20:00'
+     *
+     * @param bool $strict true ตรวจสอบความถูกต้องของวันที่ด้วย, false (default) ไม่ต้องตรวจสอบ
+     *
+     * @return string
+     */
+    public function time($strict = false)
+    {
+        if (!empty($this->value) && preg_match('/^([0-9]{1,2}:[0-9]{1,2})?(:[0-9]{1,2})?$/', $this->value, $match)) {
+            if (empty($match[2])) {
+                $match[2] = $strict ? ':00' : '';
+            }
+
+            return $match[1].$match[2];
+        }
+
+        return null;
+    }
+
+    /**
      * ลบ tag, BBCode ออก ให้เหลือแต่ข้อความล้วน
      * ลบช่องว่างไม่เกิน 1 ช่อง ไม่ขึ้นบรรทัดใหม่
      * และลบช่องว่างหัวท้าย

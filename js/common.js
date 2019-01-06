@@ -60,15 +60,17 @@ function defaultSubmit(ds) {
     } else if (prop == "alert") {
       _alert = val;
     } else if (prop == "modal") {
-      if (modal && val == "close") {
-        modal.hide();
+      if (val == "close") {
+        if (modal) {
+          modal.hide();
+        }
+      } else {
+        if (!modal) {
+          modal = new GModal();
+        }
+        modal.show(val);
+        val.evalScript();
       }
-    } else if (prop == "showmodal") {
-      if (!modal) {
-        modal = new GModal();
-      }
-      modal.show(val);
-      val.evalScript();
     } else if (prop == "elem") {
       el = $E(val);
       if (el) {

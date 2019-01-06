@@ -25,11 +25,12 @@ use Kotchasan\Language;
 class Model extends \Kotchasan\Model
 {
     /**
-     * อ่านข้อมูลสมาชิกที่ $id.
+     * อ่านข้อมูลสมาชิกที่ $id
+     * คืนค่าข้อมูล array ไม่พบคืนค่า false.
      *
      * @param int $id
      *
-     * @return array|bool คืนค่าข้อมูล array ไม่พบคืนค่า false
+     * @return array|bool
      */
     public static function get($id)
     {

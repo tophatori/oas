@@ -96,28 +96,9 @@ class View extends \Gcms\View
             'id' => 'register_name',
             'labelClass' => 'g-input icon-customer',
             'itemClass' => 'width50',
-            'label' => '{LNG_Name} {LNG_Surname}',
+            'label' => '{LNG_Name}',
             'maxlength' => 100,
             'value' => $user['name'],
-        ));
-        // sex
-        $groups->add('select', array(
-            'id' => 'register_sex',
-            'labelClass' => 'g-input icon-sex',
-            'itemClass' => 'width50',
-            'label' => '{LNG_Sex}',
-            'options' => Language::get('SEXES'),
-            'value' => $user['sex'],
-        ));
-        $groups = $fieldset->add('groups');
-        // phone
-        $groups->add('text', array(
-            'id' => 'register_phone',
-            'labelClass' => 'g-input icon-phone',
-            'itemClass' => 'width50',
-            'label' => '{LNG_Phone}',
-            'maxlength' => 32,
-            'value' => $user['phone'],
         ));
         // id_card
         $groups->add('text', array(
@@ -129,6 +110,25 @@ class View extends \Gcms\View
             'maxlength' => 13,
             'value' => $user['id_card'],
             'validator' => array('keyup,change', 'checkIdcard'),
+        ));
+        $groups = $fieldset->add('groups');
+        // phone
+        $groups->add('text', array(
+            'id' => 'register_phone',
+            'labelClass' => 'g-input icon-phone',
+            'itemClass' => 'width50',
+            'label' => '{LNG_Phone}',
+            'maxlength' => 32,
+            'value' => $user['phone'],
+        ));
+        // sex
+        $groups->add('select', array(
+            'id' => 'register_sex',
+            'labelClass' => 'g-input icon-sex',
+            'itemClass' => 'width50',
+            'label' => '{LNG_Sex}',
+            'options' => Language::get('SEXES'),
+            'value' => $user['sex'],
         ));
         // address
         $fieldset->add('text', array(

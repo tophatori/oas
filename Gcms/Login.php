@@ -79,12 +79,14 @@ class Login extends \Kotchasan\Login
      */
     public static function checkMember($params)
     {
+        // Model
+        $model = new \Kotchasan\Model();
         // query Where
         $where = array();
         foreach (self::$cfg->login_fields as $field) {
             $where[] = array("U.{$field}", $params['username']);
         }
-        $query = \Kotchasan\Model::createQuery()
+        $query = $model->db()->createQuery()
             ->select()
             ->from('user U')
             ->where($where, 'OR')
@@ -112,9 +114,9 @@ class Login extends \Kotchasan\Login
             self::$login_input = isset($item) ? 'password' : 'username';
 
             return isset($item) ? Language::replace('Incorrect :name', array(':name' => Language::get('Password'))) : Language::get('not a registered user');
-        } else {
-            return $login_result;
         }
+
+        return $login_result;
     }
 
     /**

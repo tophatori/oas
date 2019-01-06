@@ -45,6 +45,9 @@ class Model extends \Kotchasan\KBase
                         $config->$key = $value;
                     }
                 }
+                foreach (array('user_forgot', 'user_register', 'welcome_email') as $key) {
+                    $config->$key = $request->post($key)->toBoolean();
+                }
                 $config->timezone = $request->post('timezone')->text();
                 if (empty($ret)) {
                     // อัปโหลดไฟล์
