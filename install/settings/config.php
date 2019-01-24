@@ -2,7 +2,7 @@
 /* config.php */
 
 return array(
-  'version' => '2.0.2',
+  'version' => '2.0.3',
   'web_title' => 'OAS',
   'web_description' => 'Online Accounting System',
   'timezone' => 'Asia/Bangkok',
