@@ -90,12 +90,18 @@ class Controller extends \Gcms\Controller
         ));
         if ($product['id'] > 0) {
           $ul->add('li', array(
+            'innerHTML' => '<a'.($tab == 'detail' ? ' class=select' : '').' href="index.php?module=inventory-write&amp;id='.$product['id'].'&amp;tab=detail">{LNG_Other details}</a>',
+          ));
+          $ul->add('li', array(
             'innerHTML' => '<a'.($tab == 'inventory' ? ' class=select' : '').' href="index.php?module=inventory-write&amp;id='.$product['id'].'&amp;tab=inventory">{LNG_Inventory}</a>',
           ));
         }
         if ($tab == 'overview' && $product['id'] > 0) {
           // แสดงภาพรวมของสินค้า รูปแบบกราฟ
           $section->appendChild(createClass('Inventory\Overview\View')->render($request, $product));
+        } elseif ($tab == 'detail' && $product['id'] > 0) {
+          // รายละเอียดสินค้า
+          $section->appendChild(createClass('Inventory\Detail\View')->render($request, $product, $login));
         } elseif ($tab == 'inventory' && $product['id'] > 0) {
           // ตารางสต๊อคสินค้า
           $section->appendChild(createClass('Inventory\Inventory\View')->render($request, $product, $login));

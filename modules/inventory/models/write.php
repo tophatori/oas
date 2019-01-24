@@ -174,8 +174,8 @@ class Model extends \Kotchasan\Model
               // ไปหน้าแรก แสดงรายการใหม่
               $ret['location'] = $request->getUri()->postBack('index.php', array('module' => 'inventory-setup', 'id' => null, 'page' => null));
             } else {
-              // ไปหน้าเดิม แสดงรายการ
-              $ret['location'] = $request->getUri()->postBack('index.php', array('module' => 'inventory-setup', 'id' => null));
+              // รีโหลด
+              $ret['location'] = 'reload';
             }
             // เคลียร์
             $request->removeToken();

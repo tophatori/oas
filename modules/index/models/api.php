@@ -45,7 +45,6 @@ class Model extends \Kotchasan\Model
         'topic' => $item['topic'],
       );
     }
-
     return $result;
   }
 
@@ -67,7 +66,6 @@ class Model extends \Kotchasan\Model
       ->toArray()
       ->cacheOn()
       ->first('topic');
-
     return $search ? $search['topic'] : '';
   }
 
@@ -101,7 +99,7 @@ class Model extends \Kotchasan\Model
       foreach (explode(' ', $q) as $item) {
         $where[] = array('product_no', 'LIKE', "%$item%");
         $where[] = array('topic', 'LIKE', "%$item%");
-        $where[] = array('description', 'LIKE', "%$item%");
+        $where[] = array('detail', 'LIKE', "%$item%");
       }
     }
     if (!empty($where)) {
@@ -122,7 +120,6 @@ class Model extends \Kotchasan\Model
       ->toArray()
       ->execute();
     // คืนค่า
-
     return $result;
   }
 

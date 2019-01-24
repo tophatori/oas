@@ -48,6 +48,8 @@ class Model extends \Kotchasan\KBase
         $config->bank = $request->post('bank')->topic();
         $config->bank_name = $request->post('bank_name')->topic();
         $config->bank_no = $request->post('bank_no')->topic();
+        $config->inventory_w = $request->post('inventory_w')->toInt();
+        $config->inventory_h = $request->post('inventory_h')->toInt();
         // save config
         if (Config::save($config, ROOT_PATH.'settings/config.php')) {
           $ret['alert'] = Language::get('Saved successfully');

@@ -136,6 +136,28 @@ class View extends \Gcms\View
       'value' => isset(self::$cfg->bank_no) ? self::$cfg->bank_no : '',
     ));
     $fieldset = $form->add('fieldset', array(
+      'title' => '{LNG_Size of} {LNG_Image}',
+    ));
+    $groups = $fieldset->add('groups', array(
+      'comment' => '{LNG_Image size is in pixels}',
+    ));
+    // inventory_w
+    $groups->add('text', array(
+      'id' => 'inventory_w',
+      'labelClass' => 'g-input icon-width',
+      'itemClass' => 'width50',
+      'label' => '{LNG_Width}',
+      'value' => isset(self::$cfg->inventory_w) ? self::$cfg->inventory_w : 500,
+    ));
+    // inventory_h
+    $groups->add('text', array(
+      'id' => 'inventory_h',
+      'labelClass' => 'g-input icon-height',
+      'itemClass' => 'width50',
+      'label' => '{LNG_Height}',
+      'value' => isset(self::$cfg->inventory_h) ? self::$cfg->inventory_h : 500,
+    ));
+    $fieldset = $form->add('fieldset', array(
       'class' => 'submit',
     ));
     // submit

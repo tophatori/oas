@@ -158,15 +158,17 @@ INSERT INTO `{prefix}_orders` (`id`, `order_no`, `customer_id`, `order_date`, `m
 --
 
 CREATE TABLE `{prefix}_product` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `product_no` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
-  `topic` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
-  `description` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `last_update` int(11) UNSIGNED NOT NULL,
-  `price` decimal(10,2) NOT NULL,
+  `id` int(11) NOT NULL,
+  `product_no` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `topic` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `detail` TEXT COLLATE utf8_unicode_ci DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `image` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `last_update` int(11) NOT NULL,
   `vat` decimal(10,2) NOT NULL,
   `unit` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-  `category_id` int(11) UNSIGNED NOT NULL,
+  `category_id` int(11) NOT NULL,
   `count_stock` int(11) NOT NULL DEFAULT '1'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
