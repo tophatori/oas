@@ -22,8 +22,6 @@
         </label>
       </p>
       <p class="table fullwidth collapse">
-        <a class="td" href="index.php?action=forgot">{LNG_Forgot}</a>
-        <input type="hidden" name="token" id="token" value="{TOKEN}">
       </p>
     </fieldset>
     <fieldset>
@@ -38,6 +36,10 @@
           <span class="icon-google">Login with Google</span>
         </button>
       </GOOGLE>
+    </fieldset>
+    <fieldset class="center">
+      {LOGINMENU}
+      <input type="hidden" name="token" id="token" value="{TOKEN}">
     </fieldset>
   </form>
   <script>

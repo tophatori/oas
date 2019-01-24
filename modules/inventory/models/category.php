@@ -2,10 +2,10 @@
 /**
  * @filesource modules/inventory/models/category.php
  *
- * @see http://www.kotchasan.com/
- *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
+ *
+ * @see http://www.kotchasan.com/
  */
 
 namespace Inventory\Category;
@@ -19,37 +19,38 @@ namespace Inventory\Category;
  */
 class Model extends \Index\Category\Model
 {
-    /**
-     * คืนค่าหมวดหมู่สินค้า.
-     *
-     * @return \static
-     */
-    public static function categories()
-    {
-        return self::init(0);
-    }
 
-    /**
-     * หมวดหมู่สินค้า.
-     *
-     * @param string $topic
-     *
-     * @return int คืนค่า category_id
-     */
-    public static function newCategory($topic)
-    {
-        return self::check(0, $topic);
-    }
+  /**
+   * คืนค่าหมวดหมู่สินค้า.
+   *
+   * @return \static
+   */
+  public static function categories()
+  {
+    return self::init(0);
+  }
 
-    /**
-     * หน่วยของสินค้า.
-     *
-     * @param string $topic
-     *
-     * @return int คืนค่า category_id
-     */
-    public static function newUnit($topic)
-    {
-        return self::check(3, $topic);
-    }
+  /**
+   * หมวดหมู่สินค้า.
+   *
+   * @param string $topic
+   *
+   * @return int คืนค่า category_id
+   */
+  public static function newCategory($topic)
+  {
+    return self::check(0, $topic);
+  }
+
+  /**
+   * หน่วยของสินค้า.
+   *
+   * @param string $topic
+   *
+   * @return int คืนค่า category_id
+   */
+  public static function newUnit($topic)
+  {
+    return self::check(3, $topic);
+  }
 }
