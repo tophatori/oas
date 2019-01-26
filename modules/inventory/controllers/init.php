@@ -36,16 +36,9 @@ class Controller extends \Kotchasan\KBase
   {
     $menu->addTopLvlMenu('customer', '{LNG_Customer}/{LNG_Supplier}', 'index.php?module=inventory-customers', null, 'settings');
     if (Login::checkPermission($login, 'can_manage_inventory')) {
-      $submenus = array(
-        array(
-          'text' => '{LNG_List of} {LNG_Product}',
-          'url' => 'index.php?module=inventory-setup',
-        ),
-        array(
-          'text' => '{LNG_Add New} {LNG_Product}',
-          'url' => 'index.php?module=inventory-write',
-        ),
-      );
+      foreach (Language::get('INVENTORY_CATEGORIES') as $type => $text) {
+        $menu->add('settings', $text, 'index.php?module=inventory-categories&amp;type='.$type);
+      }
       $menu->addTopLvlMenu('inventory', '{LNG_Inventory}', 'index.php?module=inventory-setup', null, 'settings');
       $submenus = array();
       foreach (Language::get('BUY_TYPIES') as $k => $v) {

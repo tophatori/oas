@@ -1,12 +1,6 @@
 <?php
 /* language/en.php */
 return array(
-  'ACC_TYPIES' => array(
-    0 => 'Product Category',
-    1 => 'Receipts',
-    2 => 'Expenses',
-    3 => 'Product Unit'
-  ),
   'BILLING_DETAILS' => array(
     '' => 'No display',
     'item' => 'Item',
@@ -55,6 +49,10 @@ return array(
     4 => 'Th',
     5 => 'Fr',
     6 => 'Sa'
+  ),
+  'INVENTORY_CATEGORIES' => array(
+    0 => 'Product Category',
+    3 => 'Product Unit'
   ),
   'INVENTORY_STATUS' => array(
     'OUT' => 'Sale/Removed from inventory',
