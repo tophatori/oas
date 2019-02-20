@@ -3,12 +3,11 @@ function initInventoryWrite() {
     "write_unit",
     WEB_URL + "index.php/index/model/autocomplete/findCategory",
     "name",
-    "expand",
-    {
-      get: function () {
+    "expand", {
+      get: function() {
         return "typ=3&name=" + encodeURIComponent($E("write_unit").value);
       },
-      callBack: function () {
+      callBack: function() {
         $G("write_unit").setValue(this.name).reset();
       }
     }
@@ -17,22 +16,21 @@ function initInventoryWrite() {
     "write_category",
     WEB_URL + "index.php/index/model/autocomplete/findCategory",
     "name",
-    "category",
-    {
-      get: function () {
+    "category", {
+      get: function() {
         return "typ=0&name=" + encodeURIComponent($E("write_category").value);
       },
-      callBack: function () {
+      callBack: function() {
         $G("write_category").setValue(this.name).reset();
       }
     }
   );
-  $G("write_product_no").addEvent("keydown", function (evt) {
+  $G("write_product_no").addEvent("keydown", function(evt) {
     if (GEvent.keyCode(evt) == 13) {
       GEvent.stop(evt);
     }
   });
-  var doCountStock = function () {
+  var doCountStock = function() {
     var quantity = $G($E("write_quantity").parentNode.parentNode);
     if (this.value == 1) {
       quantity.removeClass("hidden");
@@ -44,21 +42,23 @@ function initInventoryWrite() {
     $G("write_count_stock").addEvent("change", doCountStock);
   }
 }
+
 function initInventoryOverview(id) {
-  new GGraphs("year_graph", {type: "line"});
-  $G("year").addEvent("change", function () {
+  new GGraphs("year_graph", { type: "line" });
+  $G("year").addEvent("change", function() {
     loader.location(WEB_URL + "index.php?module=inventory-write&tab=overview&to=year_graph&id=" + id + "&y=" + this.value);
   });
 }
+
 function initInventoryInOut(vat_percent, typ) {
   var tbody = $G("tb_products");
-  var addCustomer = function () {
-    showModal("xhr.php", "class=Inventory\\Customer\\Controller&method=showModal&typ=1&name=" + encodeURIComponent($E("customer").value), function () {
+  var addCustomer = function() {
+    showModal("xhr.php", "class=Inventory\\Customer\\Controller&method=showModal&typ=1&name=" + encodeURIComponent($E("customer").value), function() {
       $E("customer").focus();
     });
   };
-  var addProduct = function () {
-    showModal("xhr.php", "class=Inventory\\Write\\Controller&method=showModal&product_no=" + encodeURIComponent($E("product_no").value), function () {
+  var addProduct = function() {
+    showModal("xhr.php", "class=Inventory\\Write\\Controller&method=showModal&product_no=" + encodeURIComponent($E("product_no").value), function() {
       $E("product_no").focus();
     });
   };
@@ -68,16 +68,15 @@ function initInventoryInOut(vat_percent, typ) {
     "customer",
     WEB_URL + "index.php/index/model/autocomplete/findUser",
     "company,name,email,phone",
-    "user",
-    {
-      get: function () {
+    "user", {
+      get: function() {
         return "name=" + encodeURIComponent($E("customer").value) + "&from=company,name,email,phone";
       },
-      callBack: function () {
+      callBack: function() {
         $E("customer_id").value = this.id;
         $G("customer").valid().value = this.company.unentityify();
       },
-      onChanged: function () {
+      onChanged: function() {
         $E("customer_id").value = 0;
         $G("customer").reset();
       }
@@ -87,14 +86,13 @@ function initInventoryInOut(vat_percent, typ) {
     "product_no",
     WEB_URL + "index.php/inventory/model/autocomplete/findProduct",
     "product_no,topic",
-    "addtocart",
-    {
-      get: function () {
+    "addtocart", {
+      get: function() {
         return "name=" + encodeURIComponent($E("product_no").value) + "&from=product_no,topic";
       },
-      callBack: function () {
+      callBack: function() {
         $G("product_no").valid().value = this.product_no.unentityify();
-        send("index.php/inventory/model/search/fromProductno", "product_no=" + this.product_no + "&typ=" + typ, function (xhr) {
+        send("index.php/inventory/model/search/fromProductno", "product_no=" + this.product_no + "&typ=" + typ, function(xhr) {
           var ds = xhr.responseText.toJSON();
           if (ds) {
             var inputs,
@@ -134,6 +132,7 @@ function initInventoryInOut(vat_percent, typ) {
       }
     }
   );
+
   function findInput(inputs, name) {
     var patt = new RegExp(name + "_[0-9]+"),
       l = inputs.length;
@@ -144,10 +143,11 @@ function initInventoryInOut(vat_percent, typ) {
     }
     return null;
   }
+
   function findInputRow(name, val) {
     var tr,
       patt = new RegExp(name + "_[0-9]+");
-    forEach($G(tbody).elems("input"), function () {
+    forEach($G(tbody).elems("input"), function() {
       if (patt.test(this.id) && this.value == val) {
         tr = this;
         return true;
@@ -155,9 +155,11 @@ function initInventoryInOut(vat_percent, typ) {
     });
     return tr;
   }
+
   function getInput(inputs, name) {
     return findInput(inputs, name);
   }
+
   function setInputValue(inputs, name, value) {
     var input = findInput(inputs, name);
     if (input) {
@@ -167,10 +169,10 @@ function initInventoryInOut(vat_percent, typ) {
       }
     }
   }
-  var doCurrency = function () {
+  var doCurrency = function() {
     this.value = this.value.currFormat();
   };
-  var doChanged = function (e) {
+  var doChanged = function(e) {
     var id,
       _quantity,
       _price,
@@ -184,7 +186,7 @@ function initInventoryInOut(vat_percent, typ) {
       discount,
       tax_status = $E("tax_status").value,
       vat_status = $E("vat_status").value;
-    forEach(tbody.elems("tr"), function () {
+    forEach(tbody.elems("tr"), function() {
       id = this.id.replace(tbody.id + "_", "");
       _quantity = Math.max(1, $E("quantity_" + id).value.toInt());
       _price = $E("price_" + id).value.toInt();
@@ -228,27 +230,28 @@ function initInventoryInOut(vat_percent, typ) {
     $E("grand_total").innerHTML = (total - discount + vat).toFixed(2);
     $E("payment_amount").innerHTML = (total - discount + vat - tax).toFixed(2);
   };
+
   function initTBODY() {
     var cls,
       row = 0;
-    forEach(tbody.elems("tr"), function () {
+    forEach(tbody.elems("tr"), function() {
       this.id = tbody.id + "_" + row;
-      forEach($G(this).elems("input"), function () {
+      forEach($G(this).elems("input"), function() {
         $G(this).id = this.name.replace(/([\[\]_]+)/g, "_") + row;
         if (this.className == "num") {
-          new GMask(this, function () {
+          new GMask(this, function() {
             return /^[0-9]+$/.test(this.value);
           });
           this.addEvent("change", doChanged);
         } else if (this.className == "price") {
-          new GMask(this, function () {
+          new GMask(this, function() {
             return /^[0-9\.\-]+$/.test(this.value);
           });
           this.addEvent("change", doChanged);
           this.addEvent("blur", doCurrency);
           doCurrency.call(this);
         } else if (this.className == "amount") {
-          new GMask(this, function () {
+          new GMask(this, function() {
             return /^[0-9\.]+$/.test(this.value);
           });
           this.addEvent("change", doChanged);
@@ -257,14 +260,14 @@ function initInventoryInOut(vat_percent, typ) {
         } else if (this.className == "vat") {
           this.addEvent("change", doChanged);
         }
-        this.addEvent("focus", function () {
+        this.addEvent("focus", function() {
           this.select();
         });
       });
-      forEach($G(this).elems("a"), function () {
+      forEach($G(this).elems("a"), function() {
         cls = $G(this).hasClass("delete");
         if (cls == "delete") {
-          callClick(this, function () {
+          callClick(this, function() {
             if (tbody.elems("tr").length > 1 && confirm(trans("You want to XXX ?").replace(/XXX/, trans("delete")))) {
               var tr = $G(this.parentNode.parentNode);
               tr.remove();
@@ -282,7 +285,7 @@ function initInventoryInOut(vat_percent, typ) {
   $G("discount_percent").addEvent("change", doChanged);
   $G("tax_status").addEvent("change", doChanged);
   $G("vat_status").addEvent("change", doChanged);
-  document.body.addEvent("keydown", function (e) {
+  document.body.addEvent("keydown", function(e) {
     var keycode = GEvent.keyCode(e);
     if (keycode == 13) {
       var elem = GEvent.element(e);
@@ -320,6 +323,7 @@ function initInventoryInOut(vat_percent, typ) {
     }
   });
 }
+
 function doInventorySubmit(xhr) {
   var datas = xhr.responseText.toJSON();
   if (datas) {
@@ -331,6 +335,7 @@ function doInventorySubmit(xhr) {
     alert(xhr.responseText);
   }
 }
+
 function calcVat(amount, vat, vat_ex) {
   if (!vat_ex) {
     return amount - amount * (100 / (100 + vat));
@@ -338,14 +343,15 @@ function calcVat(amount, vat, vat_ex) {
     return (vat * amount) / 100;
   }
 }
+
 function initPaymentDetails(order) {
   if ($E("payment_print")) {
-    callClick("payment_print", function () {
+    callClick("payment_print", function() {
       billingPrint(order, "print_id", "typ");
     });
   }
   if ($E("payment_email")) {
-    callClick("payment_email", function () {
+    callClick("payment_email", function() {
       billingEmail(order, "print_id", "typ");
     });
   }

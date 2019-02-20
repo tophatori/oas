@@ -23,82 +23,81 @@ use Kotchasan\Language;
  */
 class View extends \Gcms\View
 {
+    /**
+     * ฟอร์มเพิ่ม แก้ไข สินค้า.
+     *
+     * @param Request $request
+     * @param array   $product
+     * @param array   $login
+     *
+     * @return string
+     */
+    public function render(Request $request, $product, $login)
+    {
+        // form
+        $form = Html::create('form', array(
+            'id' => 'product',
+            'class' => 'setup_frm',
+            'autocomplete' => 'off',
+            'action' => 'index.php/inventory/model/detail/submit',
+            'onsubmit' => 'doInventorySubmit',
+            'token' => true,
+            'ajax' => true,
+        ));
+        $fieldset = $form->add('fieldset', array(
+            'title' => '{LNG_Other details}',
+        ));
+        // detail
+        $fieldset->add('textarea', array(
+            'id' => 'write_detail',
+            'itemClass' => 'item',
+            'labelClass' => 'g-input icon-file',
+            'label' => '{LNG_Detail}',
+            'rows' => 5,
+            'value' => $product['detail'],
+        ));
+        if (is_file(ROOT_PATH.DATA_FOLDER.'inventory/'.$product['id'].'.jpg')) {
+            $image = WEB_URL.DATA_FOLDER.'inventory/'.$product['id'].'.jpg';
+            $placeholder = $image;
+        } elseif (!empty($product['image'])) {
+            $image = $product['image'];
+            $placeholder = $image;
+        } else {
+            $image = WEB_URL.'skin/img/blank.gif';
+            $placeholder = '';
+        }
+        // image
+        $fieldset->add('file', array(
+            'id' => 'write_image',
+            'itemClass' => 'item',
+            'labelClass' => 'g-input icon-image',
+            'label' => '{LNG_Image}',
+            'comment' => Language::replace('Browse image uploaded, type :type size :width*:height pixel', array(':type' => 'jpg, jpeg, png', ':width' => self::$cfg->inventory_w, ':height' => self::$cfg->inventory_h)),
+            'accept' => array('jpg', 'jpeg', 'png'),
+            'dataPreview' => 'logoImage',
+            'previewSrc' => $image,
+            'placeholder' => $placeholder,
+        ));
+        $fieldset = $form->add('fieldset', array(
+            'class' => 'submit',
+        ));
+        // submit
+        $fieldset->add('submit', array(
+            'class' => 'button save large icon-save',
+            'value' => '{LNG_Save}',
+        ));
+        $fieldset->add('hidden', array(
+            'id' => 'write_id',
+            'value' => $product['id'],
+        ));
+        $fieldset->add('hidden', array(
+            'id' => 'modal',
+            'value' => MAIN_INIT,
+        ));
+        // Javascript
+        $form->script('initInventoryWrite();');
+        // คืนค่า HTML
 
-  /**
-   * ฟอร์มเพิ่ม แก้ไข สินค้า.
-   *
-   * @param Request $request
-   * @param array   $product
-   * @param array   $login
-   *
-   * @return string
-   */
-  public function render(Request $request, $product, $login)
-  {
-    // form
-    $form = Html::create('form', array(
-        'id' => 'product',
-        'class' => 'setup_frm',
-        'autocomplete' => 'off',
-        'action' => 'index.php/inventory/model/detail/submit',
-        'onsubmit' => 'doInventorySubmit',
-        'token' => true,
-        'ajax' => true,
-    ));
-    $fieldset = $form->add('fieldset', array(
-      'title' => '{LNG_Other details}',
-    ));
-    // detail
-    $fieldset->add('textarea', array(
-      'id' => 'write_detail',
-      'itemClass' => 'item',
-      'labelClass' => 'g-input icon-file',
-      'label' => '{LNG_Detail}',
-      'rows' => 5,
-      'value' => $product['detail'],
-    ));
-    if (is_file(ROOT_PATH.DATA_FOLDER.'inventory/'.$product['id'].'.jpg')) {
-      $image = WEB_URL.DATA_FOLDER.'inventory/'.$product['id'].'.jpg';
-      $placeholder = $image;
-    } elseif (!empty($product['image'])) {
-      $image = $product['image'];
-      $placeholder = $image;
-    } else {
-      $image = WEB_URL.'skin/img/blank.gif';
-      $placeholder = '';
+        return $form->render();
     }
-    // image
-    $fieldset->add('file', array(
-      'id' => 'write_image',
-      'itemClass' => 'item',
-      'labelClass' => 'g-input icon-image',
-      'label' => '{LNG_Image}',
-      'comment' => Language::replace('Browse image uploaded, type :type size :width*:height pixel', array(':type' => 'jpg, jpeg, png', ':width' => self::$cfg->inventory_w, ':height' => self::$cfg->inventory_h)),
-      'accept' => array('jpg', 'jpeg', 'png'),
-      'dataPreview' => 'logoImage',
-      'previewSrc' => $image,
-      'placeholder' => $placeholder
-    ));
-    $fieldset = $form->add('fieldset', array(
-      'class' => 'submit',
-    ));
-    // submit
-    $fieldset->add('submit', array(
-      'class' => 'button save large icon-save',
-      'value' => '{LNG_Save}',
-    ));
-    $fieldset->add('hidden', array(
-      'id' => 'write_id',
-      'value' => $product['id'],
-    ));
-    $fieldset->add('hidden', array(
-      'id' => 'modal',
-      'value' => MAIN_INIT,
-    ));
-    // Javascript
-    $form->script('initInventoryWrite();');
-    // คืนค่า HTML
-
-    return $form->render();
-  }
 }

@@ -21,86 +21,85 @@ use Gcms\Login;
  */
 class Model
 {
+    /**
+     * รายการเมนู.
+     *
+     * @param array $login
+     *
+     * @return array
+     */
+    public static function getMenus($login)
+    {
+        // เมนูตั้งค่า
+        $settings = array();
+        if (Login::checkPermission($login, 'can_config')) {
+            // สามารถตั้งค่าระบบได้
+            $settings[] = array(
+                'text' => '{LNG_Site settings}',
+                'url' => 'index.php?module=system',
+            );
+            $settings[] = array(
+                'text' => '{LNG_Email settings}',
+                'url' => 'index.php?module=mailserver',
+            );
+            $settings[] = array(
+                'text' => '{LNG_Member status}',
+                'url' => 'index.php?module=memberstatus',
+            );
+            $settings[] = array(
+                'text' => '{LNG_Language}',
+                'url' => 'index.php?module=language',
+            );
+            $settings[] = array(
+                'text' => '{LNG_Company Profile}',
+                'url' => 'index.php?module=company',
+            );
+            $settings[] = array(
+                'text' => '{LNG_Image}',
+                'url' => 'index.php?module=image',
+            );
+            $settings[] = array(
+                'text' => '{LNG_Accounting settings}',
+                'url' => 'index.php?module=accsettings',
+            );
+        }
+        // เมนูหลัก
+        $menus = array(
+            'home' => array(
+                'text' => '{LNG_Home}',
+                'url' => 'index.php?module=home',
+            ),
+            'module' => array(
+                'text' => '{LNG_Module}',
+                'submenus' => array(),
+            ),
+            'member' => array(
+                'text' => '{LNG_Users}',
+                'submenus' => array(
+                    array(
+                        'text' => '{LNG_Member list}',
+                        'url' => 'index.php?module=member',
+                    ),
+                    array(
+                        'text' => '{LNG_Register}',
+                        'url' => 'index.php?module=register',
+                    ),
+                ),
+            ),
+            'report' => array(
+                'text' => '{LNG_Report}',
+                'submenus' => array(),
+            ),
+            'settings' => array(
+                'text' => '{LNG_Settings}',
+                'submenus' => $settings,
+            ),
+            'signout' => array(
+                'text' => '{LNG_Sign out}',
+                'url' => 'index.php?action=logout',
+            ),
+        );
 
-  /**
-   * รายการเมนู.
-   *
-   * @param array $login
-   *
-   * @return array
-   */
-  public static function getMenus($login)
-  {
-    // เมนูตั้งค่า
-    $settings = array();
-    if (Login::checkPermission($login, 'can_config')) {
-      // สามารถตั้งค่าระบบได้
-      $settings[] = array(
-        'text' => '{LNG_Site settings}',
-        'url' => 'index.php?module=system',
-      );
-      $settings[] = array(
-        'text' => '{LNG_Email settings}',
-        'url' => 'index.php?module=mailserver',
-      );
-      $settings[] = array(
-        'text' => '{LNG_Member status}',
-        'url' => 'index.php?module=memberstatus',
-      );
-      $settings[] = array(
-        'text' => '{LNG_Language}',
-        'url' => 'index.php?module=language',
-      );
-      $settings[] = array(
-        'text' => '{LNG_Company Profile}',
-        'url' => 'index.php?module=company',
-      );
-      $settings[] = array(
-        'text' => '{LNG_Image}',
-        'url' => 'index.php?module=image',
-      );
-      $settings[] = array(
-        'text' => '{LNG_Accounting settings}',
-        'url' => 'index.php?module=accsettings',
-      );
+        return $menus;
     }
-    // เมนูหลัก
-    $menus = array(
-      'home' => array(
-        'text' => '{LNG_Home}',
-        'url' => 'index.php?module=home',
-      ),
-      'module' => array(
-        'text' => '{LNG_Module}',
-        'submenus' => array(),
-      ),
-      'member' => array(
-        'text' => '{LNG_Users}',
-        'submenus' => array(
-          array(
-            'text' => '{LNG_Member list}',
-            'url' => 'index.php?module=member',
-          ),
-          array(
-            'text' => '{LNG_Register}',
-            'url' => 'index.php?module=register',
-          ),
-        ),
-      ),
-      'report' => array(
-        'text' => '{LNG_Report}',
-        'submenus' => array(),
-      ),
-      'settings' => array(
-        'text' => '{LNG_Settings}',
-        'submenus' => $settings,
-      ),
-      'signout' => array(
-        'text' => '{LNG_Sign out}',
-        'url' => 'index.php?action=logout',
-      ),
-    );
-
-    return $menus;
-  }
 }

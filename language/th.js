@@ -1,5 +1,8 @@
 var CHANGE_COLOR = 'เปลี่ยนสี';
 var CHECK = 'เลือก';
+var CLOSE = 'ปิด';
+var CONFIRM_RESET_DATABASE = 'คุณต้องการลบข้อมูลทั้งหมด เพื่อเริ่มต้นใหม่ ?';
+var CONFIRM_RESET_DATABASE_B = 'การกระทำนี้ไม่สามารถยกเลิกได้ คุณแน่ใจ ?';
 var DELETE = 'ลบ';
 var DRAG_THE_MARKER_TO_THE_LOCATION_YOU_WANT = 'ลากหมุดนี้ไปยังตำแหน่งที่ตั้งที่ต้องการ';
 var ENTER_A_PLACE_NAME_NEARBY_THE_LOCATION_TO_SEARCH = 'กรอกชื่อสถานที่ ที่ใกล้เคียงตำแหน่งที่ตั้งที่ต้องการค้นหา';
