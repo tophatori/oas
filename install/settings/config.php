@@ -15,4 +15,6 @@ return array(
         0 => 'พนักงาน',
         1 => 'ผู้ดูแลระบบ',
     ),
+    'inventory_w' => 500,
+    'inventory_h' => 500,
 );

@@ -99,40 +99,35 @@ class View extends \Gcms\View
         $groups = $fieldset->add('groups', array(
             'comment' => '{LNG_Address details} {LNG_show on receipt}',
         ));
-        // provinceID
-        $groups->add('select', array(
-            'id' => 'register_provinceID',
-            'labelClass' => 'g-input icon-location',
-            'itemClass' => 'width33',
-            'label' => '{LNG_Province}',
-            'options' => \Kotchasan\Province::all(),
-            'value' => $customer['provinceID'],
-        ));
-        // province
-        $groups->add('text', array(
-            'id' => 'register_province',
-            'labelClass' => 'g-input icon-location',
-            'itemClass' => 'width33',
-            'label' => '{LNG_Province}',
-            'value' => $customer['province'],
-        ));
-        // zipcode
-        $groups->add('number', array(
-            'id' => 'register_zipcode',
-            'labelClass' => 'g-input icon-location',
-            'itemClass' => 'width33',
-            'label' => '{LNG_Zipcode}',
-            'maxlength' => 5,
-            'value' => $customer['zipcode'],
-        ));
         // country
-        $groups->add('select', array(
+        $groups->add('text', array(
             'id' => 'register_country',
             'labelClass' => 'g-input icon-world',
             'itemClass' => 'width33',
             'label' => '{LNG_Country}',
-            'options' => \Kotchasan\Country::all(),
+            'datalist' => \Kotchasan\Country::all(),
             'value' => $customer['country'],
+        ));
+        // provinceID
+        $groups->add('text', array(
+            'id' => 'register_provinceID',
+            'name' => 'register_province',
+            'labelClass' => 'g-input icon-location',
+            'itemClass' => 'width33',
+            'label' => '{LNG_Province}',
+            'datalist' => array(),
+            'nameValue' => $customer['province'],
+            'value' => $customer['provinceID'],
+        ));
+        // zipcode
+        $groups->add('number', array(
+            'id' => 'register_zipcode',
+            'labelClass' => 'g-input icon-number',
+            'itemClass' => 'width33',
+            'label' => '{LNG_Zipcode}',
+            'pattern' => '[0-9]+',
+            'maxlength' => 10,
+            'value' => $customer['zipcode'],
         ));
         $fieldset = $form->add('fieldset', array(
             'title' => '{LNG_Other details}',

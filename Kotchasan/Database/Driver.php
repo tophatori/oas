@@ -184,7 +184,7 @@ abstract class Driver extends Query
     {
         $search = $this->doCustomQuery("SELECT 1 FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME='$database'");
 
-        return $search && sizeof($search) == 1 ? true : false;
+        return $search && count($search) == 1 ? true : false;
     }
 
     /**
@@ -307,7 +307,7 @@ abstract class Driver extends Query
     {
         $result = $this->select($table_name, $condition, array(), 1);
 
-        return sizeof($result) == 1 ? (object) $result[0] : false;
+        return count($result) == 1 ? (object) $result[0] : false;
     }
 
     /**

@@ -83,7 +83,7 @@ class Model extends \Kotchasan\Model
                             $this->db()->delete($this->getTableName('stock'), array('product_id', $ids), 0);
                         }
                         $ret = array();
-                        if (sizeof($ids) != sizeof($match[1])) {
+                        if (count($ids) != count($match[1])) {
                             // บางรายการลบไม่ได้
                             $ret['alert'] = Language::get('Some items can not be removed because it is in use');
                         }

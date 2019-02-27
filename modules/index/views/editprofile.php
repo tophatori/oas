@@ -13,7 +13,6 @@ namespace Index\Editprofile;
 use Gcms\Login;
 use Kotchasan\Html;
 use Kotchasan\Language;
-use Kotchasan\Province;
 
 /**
  * module=editprofile.
@@ -140,41 +139,35 @@ class View extends \Gcms\View
             'value' => $user['address'],
         ));
         $groups = $fieldset->add('groups');
+        // country
+        $groups->add('text', array(
+            'id' => 'register_country',
+            'labelClass' => 'g-input icon-world',
+            'itemClass' => 'width33',
+            'label' => '{LNG_Country}',
+            'datalist' => \Kotchasan\Country::all(),
+            'value' => $user['country'],
+        ));
         // provinceID
-        $groups->add('select', array(
+        $groups->add('text', array(
             'id' => 'register_provinceID',
+            'name' => 'register_province',
             'labelClass' => 'g-input icon-location',
             'itemClass' => 'width33',
             'label' => '{LNG_Province}',
-            'options' => array($user['provinceID'] => ''),
+            'datalist' => array(),
+            'nameValue' => $user['province'],
             'value' => $user['provinceID'],
         ));
-        // province
-        $groups->add('text', array(
-            'id' => 'register_province',
-            'labelClass' => 'g-input icon-location',
-            'itemClass' => 'width33',
-            'label' => '{LNG_Province}',
-            'value' => $user['province'],
-        ));
         // zipcode
-        $groups->add('text', array(
+        $groups->add('number', array(
             'id' => 'register_zipcode',
-            'labelClass' => 'g-input icon-location',
+            'labelClass' => 'g-input icon-number',
             'itemClass' => 'width33',
             'label' => '{LNG_Zipcode}',
             'pattern' => '[0-9]+',
             'maxlength' => 10,
             'value' => $user['zipcode'],
-        ));
-        // country
-        $groups->add('select', array(
-            'id' => 'register_country',
-            'labelClass' => 'g-input icon-world',
-            'itemClass' => 'width33',
-            'label' => '{LNG_Country}',
-            'options' => \Kotchasan\Country::all(),
-            'value' => $user['country'],
         ));
         if ($login_admin) {
             $fieldset = $form->add('fieldset', array(
@@ -212,7 +205,7 @@ class View extends \Gcms\View
             'value' => $user['id'],
         ));
         // Javascript
-        $form->script('initEditProfile("register", '.json_encode(Province::countries()).');');
+        $form->script('initEditProfile("register");');
         // คืนค่า HTML
 
         return $form->render();
