@@ -41,23 +41,21 @@ class Login extends \Kotchasan\Login
             $session_id = session_id();
             // ลบ password
             unset($login_result['password']);
-            if (self::$cfg->member_only) {
-                // token
+            // เวลานี้
+            $mktime = time();
+            if (self::$cfg->member_only || empty($login_result['token']) || $mktime - $login_result['lastvisited'] > 86400) {
+                // อัปเดท token
                 $login_result['token'] = sha1(uniqid().$login_result['id'].$session_id);
+                $save = array('token' => $login_result['token']);
             }
-            // อัปเดทการเยี่ยมชม
             if ($session_id != $login_result['session_id']) {
-                // update visited
+                // อัปเดทการเยี่ยมชม
                 ++$login_result['visited'];
                 $save = array(
                     'session_id' => $session_id,
                     'visited' => $login_result['visited'],
-                    'lastvisited' => time(),
+                    'lastvisited' => $mktime,
                     'ip' => $ip,
-                    'token' => $login_result['token'],
-                );
-            } elseif (self::$cfg->member_only) {
-                $save = array(
                     'token' => $login_result['token'],
                 );
             }

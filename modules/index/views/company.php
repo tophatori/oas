@@ -70,7 +70,7 @@ class View extends \Gcms\View
             'name' => 'company_tax_id',
             'labelClass' => 'g-input icon-profile',
             'itemClass' => 'width50',
-            'label' => '{LNG_Identification number}',
+            'label' => '{LNG_Identification No.}',
             'placeholder' => '{LNG_13-digit identification number}',
             'value' => isset(self::$cfg->tax_id) ? self::$cfg->tax_id : '',
         ));

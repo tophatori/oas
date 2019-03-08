@@ -1,4 +1,5 @@
 <?php
+
 /* language/th.php */
 return array(
   ':username passwords' => 'รหัสผ่านของ :username',
@@ -59,16 +60,16 @@ return array(
     'quantity' => 'จำนวน',
     'price' => 'ราคา',
     'discount' => 'ส่วนลด',
-    'amount' => 'จำนวนเงิน'
+    'amount' => 'จำนวนเงิน',
   ),
   'BILLING_TYPIES' => array(
     0 => 'ไม่ระบุ',
     1 => 'ต้นฉบับ',
-    2 => 'สำเนา'
+    2 => 'สำเนา',
   ),
   'BOOLEANS' => array(
     0 => 'ปิดใช้งาน',
-    1 => 'เปิดใช้งาน'
+    1 => 'เปิดใช้งาน',
   ),
   'Branch name' => 'ชื่อสาขา',
   'Browse file' => 'เลือกไฟล์',
@@ -77,7 +78,7 @@ return array(
   'Buy Price' => 'ราคาซื้อ',
   'BUY_TYPIES' => array(
     1 => 'ใบสั่งซื้อ',
-    6 => 'ใบรับสินค้า'
+    6 => 'ใบรับสินค้า',
   ),
   'by' => 'โดย',
   'Calculated from purchase price, excluding tax, multiplied by the number of items sold. At that time (FIFO)' => 'คำนวณจาก ราคาซื้อไม่รวมภาษี คูณด้วยจำนวนสินค้าที่ขายไปแล้ว ณ. ช่วงเวลานั้น (FIFO)',
@@ -132,7 +133,7 @@ return array(
   'Could not be saved' => 'ไม่สามารถบันทึกได้',
   'COUNT_STOCK' => array(
     0 => 'ไม่นับสต๊อก',
-    1 => 'นับสต๊อก'
+    1 => 'นับสต๊อก',
   ),
   'Country' => 'ประเทศ',
   'Create' => 'สร้าง',
@@ -144,7 +145,7 @@ return array(
   'Currency Unit' => 'สกุลเงิน',
   'CURRENCY_UNITS' => array(
     'THB' => 'บาท',
-    'USD' => 'ดอลล่าร์'
+    'USD' => 'ดอลล่าร์',
   ),
   'Custom Report' => 'รายงานที่กำหนดเอง',
   'Customer' => 'ลูกค้า',
@@ -197,8 +198,7 @@ return array(
   'Edit' => 'แก้ไข',
   'Edit comment successfully' => '	แก้ไขความคิดเห็นเรียบร้อย',
   'Edit post successfully' => '	แก้ไขโพสต์เรียบร้อย',
-  'Edit profile' => 'แก้ไขข้อมูลส่วนตัว',
-  'Editing your account' => 'แก้ไขข้อมูลส่วนตัวสมาชิก',
+  'Editing your account' => 'แก้ไขข้อมูลส่วนตัว',
   'Electronic Signature' => 'ลายเซ็นต์อิเลคทรอนิคส์',
   'Email' => 'อีเมล',
   'Email address used for login or request a new password' => 'ที่อยู่อีเมล ใช้สำหรับการเข้าระบบหรือการขอรหัสผ่านใหม่',
@@ -207,7 +207,7 @@ return array(
   'Email send' => 'ส่งอีเมล',
   'Email settings' => 'ตั้งค่าอีเมล',
   'Email template' => 'แม่แบบอีเมล',
-  'Emailing' => 'การส่งอีเมล์',
+  'Emailing' => 'การส่งอีเมล',
   'Enable SSL encryption for sending email' => 'เปิดใช้งานการเข้ารหัส SSL สำหรับการส่งอีเมล',
   'Enable/Disable intro page' => 'เปิด/ปิด การแสดงหน้าต้อนรับ',
   'Enable/Disable maintenance mode' => 'เปิด/ปิด โหมดบำรุงรักษา',
@@ -260,7 +260,7 @@ return array(
   'hour' => 'ชั่วโมง',
   'How to define user authentication for mail servers. If you enable it, you must configure below correctly.' => 'กำหนดวิธีการตรวจสอบผู้ใช้สำหรับเมล์เซิร์ฟเวอร์ หากคุณเปิดใช้งานคุณต้องกำหนดค่าต่างๆด้านล่างถูกต้อง',
   'Icon' => 'ไอคอน',
-  'Identification number' => 'เลขประจำตัวประชาชน',
+  'Identification No.' => 'เลขประชาชน',
   'If you are a corporate enter your 13-digit Tax identification number or if you are a person enter your 13-digit Personal identification number' => 'หากเป็นนิติบุคคลให้กรอกเลขประจำตัวผู้เสียภาษี 13 หลัก หรือหากเป็นบุคคลธรรมดาให้กรอกเลขประจำตัวประชาชน 13 หลัก',
   'Image' => 'รูปภาพ',
   'Image settings' => 'ตั้งค่ารูปภาพ',
@@ -278,11 +278,11 @@ return array(
   'Inventory Adjust' => 'ปรับยอดสินค้าคงคลัง',
   'INVENTORY_CATEGORIES' => array(
     0 => 'หมวดหมู่สินค้า',
-    3 => 'หน่วยนับสินค้า'
+    3 => 'หน่วยนับสินค้า',
   ),
   'INVENTORY_STATUS' => array(
     'OUT' => 'ขาย/จ่ายออก',
-    'IN' => 'ซื้อ/รับเข้า'
+    'IN' => 'ซื้อ/รับเข้า',
   ),
   'Invitation code' => 'รหัสผู้แนะนำ',
   'Item' => 'ลำดับ',
@@ -312,7 +312,7 @@ return array(
   'Mail program' => 'โปรแกรมส่งอีเมล',
   'Mail server' => 'เซิร์ฟเวอร์อีเมล',
   'Mail server port number (default is 25, for GMail used 465, 587 for DirectAdmin).' => 'หมายเลขพอร์ตของเมล์เซิร์ฟเวอร์ (ค่าปกติคือ 25, สำหรับ gmail ใช้ 465, 587 สำหรับ DirectAdmin)',
-  'Mail Server Settings' => 'ค่ากำหนดของเมล์เซิร์ฟเวอร์',
+  'Mail server settings' => 'ค่ากำหนดของเมล์เซิร์ฟเวอร์',
   'MAIL_PROGRAMS' => array(
     0 => 'ส่งจดหมายด้วย PHP',
     1 => 'ส่งจดหมายด้วย PHPMailer (แนะนำ)'
@@ -367,7 +367,7 @@ return array(
   'Monthly' => 'ประจำเดือน',
   'Monthly Report' => 'รายงานประจำเดือน',
   'More email addresses to send a copy of the email. Separate each item with comma (,)' => 'ที่อยู่อีเมลเพิ่มเติมหากต้องการส่งสำเนาอีเมลถึง คั่นแต่ละรายการด้วย , (ลูกน้ำ)',
-  'Name' => 'ชื่อ',
+  'Name' => 'ชื่อ นามสกุล',
   'Name of Entrepreneur' => 'ชื่อผู้ประกอบการ',
   'Name of Establishment' => 'ชื่อสถานประกอบการ',
   'Name of establishment registered VAT' => 'ชื่อสถานประกอบการที่จดทะเบียนภาษีมูลค่าเพิ่ม',
@@ -449,7 +449,7 @@ return array(
   'Published' => 'เผยแพร่',
   'PUBLISHEDS' => array(
     0 => 'ระงับการเผยแพร่',
-    1 => 'เผยแพร่'
+    1 => 'เผยแพร่',
   ),
   'Purchase' => 'ซื้อสินค้า',
   'Quantity' => 'จำนวน',
@@ -486,7 +486,7 @@ return array(
   'Sales today' => 'ยอดขายวันนี้',
   'Save' => 'บันทึก',
   'Save and Create New' => 'บันทึกแล้วสร้างใหม่',
-  'Save and email completed' => 'บันทึก และส่งอีเมลเรียบร้อย',
+  'Save and email completed' => 'บันทึกและส่งอีเมลเรียบร้อย',
   'Saved successfully' => 'บันทึกเรียบร้อย',
   'scroll to top' => 'เลื่อนขึ้นด้านบน',
   'Search' => 'ค้นหา',
@@ -499,7 +499,7 @@ return array(
   'Sell Price' => 'ราคาขาย',
   'SELL_TYPIES' => array(
     1 => 'ใบเสนอราคา',
-    6 => 'ใบเสร็จ'
+    6 => 'ใบเสร็จ',
   ),
   'Send' => 'ส่ง',
   'Send a message to the :name' => 'ส่งข้อความถึง :name',
@@ -547,7 +547,7 @@ return array(
   'Sorry, no information available for this item.' => 'ขออภัย ไม่มีข้อมูลสำหรับรายการนี้',
   'Sorry, you do not have permission to comment' => 'ขออภัย คุณไม่มีสิทธิ์ในการแสดงความคิดเห็น',
   'Sort' => 'เรียงลำดับ',
-  'Specify the file extension that allows uploading. English lowercase letters and numbers 2-4 characters to separate each type with a comma (,) and without spaces. eg zip,rar,doc,docx' => 'ระบุนามสกุลของไฟล์ที่สามารถอัพโหลดได้ ภาษาอังกฤษตัวพิมพ์เล็กและตัวเลขสองถึงสี่ตัวอักษร คั่นแต่ละรายการด้วยลูกน้ำ (,)',
+  'Specify the file extension that allows uploading. English lowercase letters and numbers 2-4 characters to separate each type with a comma (,) and without spaces. eg zip,rar,doc,docx' => 'ระบุนามสกุลของไฟล์ที่สามารถอัปโหลดได้ ภาษาอังกฤษตัวพิมพ์เล็กและตัวเลขสองถึงสี่ตัวอักษร คั่นแต่ละรายการด้วยลูกน้ำ (,)',
   'Specify the language code of the email, as utf-8' => 'ระบุรหัสภาษาของอีเมลที่ส่ง เช่น utf-8',
   'Stamp' => 'ตราประทับ',
   'Status' => 'สถานะ',
@@ -569,12 +569,12 @@ return array(
   'Tax ID 13 digit' => 'เลขประจำตัวผู้เสียภาษีอากร 13 หลัก',
   'TAX_PRICE' => array(
     0 => 'แยกภาษี',
-    1 => 'รวมภาษี'
+    1 => 'รวมภาษี',
   ),
   'TAX_STATUS' => array(
     0 => 'ไม่มีภาษี',
     1 => 'แยกภาษี',
-    2 => 'รวมภาษี'
+    2 => 'รวมภาษี',
   ),
   'Template' => 'แม่แบบ',
   'Templates for e-mail sent by the system' => 'แม่แบบของอีเมลสำหรับส่งโดยระบบ',
@@ -590,7 +590,7 @@ return array(
   'The members status of the site' => 'สถานะสมาชิกของเว็บไซต์',
   'The name of the bill or invoice receipts such as receipts for the type of receipt only' => 'ชื่อของบิลหรือใบเสร็จ เช่น ใบเสร็จรับเงิน ใบส่งของ ใช้สำหรับระบุชนิดของใบเสร็จเท่านั้น',
   'The name of the mail server as localhost or smtp.gmail.com (To change the settings of your email is the default. To remove this box entirely.)' => 'ชื่อของเมล์เซิร์ฟเวอร์ เช่น localhost หรือ smtp.gmail.com (ต้องการเปลี่ยนค่ากำหนดของอีเมลทั้งหมดเป็นค่าเริ่มต้น ให้ลบข้อความในช่องนี้ออกทั้งหมด)',
-  'The size of the files can be uploaded. (Should not exceed the value of the Server :upload_max_filesize.)' => 'ขนาดของไฟล์ที่สามารถอัพโหลดได้ (ไม่ควรเกินค่ากำหนดของเซิร์ฟเวอร์ :upload_max_filesize)',
+  'The size of the files can be uploaded. (Should not exceed the value of the Server :upload_max_filesize.)' => 'ขนาดของไฟล์ที่สามารถอัปโหลดได้ (ไม่ควรเกินค่ากำหนดของเซิร์ฟเวอร์ :upload_max_filesize)',
   'The system will send the registration information to this e-mail. Please use real email address' => 'ระบบจะส่งข้อความไปยังอีเมลนี้ กรุณาใช้ที่อยู่ที่ติดต่อได้',
   'The type of file is invalid' => 'ชนิดของไฟล์ไม่ถูกต้อง',
   'This :name already exist' => 'มี :name นี้อยู่ก่อนแล้ว',
@@ -654,7 +654,7 @@ return array(
     2 => '2.0%',
     3 => '3.0%',
     5 => '5.0%',
-    10 => '10.0%'
+    10 => '10.0%',
   ),
   'What do you want to do' => 'คุณต้องการทำอะไร',
   'When filling out the customer' => 'เมื่อมีการกรอกช่องลูกค้า',
@@ -681,5 +681,5 @@ return array(
   'Your site&#39;s URL (exclude http://, eg www.domain.tld).' => 'เว็บไซต์ของคุณ (ไม่รวม http:// เช่น www.domain.tld)',
   'Your username and password info' => 'ชื่อผู้ใช้และรหัสผ่าน',
   'Zero means unlimited' => '0 หมายถึงไม่จำกัด',
-  'Zipcode' => 'รหัสไปรษณีย์'
+  'Zipcode' => 'รหัสไปรษณีย์',
 );

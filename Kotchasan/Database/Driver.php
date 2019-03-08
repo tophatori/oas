@@ -11,7 +11,7 @@
 namespace Kotchasan\Database;
 
 use Kotchasan\ArrayTool;
-use Kotchasan\Cache\Cacheitem as Item;
+use Kotchasan\Cache\CacheItem as Item;
 use Kotchasan\Database\DbCache as Cache;
 use Kotchasan\Log\Logger;
 use Kotchasan\Text;
