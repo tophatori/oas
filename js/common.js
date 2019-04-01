@@ -97,19 +97,6 @@ function defaultSubmit(ds) {
           $G(val).remove();
         });
       }
-    } else if (prop == "input") {
-      el = $G(val);
-      t = el.title ? el.title.strip_tags() : "";
-      if (t == "" && el.placeholder) {
-        t = el.placeholder.strip_tags();
-      }
-      if (_input != el) {
-        el.invalid(t);
-      }
-      if (t != "" && _alert == "") {
-        _alert = t;
-        _input = el;
-      }
     } else if ($E(prop)) {
       $G(prop).setValue(decodeURIComponent(val).replace(/\%/g, "&#37;"));
     } else if ($E(prop.replace("ret_", ""))) {
@@ -749,7 +736,7 @@ function checkEmail() {
   }
 }
 
-function initCompany(countries) {
+function initCompany() {
   var doChanged = function() {
     var t = $E("company_type").value;
     $E("tax_id").disabled = t == 0;
@@ -757,7 +744,7 @@ function initCompany(countries) {
     $E("tax_id").parentNode.parentNode.className = t == 0 ? "hidden" : "item";
     $E("idcard").parentNode.parentNode.className = t == 1 ? "hidden" : "item";
   };
-  initEditProfile("company", countries);
+  initEditProfile("company");
   $G("company_type").addEvent("change", doChanged);
   doChanged();
 }

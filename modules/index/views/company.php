@@ -104,41 +104,35 @@ class View extends \Gcms\View
             'value' => isset(self::$cfg->address) ? self::$cfg->address : '',
         ));
         $groups = $fieldset->add('groups');
-        // provinceID
-        $groups->add('select', array(
-            'id' => 'company_provinceID',
-            'labelClass' => 'g-input icon-location',
-            'itemClass' => 'width33',
-            'label' => '{LNG_Province}',
-            'options' => \Kotchasan\Province::all(),
-            'value' => isset(self::$cfg->provinceID) ? self::$cfg->provinceID : 102,
-        ));
-        // province
-        $groups->add('text', array(
-            'id' => 'company_province',
-            'labelClass' => 'g-input icon-location',
-            'itemClass' => 'width33',
-            'label' => '{LNG_Province}',
-            'maxlength' => 64,
-            'value' => isset(self::$cfg->province) ? self::$cfg->province : '',
-        ));
-        // zipcode
-        $groups->add('number', array(
-            'id' => 'company_zipcode',
-            'labelClass' => 'g-input icon-location',
-            'itemClass' => 'width33',
-            'label' => '{LNG_Zipcode}',
-            'maxlength' => 5,
-            'value' => isset(self::$cfg->zipcode) ? self::$cfg->zipcode : 10000,
-        ));
         // country
-        $groups->add('select', array(
+        $groups->add('text', array(
             'id' => 'company_country',
             'labelClass' => 'g-input icon-world',
             'itemClass' => 'width33',
             'label' => '{LNG_Country}',
-            'options' => \Kotchasan\Country::all(),
+            'datalist' => \Kotchasan\Country::all(),
             'value' => isset(self::$cfg->country) ? self::$cfg->country : 'TH',
+        ));
+        // provinceID
+        $groups->add('text', array(
+            'id' => 'company_provinceID',
+            'name' => 'company_province',
+            'labelClass' => 'g-input icon-location',
+            'itemClass' => 'width33',
+            'label' => '{LNG_Province}',
+            'datalist' => array(),
+            'nameValue' => isset(self::$cfg->province) ? self::$cfg->province : '',
+            'value' => isset(self::$cfg->provinceID) ? self::$cfg->provinceID : '',
+        ));
+        // zipcode
+        $groups->add('number', array(
+            'id' => 'company_zipcode',
+            'labelClass' => 'g-input icon-number',
+            'itemClass' => 'width33',
+            'label' => '{LNG_Zipcode}',
+            'pattern' => '[0-9]+',
+            'maxlength' => 10,
+            'value' => isset(self::$cfg->zipcode) ? self::$cfg->zipcode : 10000,
         ));
         $groups = $fieldset->add('groups');
         // phone
@@ -167,7 +161,7 @@ class View extends \Gcms\View
             'class' => 'button ok large',
             'value' => '{LNG_Save}',
         ));
-        $form->script('initCompany('.json_encode(\Kotchasan\Province::countries()).');');
+        $form->script('initCompany();');
 
         return $form->render();
     }
