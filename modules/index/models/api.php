@@ -10,6 +10,7 @@
 
 namespace Index\Api;
 
+use Kotchasan\Database\Sql;
 use Kotchasan\Http\Request;
 
 /**
@@ -24,8 +25,7 @@ class Model extends \Kotchasan\Model
     /**
      * คืนค่ารายการหมวดหมู่ทั้งหมด.
      *
-     * @param Request $request
-     *
+     * @param  Request $request
      * @return array
      */
     public static function categories(Request $request)
@@ -51,8 +51,7 @@ class Model extends \Kotchasan\Model
     /**
      * อ่านชื่อหมวดหมู่ที่ต้องการ.
      *
-     * @param int $id
-     *
+     * @param  int      $id
      * @return string
      */
     private static function category($id)
@@ -73,8 +72,7 @@ class Model extends \Kotchasan\Model
     /**
      * คืนค่ารายการสินค้า ถ้ามีการระบุ id มา หมายถึงสินค้าในหมวดที่เลือก
      *
-     * @param Request $request
-     *
+     * @param  Request $request
      * @return array
      */
     public static function products(Request $request)
@@ -114,7 +112,7 @@ class Model extends \Kotchasan\Model
         $result['start'] = $list_per_page * ($result['page'] - 1);
         // query
         $result['items'] = $query->order('id')
-            ->select()
+            ->select('id', 'product_no', 'topic', 'description', 'detail', 'price', 'url', Sql::create('IFNULL(`image`,CONCAT("' . WEB_URL . 'datas/inventory/",`id`,".jpg")) AS image'), 'vat', 'unit', 'category_id', 'count_stock')
             ->order('topic', 'product_no')
             ->limit($list_per_page, $result['start'])
             ->cacheOn()
@@ -128,8 +126,7 @@ class Model extends \Kotchasan\Model
     /**
      * ค้นหารายการสินค้า จาก product_no topic description.
      *
-     * @param Request $request
-     *
+     * @param  Request $request
      * @return array
      */
     public static function search(Request $request)
@@ -140,8 +137,7 @@ class Model extends \Kotchasan\Model
     /**
      * คืนค่ารายละเอียดของสินค้าที่ id.
      *
-     * @param Request $request
-     *
+     * @param  Request $request
      * @return array
      */
     public static function product(Request $request)
@@ -151,6 +147,6 @@ class Model extends \Kotchasan\Model
             ->where(array('id', $request->get('id')->toInt()))
             ->cacheOn()
             ->toArray()
-            ->first();
+            ->first('id', 'product_no', 'topic', 'description', 'detail', 'price', 'url', Sql::create('IFNULL(`image`,CONCAT("' . WEB_URL . 'datas/inventory/",`id`,".jpg")) AS image'), 'vat', 'unit', 'category_id', 'count_stock');
     }
 }
