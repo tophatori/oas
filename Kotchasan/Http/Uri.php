@@ -110,9 +110,9 @@ class Uri extends \Kotchasan\KBase implements \Psr\Http\Message\UriInterface
         $qs = array();
         foreach ($this->parseQueryParams($this->query) as $key => $value) {
             $key = ltrim($key, '_');
-            if ($key != 'token' && key_exists($key, $query_string) && $query_string[$key] === null) {
+            if (key_exists($key, $query_string) && $query_string[$key] === null) {
                 continue;
-            } elseif (preg_match('/^[0-9]+$/', $key)) {
+            } elseif (preg_match('/((^[0-9]+$)|(.*?(username|password|token|time).*?))/', $key)) {
                 continue;
             }
             if ($value !== null) {

@@ -446,7 +446,7 @@ class DataTable extends \Kotchasan\KBase
         foreach ($url_query as $key => $value) {
             // แอเรย์เก็บรายการ input ที่ไม่ต้องสร้าง
             if ($key !== 'search' && $key !== 'count' && $key !== 'page' && $key !== 'action' && !preg_match('/.*?(username|password|token|time).*?/', $key)) {
-                $hidden_fields[$key] = '<input type="hidden" name="' . $key . '" value="' . $value . '">';
+                $hidden_fields[$key] = '<input type="hidden" name="'.$key.'" value="'.$value.'">';
             }
         }
         if (isset($this->model)) {
