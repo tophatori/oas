@@ -105,9 +105,9 @@ INSERT INTO `{prefix}_customer` (`id`, `company`, `branch`, `name`, `idcard`, `t
 
 CREATE TABLE `{prefix}_number` (
   `id` int(11) NOT NULL,
-  `product_no` int(11) DEFAULT '0',
-  `order_no` int(11) DEFAULT '0',
-  `billing_no` int(11) DEFAULT '0'
+  `product_no` int(11) DEFAULT 0,
+  `order_no` int(11) DEFAULT 0,
+  `billing_no` int(11) DEFAULT 0
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -129,15 +129,15 @@ CREATE TABLE `{prefix}_orders` (
   `customer_id` int(11) UNSIGNED NOT NULL,
   `order_date` date NOT NULL,
   `member_id` int(11) UNSIGNED NOT NULL,
-  `discount` decimal(10,2) DEFAULT NULL,
-  `vat` decimal(10,2) NOT NULL,
-  `tax` decimal(10,2) NOT NULL,
-  `total` decimal(10,2) NOT NULL,
+  `discount` decimal(10,2) DEFAULT 0,
+  `vat` decimal(10,2) DEFAULT 0,
+  `tax` decimal(10,2) DEFAULT 0,
+  `total` decimal(10,2) DEFAULT 0,
   `status` tinyint(1) UNSIGNED NOT NULL,
   `stock_status` enum('IN','OUT') COLLATE utf8_unicode_ci NOT NULL,
-  `paid` decimal(10,2) NOT NULL,
-  `discount_percent` decimal(10,2) NOT NULL,
-  `tax_status` decimal(10,2) NOT NULL,
+  `paid` decimal(10,2) DEFAULT 0,
+  `discount_percent` decimal(10,2) DEFAULT 0,
+  `tax_status` decimal(10,2) DEFAULT 0,
   `vat_status` tinyint(1) UNSIGNED NOT NULL,
   `order` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
   `due_date` date DEFAULT NULL,
@@ -156,11 +156,11 @@ CREATE TABLE `{prefix}_product` (
   `topic` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
   `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `detail` TEXT COLLATE utf8_unicode_ci DEFAULT NULL,
-  `price` decimal(10,2) DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT 0,
   `url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `image` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_update` int(11) NOT NULL,
-  `vat` decimal(10,2) NOT NULL,
+  `vat` decimal(10,2) DEFAULT 0,
   `unit` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `category_id` int(11) NOT NULL,
   `count_stock` int(11) NOT NULL DEFAULT 1
@@ -191,10 +191,10 @@ CREATE TABLE `{prefix}_stock` (
   `create_date` datetime NOT NULL,
   `topic` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
   `quantity` int(11) NOT NULL,
-  `price` decimal(10,2) NOT NULL,
-  `vat` decimal(10,2) NOT NULL,
-  `discount` decimal(10,2) NOT NULL,
-  `total` decimal(10,2) NOT NULL
+  `price` decimal(10,2) DEFAULT 0,
+  `vat` decimal(10,2) DEFAULT 0,
+  `discount` decimal(10,2) DEFAULT 0,
+  `total` decimal(10,2) DEFAULT 0
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
