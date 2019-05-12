@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 13, 2019 at 09:36 AM
--- Server version: 10.1.37-MariaDB
+-- Generation Time: Mar 31, 2019 at 03:13 PM
+-- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.0.32
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -254,15 +254,14 @@ CREATE TABLE `{prefix}_user` (
 INSERT INTO `{prefix}_user` (`id`, `username`, `salt`, `password`, `social`, `active`, `name`, `phone`, `fax`, `create_date`, `visited`, `lastvisited`, `status`, `ip`, `session_id`, `permission`, `website`, `email`, `type`) VALUES
 (2, 'demo@localhost', 'demo@localhost', 'db75cdf3d5e77181ec3ed6072b56a8870eb6822d', 0, 1, 'พนักงาน', '', NULL, '2017-09-16 10:38:02', 91, 1505659350, 0, '223.24.90.121', '16m0q0bd2tae0dg5bkd0692sb7', 'can_customer,can_stock,can_sell,can_buy,can_manage_inventory', '', '', 0),
 (1, 'admin@localhost', 'admin@localhost', 'b620e8b83d7fcf7278148d21b088511917762014', 0, 1, 'แอดมิน', '', NULL, '2017-09-17 21:07:06', 1, 1505660615, 1, '119.76.143.13', '9n4572970bq87ee1gin5ip2bh5', 'can_config,can_customer,can_stock,can_sell,can_buy,can_manage_inventory', '', '', 0);
---
--- Indexes for dumped tables
---
 
 --
 -- Indexes for table `{prefix}_category`
 --
 ALTER TABLE `{prefix}_category`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `type` (`type`),
+  ADD KEY `category_id` (`category_id`);
 
 --
 -- Indexes for table `{prefix}_customer`
@@ -307,7 +306,7 @@ ALTER TABLE `{prefix}_stock`
 --
 ALTER TABLE `{prefix}_user`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `username` (`username`);
+  ADD KEY `username` (`username`);
 
 --
 -- AUTO_INCREMENT for dumped tables
