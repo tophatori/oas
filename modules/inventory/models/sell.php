@@ -50,11 +50,9 @@ class Model extends \Kotchasan\Model
                     'status' => $request->post('status')->toInt(),
                 );
                 $order_id = $request->post('order_id')->toInt();
-                // Model
-                $model = new static();
                 // ชื่อตาราง
-                $table_orders = $model->getTableName('orders');
-                $table_stock = $model->getTableName('stock');
+                $table_orders = $this->getTableName('orders');
+                $table_stock = $this->getTableName('stock');
                 // ตรวจสอบรายการ order ที่เลือก
                 $orders = \Inventory\Order\Model::get($order_id, 'OUT', $order['status']);
                 if (!$orders) {
@@ -88,15 +86,14 @@ class Model extends \Kotchasan\Model
                     if (empty($stock)) {
                         // ไม่ได้เลือกสินค้า
                         $ret['ret_topic_'.$key] = 'Please fill in';
-                    }
-                    if (empty($ret)) {
+                    } else {
                         // save order
                         if ($order['order_no'] == '') {
                             // สร้างเลข running number
                             $order['order_no'] = \Inventory\Number\Model::get($order_id, 'billing_no', $table_orders, 'order_no');
                         } else {
                             // ตรวจสอบ order_no ซ้ำ
-                            $search = $model->db()->first($table_orders, array(
+                            $search = $this->db()->first($table_orders, array(
                                 array('order_no', $order['order_no']),
                             ));
                             if ($search !== false && $order_id != $search->id) {
@@ -107,7 +104,7 @@ class Model extends \Kotchasan\Model
                     if (empty($ret)) {
                         if ($order_id > 0) {
                             // แก้ไข
-                            $model->db()->createQuery()
+                            $this->db()->createQuery()
                                 ->update('orders')
                                 ->set($order)
                                 ->where(array(
@@ -116,13 +113,13 @@ class Model extends \Kotchasan\Model
                                 ->execute();
                         } else {
                             // ใหม่
-                            $order_id = $model->db()->getNextId($table_orders);
+                            $order_id = $this->db()->getNextId($table_orders);
                             $order['id'] = $order_id;
                             $order['stock_status'] = 'OUT';
-                            $model->db()->insert($table_orders, $order);
+                            $this->db()->insert($table_orders, $order);
                         }
                         // ลบ stock เก่า (ถ้ามี)
-                        $model->db()->delete($table_stock, array(
+                        $this->db()->delete($table_stock, array(
                             array('order_id', $order_id),
                         ), 0);
                         // save stock
@@ -131,7 +128,7 @@ class Model extends \Kotchasan\Model
                             $save['order_id'] = $order_id;
                             $save['status'] = 'OUT';
                             $save['create_date'] = $order['order_date'];
-                            $model->db()->insert($table_stock, $save);
+                            $this->db()->insert($table_stock, $save);
                         }
                         // คืนค่า
                         $ret['alert'] = Language::get('Saved successfully');

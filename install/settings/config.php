@@ -3,7 +3,7 @@
 /* config.php */
 
 return array(
-    'version' => '2.0.3',
+    'version' => '2.0.5',
     'web_title' => 'OAS',
     'web_description' => 'Online Accounting System',
     'timezone' => 'Asia/Bangkok',
@@ -15,6 +15,7 @@ return array(
         0 => 'พนักงาน',
         1 => 'ผู้ดูแลระบบ',
     ),
+    'default_icon' => 'icon-billing',
     'inventory_w' => 500,
     'inventory_h' => 500,
 );
