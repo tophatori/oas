@@ -57,6 +57,9 @@ class PdoMysqlDriver extends Driver
         if (isset($this->settings->username) && isset($this->settings->password)) {
             try {
                 $this->connection = new \PDO($sql, $this->settings->username, $this->settings->password, $this->options);
+                if (defined('SQL_MODE')) {
+                    $this->connection->query("SET SESSION sql_mode = '".SQL_MODE."'");
+                }
             } catch (\PDOException $e) {
                 throw new \Exception($e->getMessage(), 500, $e);
             }
@@ -126,7 +129,7 @@ class PdoMysqlDriver extends Driver
 
     /**
      * ฟังก์ชั่นเพิ่มข้อมูลใหม่ลงในตาราง
-     * ถ้ามีข้อมูลเดิมอยู่แล้วจะเป็นการอัปเดท
+     * ถ้ามีข้อมูลเดิมอยู่แล้วจะเป็นการอัปเดต
      * (ข้อมูลเดิมตาม KEY ที่เป็น UNIQUE)
      * insert คืนค่า id ที่เพิ่ม
      * update คืนค่า 0

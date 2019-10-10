@@ -95,6 +95,10 @@ function defaultSubmit(ds) {
       }, 1);
     } else if (prop == "tab") {
       initWriteTab("accordient_menu", val);
+    } else if (prop == "valid") {
+      if ($E(val)) {
+        $G(val).valid();
+      }
     } else if (remove.test(prop)) {
       if ($E(val)) {
         $G(val).fadeOut(function() {
@@ -111,7 +115,7 @@ function defaultSubmit(ds) {
       if (val == "") {
         el.valid();
       } else {
-        if (val == "Please fill in" || val == "Please select" || val == "Please browse file" || val == "already exist") {
+        if (val == "Please fill in" || val == "Please select" || val == "Please browse file" || val == "already exist" || val == "Please select at least one item" || val=="Invalid data") {
           var label = el.findLabel();
           if (label) {
             t = label.innerHTML.strip_tags();
@@ -128,12 +132,16 @@ function defaultSubmit(ds) {
           if (t != "") {
             if (val == "already exist") {
               val = t + " " + trans(val);
+            } else if (val == "Please select at least one item") {
+              val = PLEASE_SELECT_AT_LEAST_ONE_ITEM.replace('XXX', t)
+            } else if (val == "Invalid data") {
+              val = INVALID_DATA.replace('XXX', t)
             } else {
               val = trans(val) + " " + t;
             }
+          } else {
+            val = trans(val);
           }
-        } else if (val == "Please select at least one item") {
-          val = trans(val);
         } else if (val == "this") {
           if (typeof el.placeholder != "undefined") {
             t = el.placeholder.strip_tags();
@@ -495,8 +503,8 @@ function initEditInplace(id, model, addbtn) {
   }
 
   function _initOrder() {
-    new GSortTable(id, {
-      tag: "li",
+    new GDragDrop(id, {
+      dragClass: "icon-move",
       endDrag: function() {
         var trs = new Array();
         forEach($G(id).elems("li"), function() {
@@ -587,6 +595,24 @@ function initEditProfile(prefix) {
       }
     });
   });
+}
+
+function initCalendarRange(minDate, maxDate, minChanged) {
+  if ($E(minDate) && $E(maxDate)) {
+    $G(minDate).addEvent("change", function() {
+      if (this.value != "") {
+        $E(maxDate).calendar.minDate(this.value);
+        if (Object.isFunction(minChanged)) {
+          minChanged.call($E(minDate), $E(maxDate));
+        }
+      }
+    });
+    $G(maxDate).addEvent("change", function() {
+      if (this.value != "") {
+        $E(minDate).calendar.maxDate(this.value);
+      }
+    });
+  }
 }
 var createLikeButton;
 
@@ -719,39 +745,15 @@ if (navigator.userAgent.match(/(iPhone|iPod|iPad)/i)) {
   document.addEventListener("touchstart", function() {}, false);
 }
 
-function initModal(id, callback) {
-  var patt = /^modal_([a-z\/]+)_(.*)$/;
-  forEach($G(id).elems("a"), function() {
-    if (patt.test(this.id)) {
-      callClick(this, function() {
-        showModal("index.php/index/controller/modal", "data=" + this.id, callback || $K.emptyFunction);
+function barcodeEnabled(inputs) {
+  $G(window).Ready(function() {
+    forEach(inputs, function(item) {
+      $G(item).addEvent('keydown', function(e) {
+        if (GEvent.keyCode(e) == 13) {
+          GEvent.stop(e);
+          return false;
+        }
       });
-    }
+    });
   });
-}
-
-function checkEmail() {
-  var value = this.value;
-  var ids = this.id.split("_");
-  var id = "&id=" + floatval($E(ids[0] + "_id").value);
-  if (value == "") {
-    this.invalid(this.title);
-  } else if (/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/.test(value)) {
-    return "value=" + encodeURIComponent(value) + id;
-  } else {
-    this.invalid(this.title);
-  }
-}
-
-function initCompany() {
-  var doChanged = function() {
-    var t = $E("company_type").value;
-    $E("tax_id").disabled = t == 0;
-    $E("idcard").disabled = t == 1;
-    $E("tax_id").parentNode.parentNode.className = t == 0 ? "hidden" : "item";
-    $E("idcard").parentNode.parentNode.className = t == 1 ? "hidden" : "item";
-  };
-  initEditProfile("company");
-  $G("company_type").addEvent("change", doChanged);
-  doChanged();
 }

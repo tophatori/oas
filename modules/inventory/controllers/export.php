@@ -17,7 +17,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * Controller สำหรับสร้างไฟล์ PDF หรือ หน้าสำหรับพิมพ์.
+ * module=inventory-export
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *

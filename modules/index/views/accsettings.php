@@ -98,7 +98,7 @@ class View extends \Gcms\View
             'id' => 'currency_unit',
             'labelClass' => 'g-input icon-currency',
             'itemClass' => 'item',
-            'label' => '{LNG_Currency Unit}',
+            'label' => '{LNG_Currency unit}',
             'comment' => '{LNG_Currency for goods and services}',
             'options' => Language::get('CURRENCY_UNITS'),
             'value' => isset(self::$cfg->currency_unit) ? self::$cfg->currency_unit : 'THB',

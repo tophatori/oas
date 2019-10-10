@@ -39,7 +39,7 @@ class View extends \Gcms\View
             'class' => 'setup_frm',
             'autocomplete' => 'off',
             'action' => 'index.php/inventory/model/customer/submit',
-            'onsubmit' => 'doInventorySubmit',
+            'onsubmit' => 'doFormSubmit',
             'token' => true,
             'ajax' => true,
         ));

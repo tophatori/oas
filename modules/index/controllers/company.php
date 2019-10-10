@@ -34,7 +34,7 @@ class Controller extends \Gcms\Controller
     public function render(Request $request)
     {
         // ข้อความ title bar
-        $this->title = Language::get('Company Profile');
+        $this->title = Language::get('Company profile');
         // เลือกเมนู
         $this->menu = 'settings';
         // สามารถตั้งค่าระบบได้

@@ -46,6 +46,8 @@ class View extends \Kotchasan\KBase
             }
             closedir($f);
         }
+        $data2 .= 'header.header,body.mainpage .footer,body.loginpage,.language-menu li>a:hover,.topmenu>ul ul>li.hover>a,.topmenu>ul ul>li:hover>a,.gdpanel a:hover{background-color:'.self::$cfg->bg_color.'}';
+        $data2 .= 'header.header .td,.topmenu>ul>li,.footer,.language-menu li>a:hover,.topmenu>ul ul>li.hover>a,.topmenu>ul ul>li:hover>a,.gdpanel a:hover{color:'.self::$cfg->color.'}';
         foreach (self::$cfg->color_status as $key => $value) {
             $data2 .= '.status'.$key.'{color:'.$value.'}';
         }
@@ -55,9 +57,7 @@ class View extends \Kotchasan\KBase
         $response = new \Kotchasan\Http\Response();
         $response->withHeaders(array(
             'Content-type' => 'text/css; charset=utf-8',
-            'Cache-Control' => 'public',
-            // cache 1 month
-            'Expires' => gmdate('D, d M Y H:i:s', strtotime('+1 month')).' GMT',
+            'Cache-Control' => 'max-age=31557600',
         ))
             ->withContent($data)
             ->send();

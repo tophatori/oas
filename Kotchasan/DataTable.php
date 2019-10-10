@@ -886,7 +886,6 @@ class DataTable extends \Kotchasan\KBase
                     }
                     if (!empty($this->buttons)) {
                         if (!empty($buttons)) {
-                            $module_id = isset($items['module_id']) ? $items['module_id'] : 0;
                             $patt = array();
                             $replace = array();
                             $keys = array_keys($src_items);
@@ -1038,6 +1037,9 @@ class DataTable extends \Kotchasan\KBase
                     return '<a '.implode(' ', $prop).'><span class="'.$match[2].'"></span></a>';
                 } else {
                     $prop['class'] = 'class="'.implode(' ', $class).'"';
+                    if (!isset($prop['title'])) {
+                        $prop['title'] = 'title="'.strip_tags($properties['text']).'"';
+                    }
 
                     return '<a '.implode(' ', $prop).'><span class="'.$match[2].' button_w_text"><span class=mobile>'.$properties['text'].'</span></span></a>';
                 }
@@ -1067,10 +1069,32 @@ class DataTable extends \Kotchasan\KBase
             }
 
             return '<fieldset><select id="'.$item['id'].'">'.implode('', $rows).'</select><label for="'.$item['id'].'" class="button '.$item['class'].' action"><span>'.$item['text'].'</span></label></fieldset>';
+        } elseif (isset($item['type'])) {
+            $prop = array(
+                'type="'.$item['type'].'"',
+            );
+            $prop2 = array(
+                'button' => 'class="button action"',
+            );
+            foreach ($item as $key => $value) {
+                if ($key == 'id') {
+                    $prop[] = 'id="'.$value.'"';
+                    $prop2[] = 'for="'.$value.'"';
+                } elseif ($key == 'class') {
+                    $prop2['button'] = 'class="button '.$value.' action"';
+                } elseif (!in_array($key, array('type', 'text'))) {
+                    $prop[] = $key.'="'.$value.'"';
+                }
+            }
+
+            return '<fieldset><input '.implode(' ', $prop).'><label '.implode(' ', $prop2).'><span>'.$item['text'].'</span></label></fieldset>';
         } else {
             // link, button
             $prop = array();
             $text = isset($item['text']) ? $item['text'] : '';
+            if ($text != '' && !isset($item['title'])) {
+                $item['title'] = strip_tags($text);
+            }
             if (isset($item['class'])) {
                 if (empty($match[3])) {
                     $prop[] = 'class="'.$item['class'].'"';
@@ -1111,11 +1135,17 @@ class DataTable extends \Kotchasan\KBase
                     foreach ($value as $k => $v) {
                         $datalist .= '<option value="'.$k.'">'.$v.'</option>';
                     }
-                } elseif ($key != 'text' && $key != 'default') {
+                } elseif ($key != 'text' && $key != 'default' && !is_array($value)) {
                     $prop[$key] = $key.'="'.$value.'"';
                 }
             }
             if ($datalist != '' && isset($item['name'])) {
+                if (!isset($item['id'])) {
+                    $item['id'] = $item['name'];
+                    $prop['id'] = 'id="'.$item['name'].'"';
+                }
+                $prop['autocomplete'] = 'autocomplete="off"';
+                $this->javascript[] = 'new Datalist("'.$item['id'].'");';
                 $prop['list'] = 'list="'.$item['name'].'-datalist"';
                 $datalist = '<datalist id="'.$item['name'].'-datalist">'.$datalist.'</datalist>';
             } else {
@@ -1125,7 +1155,7 @@ class DataTable extends \Kotchasan\KBase
         } else {
             $prop = array();
             foreach ($item as $key => $value) {
-                if ($key != 'options' && $key != 'value' && $key != 'text' && $key != 'default') {
+                if ($key != 'options' && $key != 'value' && $key != 'text' && $key != 'default' && !is_array($value)) {
                     $prop[$key] = $key.'="'.$value.'"';
                 }
             }

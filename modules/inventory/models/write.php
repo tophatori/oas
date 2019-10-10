@@ -15,7 +15,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * ข้อมูล.
+ * เพิ่ม/แก้ไข ข้อมูล Inventory
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -24,8 +24,9 @@ use Kotchasan\Language;
 class Model extends \Kotchasan\Model
 {
     /**
-     * อ่านข้อมูลสินค้าที่ $id
-     * $id = 0 หมายถึงสินค้าใหม่.
+     * อ่านข้อมูลรายการที่เลือก
+     * ถ้า $id = 0 หมายถึงรายการใหม่
+     * คืนค่าข้อมูล object ไม่พบคืนค่า null.
      *
      * @param int $id
      *
@@ -65,7 +66,7 @@ class Model extends \Kotchasan\Model
     }
 
     /**
-     * บันทึกข้อมูล.
+     * บันทึกข้อมูลที่ส่งมาจากฟอร์ม (write.php)
      *
      * @param Request $request
      */
@@ -76,7 +77,7 @@ class Model extends \Kotchasan\Model
         if ($request->initSession() && $request->isSafe() && $login = Login::isMember()) {
             if (Login::checkPermission($login, 'can_manage_inventory') && Login::notDemoMode($login)) {
                 // รับค่าจากการ POST
-                $product = array(
+                $save = array(
                     'product_no' => $request->post('write_product_no')->topic(),
                     'topic' => $request->post('write_topic')->topic(),
                     'description' => $request->post('write_description')->topic(),
@@ -97,29 +98,29 @@ class Model extends \Kotchasan\Model
                 // อ่านข้อมูลที่เลือก
                 $index = self::get($request->post('write_id')->toInt());
                 if (!$index) {
-                    // ไม่พบข้อมูลที่แก้ไข
+                    // ไม่พบ
                     $ret['alert'] = Language::get('Sorry, Item not found It&#39;s may be deleted');
                 } else {
                     // ตาราง product
                     $table_product = $this->getTableName('product');
-                    if (empty($product['product_no'])) {
+                    if (empty($save['product_no'])) {
                         // ถ้าไม่ได้กรอก product_no มา สร้างเลข running number
-                        $product['product_no'] = \Inventory\Number\Model::get($index['id'], 'product_no', $table_product, 'product_no');
+                        $save['product_no'] = \Inventory\Number\Model::get($index['id'], 'product_no', $table_product, 'product_no');
                     } else {
                         // ตรวจสอบ product_no ซ้ำ
                         $search = $db->first($table_product, array(
-                            array('product_no', $product['product_no']),
+                            array('product_no', $save['product_no']),
                         ));
                         if ($search !== false && $index['id'] != $search->id) {
                             $ret['ret_write_product_no'] = Language::replace('This :name already exist', array(':name' => Language::get('Product Code')));
                         }
                     }
                     // ตรวจสอบ topic ซ้ำ
-                    if (empty($product['topic'])) {
+                    if (empty($save['topic'])) {
                         $ret['ret_write_topic'] = 'Please fill in';
                     } else {
                         $search = $db->first($table_product, array(
-                            array('topic', $product['topic']),
+                            array('topic', $save['topic']),
                         ));
                         if ($search !== false && $index['id'] != $search->id) {
                             $ret['ret_write_opic'] = Language::replace('This :name already exist', array(':name' => Language::get('Product name')));
@@ -127,18 +128,18 @@ class Model extends \Kotchasan\Model
                     }
                     if (empty($ret)) {
                         // หมวดหมู่สินค้า
-                        $product['category_id'] = \Inventory\Category\Model::newCategory($request->post('write_category')->topic());
+                        $save['category_id'] = \Inventory\Category\Model::newCategory($request->post('write_category')->topic());
                         // หน่วยสินค้า
-                        \Inventory\Category\Model::newUnit($product['unit']);
+                        \Inventory\Category\Model::newUnit($save['unit']);
                         // save product
-                        $product['last_update'] = time();
+                        $save['last_update'] = time();
                         if ($index['id'] == 0) {
                             // ใหม่
-                            $product['id'] = $db->insert($table_product, $product);
+                            $save['id'] = $db->insert($table_product, $save);
                             // บันทึก inventory
                             if ($inventory['quantity'] > 0) {
                                 $table_inventory = $this->getTableName('stock');
-                                $inventory['product_id'] = $product['id'];
+                                $inventory['product_id'] = $save['id'];
                                 $inventory['order_id'] = 0;
                                 $inventory['status'] = 'IN';
                                 $inventory['total'] = $inventory['price'] * $inventory['quantity'];
@@ -160,7 +161,7 @@ class Model extends \Kotchasan\Model
                             // แก้ไข
                             $db->update($table_product, array(
                                 array('id', $index['id']),
-                            ), $product);
+                            ), $save);
                         }
                         // คืนค่า
                         $ret['alert'] = Language::get('Saved successfully');
@@ -168,7 +169,7 @@ class Model extends \Kotchasan\Model
                             // ปิด modal
                             $ret['modal'] = 'close';
                             // คืนค่าข้อมูล
-                            $ret['product_no'] = $product['product_no'];
+                            $ret['product_no'] = $save['product_no'];
                         } elseif ($index['id'] == 0) {
                             // ไปหน้าแรก แสดงรายการใหม่
                             $ret['location'] = $request->getUri()->postBack('index.php', array('module' => 'inventory-setup', 'id' => null, 'page' => null));

@@ -40,7 +40,7 @@ class View extends \Gcms\View
             'ajax' => true,
         ));
         $fieldset = $form->add('fieldset', array(
-            'title' => '{LNG_Corporate information and Contacts}',
+            'title' => '{LNG_Corporate information and contacts}',
         ));
         $groups = $fieldset->add('groups', array(
             'comment' => '{LNG_If you are a corporate enter your 13-digit Tax identification number or if you are a person enter your 13-digit Personal identification number}',

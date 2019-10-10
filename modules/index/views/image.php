@@ -53,7 +53,7 @@ class View extends \Gcms\View
             'id' => 'logo',
             'labelClass' => 'g-input icon-upload',
             'itemClass' => 'item',
-            'label' => '{LNG_Company Logo}',
+            'label' => '{LNG_Company logo}',
             'comment' => '{LNG_Select an image size 500 * 500 pixel jpg, png types}',
             'dataPreview' => 'logoImage',
             'previewSrc' => is_file(ROOT_PATH.DATA_FOLDER.'logo.jpg') ? WEB_URL.DATA_FOLDER.'logo.jpg' : WEB_URL.'skin/img/blank.gif',

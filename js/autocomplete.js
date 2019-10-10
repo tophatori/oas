@@ -243,15 +243,19 @@ function initAutoComplete(id, link, displayFields, icon, options) {
     obj.valid();
   }
 
+  function doPopulateItem() {
+    var datas = new Array();
+    for (var i in df) {
+      if (this[df[i]] !== null && this[df[i]] != "") {
+        datas.push(this[df[i]]);
+      }
+    }
+    return datas.join(" ").unentityify();
+  }
+
   function doPopulate() {
     if ($E(id)) {
-      var datas = new Array();
-      for (var i in df) {
-        if (this[df[i]] !== null && this[df[i]] != "") {
-          datas.push(this[df[i]]);
-        }
-      }
-      var row = datas.join(" ").unentityify();
+      var row = o.populateItem.call(this);
       forEach($E(id).value.replace(/[\s]+/, " ").split(" "), function() {
         if (this.length > 0) {
           var patt = new RegExp("(" + this.preg_quote() + ")", "gi");
@@ -264,6 +268,7 @@ function initAutoComplete(id, link, displayFields, icon, options) {
   var o = {
     get: doGetQuery,
     populate: doPopulate,
+    populateItem: doPopulateItem,
     callBack: doCallBack,
     url: link
   };

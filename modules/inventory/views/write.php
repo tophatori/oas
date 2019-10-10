@@ -24,7 +24,7 @@ use Kotchasan\Language;
 class View extends \Gcms\View
 {
     /**
-     * ฟอร์มเพิ่ม แก้ไข สินค้า.
+     * ฟอร์มเพิ่ม/แก้ไข พัสดุ
      *
      * @param Request $request
      * @param array   $product
@@ -40,9 +40,9 @@ class View extends \Gcms\View
             'class' => 'setup_frm',
             'autocomplete' => 'off',
             'action' => 'index.php/inventory/model/write/submit',
-            'onsubmit' => 'doInventorySubmit',
-            'token' => true,
+            'onsubmit' => 'doFormSubmit',
             'ajax' => true,
+            'token' => true,
         ));
         $fieldset = $form->add('fieldset', array(
             'title' => '{LNG_Details of} {LNG_Product}',
@@ -166,6 +166,7 @@ class View extends \Gcms\View
             'class' => 'button save large icon-save',
             'value' => '{LNG_Save}',
         ));
+        // id
         $fieldset->add('hidden', array(
             'id' => 'write_id',
             'value' => $product['id'],

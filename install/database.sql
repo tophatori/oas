@@ -3,15 +3,12 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 31, 2019 at 03:13 PM
+-- Generation Time: Jun 16, 2019 at 01:54 AM
 -- Server version: 10.1.38-MariaDB
 -- PHP Version: 7.0.32
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-
 
 -- --------------------------------------------------------
 --
@@ -29,7 +26,6 @@ CREATE TABLE `{prefix}_language` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
-
 --
 -- Table structure for table `{prefix}_category`
 --
@@ -37,9 +33,9 @@ CREATE TABLE `{prefix}_language` (
 CREATE TABLE `{prefix}_category` (
   `id` int(11) NOT NULL,
   `type` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
-  `category_id` int(11) NOT NULL,
-  `topic` varchar(128) CHARACTER SET utf8 NOT NULL,
-  `color` varchar(16) CHARACTER SET utf8 DEFAULT NULL,
+  `category_id` int(11) DEFAULT 0,
+  `topic` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `color` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
   `published` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -228,20 +224,20 @@ CREATE TABLE `{prefix}_user` (
   `name` varchar(150) COLLATE utf8_unicode_ci NOT NULL,
   `sex` varchar(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `id_card` varchar(13) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `address` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
   `phone` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
   `fax` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
   `provinceID` varchar(3) COLLATE utf8_unicode_ci DEFAULT NULL,
   `province` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `zipcode` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL,
   `country` varchar(2) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `visited` int(11) UNSIGNED DEFAULT 0,
+  `visited` int(11) DEFAULT 0,
   `lastvisited` int(11) DEFAULT 0,
   `session_id` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ip` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `create_date` datetime DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT 1,
-  `social` tinyint(1) NOT NULL DEFAULT 0,
+  `active` tinyint(1) DEFAULT 1,
+  `social` tinyint(1) DEFAULT 0,
   `email` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `website` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `type` tinyint(1) NOT NULL DEFAULT 0
@@ -317,31 +313,37 @@ ALTER TABLE `{prefix}_user`
 --
 ALTER TABLE `{prefix}_category`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `{prefix}_language`
 --
 ALTER TABLE `{prefix}_language`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `{prefix}_customer`
 --
 ALTER TABLE `{prefix}_customer`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `{prefix}_orders`
 --
 ALTER TABLE `{prefix}_orders`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `{prefix}_product`
 --
 ALTER TABLE `{prefix}_product`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `{prefix}_stock`
 --
 ALTER TABLE `{prefix}_stock`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `{prefix}_user`
 --

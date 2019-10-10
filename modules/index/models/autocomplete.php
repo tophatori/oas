@@ -24,14 +24,18 @@ class Model extends \Kotchasan\Model
 {
     /**
      * ค้นหาสมาชิก สำหรับ autocomplete
-     * คืนค่าเป็น JSON.
+     * คืนค่าเป็น JSON
      *
      * @param Request $request
      */
     public function findUser(Request $request)
     {
         if ($request->initSession() && $request->isReferer() && Login::isMember()) {
+            // ข้อความค้นหา
             $search = $request->post('name')->topic();
+            // 1 (default) คืนค่าสมาชิกที่สามารถเข้าระบบได้ (active=1), 0 ทั้งหมด
+            $active = $request->post('active', 1)->toBoolean();
+            // query
             $where = array();
             $select = array('id', 'name', 'email');
             $order = array();
@@ -72,6 +76,9 @@ class Model extends \Kotchasan\Model
                 ->order($order)
                 ->limit($request->post('count')->toInt())
                 ->toArray();
+            if ($active) {
+                $query->where(array('active', 1));
+            }
             if (!empty($where)) {
                 $query->andWhere($where, 'OR');
             }

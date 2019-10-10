@@ -13,6 +13,7 @@ if (defined('ROOT_PATH')) {
         $dbdriver = empty($db_config['dbdriver']) ? 'mysql' : $db_config['dbdriver'];
         $hostname = empty($db_config['hostname']) ? 'localhost' : $db_config['hostname'];
         $conn = new \PDO($dbdriver.':host='.$hostname.';dbname='.$db_config['dbname'], $db_config['username'], $db_config['password'], $options);
+        $conn->query("SET SESSION sql_mode = ''");
     } catch (\PDOException $e) {
         $error = true;
         echo '<h2>ความผิดพลาดในการเชื่อมต่อกับฐานข้อมูล</h2>';
@@ -45,6 +46,7 @@ if (defined('ROOT_PATH')) {
             if (!fieldExists($conn, $table, 'token')) {
                 $conn->query("ALTER TABLE `$table` ADD `token` VARCHAR(50) NULL AFTER `password`");
             }
+            $conn->query("ALTER TABLE `$table` CHANGE `address` `address` VARCHAR(150) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL");
             $conn->query("ALTER TABLE `$table` CHANGE `password` `password` VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL");
             $content[] = '<li class="correct">ปรับปรุงตาราง `'.$table.'` สำเร็จ</li>';
             // ตาราง orders

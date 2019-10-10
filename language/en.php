@@ -17,7 +17,7 @@ return array(
   ),
   'BOOLEANS' => array(
     0 => 'Disable',
-    1 => 'Enamle'
+    1 => 'Enabled'
   ),
   'BUY_TYPIES' => array(
     1 => 'Purchase Order',

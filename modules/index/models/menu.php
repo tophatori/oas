@@ -51,7 +51,7 @@ class Model
                 'url' => 'index.php?module=language',
             );
             $settings[] = array(
-                'text' => '{LNG_Company Profile}',
+                'text' => '{LNG_Company profile}',
                 'url' => 'index.php?module=company',
             );
             $settings[] = array(
@@ -95,7 +95,7 @@ class Model
                 'submenus' => $settings,
             ),
             'signout' => array(
-                'text' => '{LNG_Sign out}',
+                'text' => '{LNG_Logout}',
                 'url' => 'index.php?action=logout',
             ),
         );

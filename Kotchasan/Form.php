@@ -57,29 +57,6 @@ class Form extends \Kotchasan\KBase
      *
      * @return \static
      */
-    public static function antispam($attributes = array())
-    {
-        $obj = new static();
-        $obj->tag = 'input';
-        $attributes['type'] = 'text';
-        $labelClass = array(
-            'antispam' => 'antispam',
-            'g-input' => 'g-input',
-        );
-        foreach (explode(' ', $attributes['labelClass']) as $c) {
-            $labelClass[$c] = $c;
-        }
-        $attributes['labelClass'] = implode(' ', $labelClass);
-        $obj->attributes = $attributes;
-
-        return $obj;
-    }
-
-    /**
-     * @param array $attributes
-     *
-     * @return \static
-     */
     public static function button($attributes = array())
     {
         $obj = new static();
@@ -320,12 +297,12 @@ class Form extends \Kotchasan\KBase
                 case 'options':
                 case 'optgroup':
                 case 'multiple':
-                case 'antispamid':
                 case 'text':
                 case 'validator':
                 case 'result':
                 case 'checked':
                 case 'datalist':
+                case 'button':
                     $$k = $v;
                     break;
                 case 'title':
@@ -444,6 +421,7 @@ class Form extends \Kotchasan\KBase
                 $list = $prop['list'];
             }
             $prop['list'] = 'list="'.$list.'"';
+            $prop['autocomplete'] = 'autocomplete="off"';
         }
         $prop = implode(' ', $prop);
         if ($this->tag == 'input') {
@@ -460,21 +438,22 @@ class Form extends \Kotchasan\KBase
             }
             $element .= '</datalist>';
         }
-        if (!empty($antispamid)) {
-            $element = Antispam::createImage($antispamid, true).$element;
-        }
         if (empty($itemClass)) {
             $input = empty($comment) ? '' : '<div class="item"'.(empty($itemId) ? '' : ' id="'.$itemId.'"').'>';
             $input = empty($unit) ? '' : '<div class="wlabel">';
             if (empty($labelClass) && empty($label)) {
                 $input .= $element;
             } elseif (isset($type) && ($type === 'checkbox' || $type === 'radio')) {
-                $input .= '<label'.(empty($labelClass) ? '' : ' class="'.$labelClass.'"').'>'.$element.$label.'</label>';
+                if (isset($button) && $button === true) {
+                    $input .= $element.'<label for="'.$id.'"'.(empty($labelClass) ? '' : ' class="'.$labelClass.'"').'>'.$label.'</label>';
+                } else {
+                    $input .= '<label'.(empty($labelClass) ? '' : ' class="'.$labelClass.'"').'>'.$element.$label.'</label>';
+                }
             } else {
                 $input .= '<label'.(empty($labelClass) ? '' : ' class="'.$labelClass.'"').'>'.(empty($label) ? '' : $label.'&nbsp;').$element.'</label>';
             }
             if (!empty($unit)) {
-                $input .= '<span class=label>'.$unit.'</span></div>';
+                $input .= '<span class="label">'.$unit.'</span></div>';
             }
             if (!empty($comment)) {
                 $input .= '<div class="comment"'.(empty($id) ? '' : ' id="result_'.$id.'"').'>'.$comment.'</div>';
@@ -488,7 +467,9 @@ class Form extends \Kotchasan\KBase
                 $input .= '<label'.(empty($labelClass) ? '' : ' class="'.$labelClass.'"').'>'.$element.'&nbsp;'.(isset($label) ? $label : '').'</label>';
             } else {
                 if (isset($dataPreview)) {
-                    $input .= '<div class=usericon><span><img src="'.$previewSrc.'" alt="Image preview" id='.$dataPreview.'></span></div>';
+                    $input .= '<div class="file-preview" id="'.$dataPreview.'">';
+                    $input .= isset($previewSrc) ? '<div class="file-thumb" style="background-image:url('.$previewSrc.')"></div>' : '';
+                    $input .= '</div>';
                 }
                 if (isset($label) && isset($id)) {
                     $input .= '<label for="'.$id.'">'.$label.'</label>';
