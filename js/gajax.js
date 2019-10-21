@@ -2507,7 +2507,8 @@ window.$K = (function() {
       this.options = {
         beginDrag: $K.emptyFunction,
         moveDrag: $K.emptyFunction,
-        endDrag: $K.emptyFunction
+        endDrag: $K.emptyFunction,
+        srcOnly: true
       };
       for (var property in options) {
         this.options[property] = options[property];
@@ -2551,7 +2552,7 @@ window.$K = (function() {
           window.clearTimeout(delay);
           this.removeEvent("mouseup", _cancelClick);
         }
-        if (src == self.src && GEvent.isLeftClick(event)) {
+        if ((!self.options.srcOnly || src == self.src) && GEvent.isLeftClick(event)) {
           GEvent.stop(event);
           self.mousePos = GEvent.pointer(event);
           if (this.setCapture) {
@@ -2620,7 +2621,8 @@ window.$K = (function() {
       this.options = {
         beginDrag: $K.resultFunction,
         moveDrag: $K.resultFunction,
-        endDrag: $K.emptyFunction
+        endDrag: $K.emptyFunction,
+        srcOnly: true
       };
       for (var property in options) {
         this.options[property] = options[property];
@@ -2667,7 +2669,8 @@ window.$K = (function() {
       var o = {
         beginDrag: _beginDrag,
         moveDrag: _moveDrag,
-        endDrag: _endDrag
+        endDrag: _endDrag,
+        srcOnly: this.options.srcOnly
       };
       new GDrag(this.dragObj, this.dragObj, o);
     }
@@ -4202,11 +4205,11 @@ window.$K = (function() {
     },
     add: function(a) {
       var img = $E(a);
-      img.id = this.imgs.length;
+      img.alt = this.imgs.length;
       this.imgs.push(img);
       var self = this;
       callClick(img, function() {
-        self.currentId = floatval(this.id);
+        self.currentId = floatval(this.alt);
         self.show(this, false);
         return false;
       });

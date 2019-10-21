@@ -30,7 +30,7 @@ class Controller extends \Kotchasan\Controller
      *
      * @param Request $request
      */
-    public function execute(Request $request)
+    public function export(Request $request)
     {
         // สมาชิก
         if (Login::isMember()) {

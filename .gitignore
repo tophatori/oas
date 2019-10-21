@@ -5,5 +5,5 @@
 .gitignore
 .vscode
 robots.txt
-/datas/*
-/settings/*
+datas/
+settings/
