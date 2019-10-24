@@ -42,6 +42,8 @@ if (defined('ROOT_PATH')) {
                     $config['password_key'] = uniqid();
                     updateAdmin($conn, $table, $_POST['username'], $_POST['password'], $config['password_key']);
                     $content[] = '<li class="correct">อัปเดทข้อมูลผู้ดูแลระบบสำเร็จ</li>';
+                } else {
+                    updateAdmin($conn, $table, $_POST['username'], $_POST['password'], $config['password_key']);
                 }
                 if (!fieldExists($conn, $table, 'social')) {
                     $conn->query("ALTER TABLE `$table` CHANGE `fb` `social` TINYINT(1) NOT NULL DEFAULT '0'");
