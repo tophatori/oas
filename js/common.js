@@ -115,7 +115,7 @@ function defaultSubmit(ds) {
       if (val == "") {
         el.valid();
       } else {
-        if (val == "Please fill in" || val == "Please select" || val == "Please browse file" || val == "already exist" || val == "Please select at least one item" || val=="Invalid data") {
+        if (val == "Please fill in" || val == "Please select" || val == "Please browse file" || val == "already exist" || val == "Please select at least one item" || val == "Invalid data") {
           var label = el.findLabel();
           if (label) {
             t = label.innerHTML.strip_tags();
@@ -613,6 +613,19 @@ function initCalendarRange(minDate, maxDate, minChanged) {
       }
     });
   }
+}
+
+function initCompany() {
+  var doChanged = function() {
+    var t = $E('company_type').value;
+    $E('tax_id').disabled = t == 0;
+    $E('idcard').disabled = t == 1;
+    $E('tax_id').parentNode.parentNode.className = t == 0 ? 'hidden' : 'item';
+    $E('idcard').parentNode.parentNode.className = t == 1 ? 'hidden' : 'item';
+  };
+  initEditProfile('company');
+  $G('company_type').addEvent('change', doChanged);
+  doChanged();
 }
 var createLikeButton;
 

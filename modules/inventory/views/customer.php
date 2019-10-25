@@ -11,7 +11,6 @@
 namespace Inventory\Customer;
 
 use Kotchasan\Html;
-use Kotchasan\Province;
 
 /**
  * module=inventory-customer.
@@ -187,7 +186,7 @@ class View extends \Gcms\View
             'value' => MAIN_INIT,
         ));
         // Javascript
-        $form->script('initEditProfile("register", '.json_encode(Province::countries()).');');
+        $form->script('initEditProfile("register");');
         // คืนค่าฟอร์ม
 
         return $form->render();
