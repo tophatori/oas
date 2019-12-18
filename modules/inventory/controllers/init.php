@@ -33,7 +33,11 @@ class Controller extends \Kotchasan\KBase
      */
     public static function execute(Request $request, $menu, $login)
     {
-        $menu->addTopLvlMenu('customer', '{LNG_Customer}/{LNG_Supplier}', 'index.php?module=inventory-customers', null, 'settings');
+        // สามารถดูรายชื่อลูกค้าได้
+        if (Login::checkPermission($login, array('can_buy', 'can_sell', 'can_manage_inventory'))) {
+            $menu->addTopLvlMenu('customer', '{LNG_Customer}/{LNG_Supplier}', 'index.php?module=inventory-customers', null, 'settings');
+        }
+        // สามารถบริหารคลังสินค้าได้
         if (Login::checkPermission($login, 'can_manage_inventory')) {
             foreach (Language::get('INVENTORY_CATEGORIES') as $type => $text) {
                 $menu->add('settings', $text, 'index.php?module=inventory-categories&amp;type='.$type);

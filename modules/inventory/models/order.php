@@ -33,12 +33,8 @@ class Model extends \Kotchasan\Model
         if ($id > 0) {
             return self::createQuery()
                 ->from('orders O')
-                ->join('customer U', 'LEFT', array(
-                    array('U.id', 'O.customer_id'),
-                ))
-                ->where(array(
-                    array('O.id', $id),
-                ))
+                ->join('customer U', 'LEFT', array('U.id', 'O.customer_id'))
+                ->where(array('O.id', $id))
                 ->first('O.*', 'U.name customer', 'U.company', 'U.branch', 'U.address', 'U.province', 'U.zipcode', 'U.country', 'U.phone', 'U.email', 'U.tax_id');
         } else {
             return (object) array(

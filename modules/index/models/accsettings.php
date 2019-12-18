@@ -45,7 +45,7 @@ class Model extends \Kotchasan\KBase
                 $config->billing_no = $request->post('billing_no')->topic();
                 $config->currency_unit = $request->post('currency_unit')->filter('A-Z');
                 $config->bank = $request->post('bank')->topic();
-                $config->bank_name = $request->post('bank_name')->topic();
+                $config->bank_name = $request->post('bank_name')->filter('a-z');
                 $config->bank_no = $request->post('bank_no')->topic();
                 $config->inventory_w = $request->post('inventory_w')->toInt();
                 $config->inventory_h = $request->post('inventory_h')->toInt();

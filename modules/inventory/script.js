@@ -271,7 +271,7 @@ function initInventoryInOut(vat_percent, typ) {
       "customer",
       WEB_URL + "index.php/inventory/model/autocomplete/findCustomer",
       "company,name,email,phone",
-      "user", {
+      "customer", {
         get: function() {
           return "name=" + encodeURIComponent($E("customer").value) + "&from=company,name,email,phone";
         },

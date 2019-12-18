@@ -108,7 +108,7 @@ class Controller extends \Kotchasan\Controller
                     '/%AUTHORITYZIPCODE%/' => isset(self::$cfg->zipcode) ? self::$cfg->zipcode : '',
                     '/%AUTHORITYTAXID%/' => isset(self::$cfg->tax_id) ? self::$cfg->tax_id : '',
                     '/%AUTHORITYBRANCH%/' => isset(self::$cfg->branch) ? self::$cfg->branch : '',
-                    '/%BANK%/' => isset(self::$cfg->bank) ? self::$cfg->bank : '',
+                    '/%BANK%/' => Language::find('BANKS', '', (isset(self::$cfg->bank) ? self::$cfg->bank : '')),
                     '/%BANKNAME%/' => isset(self::$cfg->bank_name) ? self::$cfg->bank_name : '',
                     '/%BANKNO%/' => isset(self::$cfg->bank_no) ? self::$cfg->bank_no : '',
                     '/%SUBTOTAL%/' => Currency::format($subtotal),

@@ -53,6 +53,8 @@ class Model extends \Kotchasan\Model
                 // ชื่อตาราง
                 $table_orders = $this->getTableName('orders');
                 $table_stock = $this->getTableName('stock');
+                // Database
+                $db = $this->db();
                 // ตรวจสอบรายการ order ที่เลือก
                 $orders = \Inventory\Order\Model::get($order_id, 'OUT', $order['status']);
                 if (!$orders) {
@@ -72,20 +74,21 @@ class Model extends \Kotchasan\Model
                     $stock = array();
                     foreach ($datas['topic'] as $key => $value) {
                         if ($value != '') {
-                            $stock[] = array(
+                            $product_id = $datas['id'][$key];
+                            $stock[$product_id] = array(
                                 'quantity' => $datas['quantity'][$key],
                                 'topic' => $datas['topic'][$key],
                                 'price' => $datas['price'][$key],
                                 'discount' => $datas['discount'][$key],
                                 'total' => $datas['total'][$key],
                                 'vat' => empty($datas['vat'][$key]) ? 0 : $datas['vat'][$key],
-                                'product_id' => $datas['id'][$key],
+                                'product_id' => $product_id,
                             );
                         }
                     }
                     if (empty($stock)) {
                         // ไม่ได้เลือกสินค้า
-                        $ret['ret_topic_'.$key] = 'Please fill in';
+                        $ret['ret_product_no'] = 'this';
                     } else {
                         // save order
                         if ($order['order_no'] == '') {
@@ -93,9 +96,7 @@ class Model extends \Kotchasan\Model
                             $order['order_no'] = \Inventory\Number\Model::get($order_id, 'billing_no', $table_orders, 'order_no');
                         } else {
                             // ตรวจสอบ order_no ซ้ำ
-                            $search = $this->db()->first($table_orders, array(
-                                array('order_no', $order['order_no']),
-                            ));
+                            $search = $db->first($table_orders, array('order_no', $order['order_no']));
                             if ($search !== false && $order_id != $search->id) {
                                 $ret['ret_order_no'] = Language::replace('This :name already exist', array(':name' => Language::get('Order No.')));
                             }
@@ -104,31 +105,27 @@ class Model extends \Kotchasan\Model
                     if (empty($ret)) {
                         if ($order_id > 0) {
                             // แก้ไข
-                            $this->db()->createQuery()
-                                ->update('orders')
-                                ->set($order)
-                                ->where(array(
-                                    array('id', $order_id),
-                                ))
-                                ->execute();
+                            $db->update($table_orders, array('id', $order_id), $order);
                         } else {
                             // ใหม่
-                            $order_id = $this->db()->getNextId($table_orders);
-                            $order['id'] = $order_id;
                             $order['stock_status'] = 'OUT';
-                            $this->db()->insert($table_orders, $order);
+                            $order_id = $db->insert($table_orders, $order);
+                        }
+                        // ตรวจสอบ stock เดิม
+                        foreach ($db->select($table_stock, array('order_id', $order_id)) as $item) {
+                            if (isset($stock[$item['product_id']])) {
+                                $stock[$item['product_id']]['id'] = $item['id'];
+                            }
                         }
                         // ลบ stock เก่า (ถ้ามี)
-                        $this->db()->delete($table_stock, array(
-                            array('order_id', $order_id),
-                        ), 0);
+                        $db->delete($table_stock, array('order_id', $order_id), 0);
                         // save stock
                         foreach ($stock as $save) {
                             $save['member_id'] = $order['member_id'];
                             $save['order_id'] = $order_id;
                             $save['status'] = 'OUT';
                             $save['create_date'] = $order['order_date'];
-                            $this->db()->insert($table_stock, $save);
+                            $db->insert($table_stock, $save);
                         }
                         // คืนค่า
                         $ret['alert'] = Language::get('Saved successfully');

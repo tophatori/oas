@@ -72,7 +72,7 @@ class Model extends \Kotchasan\Model
             }
             $query = $this->db()->createQuery()
                 ->select($select)
-                ->from('customer')
+                ->from('user')
                 ->order($order)
                 ->limit($request->post('count')->toInt())
                 ->toArray();

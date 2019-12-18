@@ -1,6 +1,16 @@
 <?php
 /* language/en.php */
 return array(
+  'BANKS' => array(
+    'scb' => 'ธนาคารไทยพาณิชย์',
+    'kbank' => 'ธนาคารกสิกรไทย',
+    'ktb' => 'ธนาคารกรุงไทย',
+    'bbl' => 'ธนาคารกรุงเทพ',
+    'bay' => 'ธนาคารกรุงศรี',
+    'nbank' => 'ธนาคารธนชาต',
+    'tmb' => 'ธนาคารทหารไทย',
+    'gsb' => 'ธนาคารทหารไทย'
+  ),
   'BILLING_DETAILS' => array(
     '' => 'No display',
     'item' => 'Item',

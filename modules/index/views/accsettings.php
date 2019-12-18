@@ -108,12 +108,12 @@ class View extends \Gcms\View
         ));
         $groups = $fieldset->add('groups');
         // bank
-        $groups->add('text', array(
+        $groups->add('select', array(
             'id' => 'bank',
             'itemClass' => 'width33',
             'labelClass' => 'g-input icon-office',
             'label' => '{LNG_Bank}',
-            'maxlength' => 100,
+            'options' => array('' => '{LNG_please select}') + Language::get('BANKS'),
             'value' => isset(self::$cfg->bank) ? self::$cfg->bank : '',
         ));
         // bank_name
