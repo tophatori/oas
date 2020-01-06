@@ -62,7 +62,7 @@ class Controller extends \Kotchasan\Controller
                         if ($col == 'item') {
                             $detail .= '<td class=center>'.$i.'</td>';
                         } elseif ($col == 'quantity') {
-                            $detail .= '<td class=center>'.number_format($item['quantity']).' '.$item['unit'].'</td>';
+                            $detail .= '<td class=center>'.$item['quantity'].' '.$item['unit'].'</td>';
                         } elseif ($col == 'topic') {
                             $detail .= '<td>'.nl2br($item['topic']).'</td>';
                         } elseif ($col == 'amount') {

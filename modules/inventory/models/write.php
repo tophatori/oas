@@ -88,7 +88,7 @@ class Model extends \Kotchasan\Model
                 );
                 $inventory = array(
                     'price' => $request->post('write_buy_price')->toDouble(),
-                    'quantity' => $request->post('write_quantity')->toInt(),
+                    'quantity' => $request->post('write_quantity')->toDouble(),
                     'vat' => $request->post('write_buy_vat')->toInt(),
                     'member_id' => $login['id'],
                     'create_date' => $request->post('write_create_date')->date().date(' H:i:s'),

@@ -63,7 +63,7 @@ class Model extends \Kotchasan\Model
                 } else {
                     // สินค้าที่เลือก
                     $datas = array(
-                        'quantity' => $request->post('quantity', array())->toInt(),
+                        'quantity' => $request->post('quantity', array())->toDouble(),
                         'topic' => $request->post('topic', array())->topic(),
                         'price' => $request->post('price', array())->toDouble(),
                         'discount' => $request->post('discount', array())->toDouble(),

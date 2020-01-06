@@ -147,7 +147,7 @@ class View extends \Gcms\View
         $this->total += $item['total'];
         $this->quantity += $item['quantity'];
         $item['create_date'] = Date::format($item['create_date'], 'd M Y');
-        $item['quantity'] = '<span class=status'.($item['status'] == 'IN' ? 0 : 1).'>'.number_format($item['quantity']).'</span>';
+        $item['quantity'] = '<span class=status'.($item['status'] == 'IN' ? 0 : 1).'>'.$item['quantity'].'</span>';
         $item['price'] = Currency::format($item['price']);
         $item['total'] = Currency::format($item['total']);
         if ($item['order_id'] == 0) {
@@ -167,6 +167,6 @@ class View extends \Gcms\View
      */
     public function onCreateFooter()
     {
-        return '<tr><td class=right colspan=2>{LNG_Total}</td><td class=center>'.number_format($this->quantity).'</td><td></td><td class=right>'.Currency::format($this->total).'</td></tr>';
+        return '<tr><td class=right colspan=2>{LNG_Total}</td><td class=center>'.$this->quantity.'</td><td></td><td class=right>'.Currency::format($this->total).'</td></tr>';
     }
 }

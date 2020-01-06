@@ -98,6 +98,7 @@ class View extends \Gcms\View
             'labelClass' => 'g-input icon-number',
             'itemClass' => 'width20',
             'label' => '{LNG_Quantity}',
+            'data-keyboard' => '0123456789.',
             'value' => 1,
         ));
         // product_no

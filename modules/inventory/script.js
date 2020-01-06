@@ -114,7 +114,7 @@ function initInventoryInOut(vat_percent, typ) {
         $G(this).id = this.name.replace(/([\[\]_]+)/g, "_") + row;
         if (this.className == "num") {
           new GMask(this, function() {
-            return /^[0-9]+$/.test(this.value);
+            return /^[0-9\.]+$/.test(this.value);
           });
           this.addEvent("change", doChanged);
         } else if (this.className == "price") {
@@ -171,7 +171,7 @@ function initInventoryInOut(vat_percent, typ) {
       vat_status = $E("vat_status").value;
     forEach(tbody.elems("tr"), function() {
       id = this.id.replace(tbody.id + "_", "");
-      _quantity = Math.max(1, $E("quantity_" + id).value.toInt());
+      _quantity = $E("quantity_" + id).value.toInt();
       _price = $E("price_" + id).value.toInt();
       _discount = $E("discount_" + id).value.toInt();
       if (_discount > 0) {
