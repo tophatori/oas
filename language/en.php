@@ -11,20 +11,6 @@ return array(
     'tmb' => 'ธนาคารทหารไทย',
     'gsb' => 'ธนาคารทหารไทย'
   ),
-  'BILLING_DETAILS' => array(
-    '' => 'No display',
-    'item' => 'Item',
-    'description' => 'Description',
-    'quantity' => 'Quantity',
-    'price' => 'Unit Price',
-    'discount' => 'Discount',
-    'amount' => 'Amount'
-  ),
-  'BILLING_TYPIES' => array(
-    0 => 'Not shown',
-    1 => 'Original',
-    2 => 'Copy'
-  ),
   'BOOLEANS' => array(
     0 => 'Disable',
     1 => 'Enabled'
@@ -39,7 +25,9 @@ return array(
   ),
   'CURRENCY_UNITS' => array(
     'THB' => 'Baht',
-    'USD' => 'Dollar'
+    'USD' => 'Dollar',
+    'LAK' => 'Kip',
+    'MMK' => 'Kyart'
   ),
   'DATE_FORMAT' => 'd M Y, H:i',
   'DATE_LONG' => array(
@@ -100,7 +88,6 @@ return array(
     11 => 'Nov',
     12 => 'Dec'
   ),
-  'OnHand' => 'On Hand',
   'PERMISSIONS' => array(
     'can_config' => 'Can setting up the system',
     'can_customer' => 'Can manage the customer list'
@@ -116,10 +103,6 @@ return array(
   'SMTPSECURIES' => array(
     '' => 'Clear Text',
     'ssl' => 'Server using a secure connection (SSL)'
-  ),
-  'TAX_PRICE' => array(
-    0 => 'Exclude Tax',
-    1 => 'Include Tax'
   ),
   'TAX_STATUS' => array(
     0 => 'No Tax',

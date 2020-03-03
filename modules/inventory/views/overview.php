@@ -56,7 +56,7 @@ class View extends \Gcms\View
             $option .= '<option value='.$k.$sel.'>'.$v.'</option>';
         }
         $content .= '<article id=year_graph class=ggraphs>';
-        $content .= '<header><h3>{LNG_Product Activity Report} '.$product['topic'].' {LNG_Product Code} '.$product['product_no'].'<label>&nbsp;{LNG_year} <select id=year>'.$option.'</select></label></h3></header>';
+        $content .= '<header><h3>{LNG_Product activity report} '.$product['topic'].' {LNG_Product code} '.$product['product_no'].'<label>&nbsp;{LNG_year} <select id=year>'.$option.'</select></label></h3></header>';
         $content .= '<canvas></canvas>';
         $content .= '<table class=hidden>';
         $content .= '<thead><tr><th>{LNG_monthly}</th>'.$thead.'</tr></thead>';

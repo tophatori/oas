@@ -45,7 +45,7 @@ class Controller extends \Gcms\Controller
                 'status' => $request->request('status')->toInt(),
             );
             $owner->status = isset($owner->typies[$owner->status]) ? $owner->status : self::$cfg->outward_status;
-            $title = '{LNG_Sales Report} '.$owner->typies[$owner->status];
+            $title = '{LNG_Sales report} '.$owner->typies[$owner->status];
             if ($owner->month > 0) {
                 $title .= ' {LNG_month}  '.Language::find('MONTH_LONG', null, $owner->month);
             }

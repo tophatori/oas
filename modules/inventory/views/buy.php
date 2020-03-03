@@ -97,7 +97,7 @@ class View extends \Gcms\View
                 'id' => 'due_date',
                 'labelClass' => 'g-input icon-calendar',
                 'itemClass' => 'width25',
-                'label' => '{LNG_Due Date}',
+                'label' => '{LNG_Due date}',
                 'value' => $index->due_date,
             ));
         }
@@ -116,9 +116,9 @@ class View extends \Gcms\View
             'id' => 'product_no',
             'labelClass' => 'g-input icon-addtocart',
             'itemClass' => 'width70',
-            'label' => '{LNG_Product Code}/{LNG_Barcode}<span class=tablet> (F4)</span>',
+            'label' => '{LNG_Product code}/{LNG_Barcode}<span class=tablet> (F4)</span>',
             'title' => '{LNG_Product}',
-            'placeholder' => Language::replace('Fill some of the :name to find', array(':name' => '{LNG_Product Code}, {LNG_Product name}')),
+            'placeholder' => Language::replace('Fill some of the :name to find', array(':name' => '{LNG_Product code}, {LNG_Product name}')),
         ));
         // add_product
         $groups->add('button', array(
@@ -132,7 +132,7 @@ class View extends \Gcms\View
         $table = '<table class="fullwidth"><thead><tr>';
         $table .= '<th class=center>{LNG_Quantity}</th>';
         $table .= '<th>{LNG_Detail}</th>';
-        $table .= '<th class=center>{LNG_Unit Price}</th>';
+        $table .= '<th class=center>{LNG_Unit price}</th>';
         $table .= '<th class=center></th>';
         $table .= '<th class=center>{LNG_Discount}</th>';
         // สกุลเงิน
@@ -190,7 +190,7 @@ class View extends \Gcms\View
         // save_and_create
         $fieldset->add('checkbox', array(
             'id' => 'save_and_create',
-            'label' => '{LNG_Save and Create New}&nbsp;',
+            'label' => '{LNG_Save and create new}&nbsp;',
             'value' => 1,
             'checked' => self::$request->cookie('buy_save_and_create')->toInt() == 1,
         ));

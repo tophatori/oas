@@ -101,7 +101,7 @@ class View extends \Gcms\View
                     'class' => 'center',
                 ),
                 'price' => array(
-                    'text' => '{LNG_Unit Price}',
+                    'text' => '{LNG_Unit price}',
                     'class' => 'center',
                 ),
                 'total' => array(
@@ -131,7 +131,7 @@ class View extends \Gcms\View
 
         return Html::create('section', array(
             'id' => 'inventory',
-            'innerHTML' => '<h3>{LNG_Inventory} '.$product['topic'].' {LNG_Product Code} '.$product['product_no'].'</h3>'.$table->render(),
+            'innerHTML' => '<h3>{LNG_Inventory} '.$product['topic'].' {LNG_Product code} '.$product['product_no'].'</h3>'.$table->render(),
         ))->render();
     }
 

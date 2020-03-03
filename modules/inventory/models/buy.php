@@ -15,7 +15,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * module=inventory-buy.
+ * module=inventory-buy
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -24,7 +24,7 @@ use Kotchasan\Language;
 class Model extends \Kotchasan\Model
 {
     /**
-     * บันทึกข้อมูลการสั่งซื้อ.
+     * บันทึกข้อมูลการสั่งซื้อ
      *
      * @param Request $request
      */
@@ -37,7 +37,6 @@ class Model extends \Kotchasan\Model
                 $order = array(
                     'order_no' => $request->post('order_no')->topic(),
                     'customer_id' => $request->post('customer_id')->toInt(),
-                    'member_id' => $login['id'],
                     'comment' => $request->post('comment')->textarea(),
                     'order_date' => $request->post('order_date')->date(),
                     'due_date' => $request->post('due_date')->date(),
@@ -76,8 +75,11 @@ class Model extends \Kotchasan\Model
                         'id' => $request->post('id', array())->toInt(),
                     );
                     $stock = array();
-                    foreach ($datas['id'] as $key => $product_id) {
-                        if ($product_id > 0) {
+                    foreach ($datas['topic'] as $key => $value) {
+                        if ($value == '') {
+                            $ret['ret_topic_'.$key] = 'Please fill in';
+                        } else {
+                            $product_id = $datas['id'][$key];
                             $stock[$product_id] = array(
                                 'quantity' => $datas['quantity'][$key],
                                 'topic' => $datas['topic'][$key],
@@ -86,22 +88,27 @@ class Model extends \Kotchasan\Model
                                 'total' => $datas['total'][$key],
                                 'vat' => empty($datas['vat'][$key]) ? 0 : $datas['vat'][$key],
                                 'product_id' => $product_id,
+                                'member_id' => $login['id'],
+                                'create_date' => $order['order_date'],
+                                'status' => 'IN',
                             );
                         }
                     }
-                    if (empty($stock)) {
-                        // ไม่ได้เลือกสินค้า
-                        $ret['ret_product_no'] = 'this';
-                    } else {
-                        // save order
-                        if ($order['order_no'] == '') {
-                            // สร้างเลข running number
-                            $order['order_no'] = \Inventory\Number\Model::get($order_id, 'order_no', $table_orders, 'order_no');
+                    if (empty($ret)) {
+                        if (empty($stock)) {
+                            // ไม่ได้เลือกสินค้า
+                            $ret['ret_product_no'] = 'this';
                         } else {
-                            // ตรวจสอบ order_no ซ้ำ
-                            $search = $db->first($table_orders, array('order_no', $order['order_no']));
-                            if ($search !== false && $order_id != $search->id) {
-                                $ret['ret_order_no'] = Language::replace('This :name already exist', array(':name' => Language::get('Order No.')));
+                            // save order
+                            if ($order['order_no'] == '') {
+                                // สร้างเลข running number
+                                $order['order_no'] = \Inventory\Number\Model::get($order_id, 'order_no', $table_orders, 'order_no');
+                            } else {
+                                // ตรวจสอบ order_no ซ้ำ
+                                $search = $db->first($table_orders, array('order_no', $order['order_no']));
+                                if ($search !== false && $order_id != $search->id) {
+                                    $ret['ret_order_no'] = Language::replace('This :name already exist', array(':name' => Language::get('Order No.')));
+                                }
                             }
                         }
                     }
@@ -112,6 +119,7 @@ class Model extends \Kotchasan\Model
                         } else {
                             // ใหม่
                             $order['stock_status'] = 'IN';
+                            $order['member_id'] = $login['id'];
                             $order_id = $db->insert($table_orders, $order);
                         }
                         // ตรวจสอบ stock เดิม

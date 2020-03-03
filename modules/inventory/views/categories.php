@@ -64,7 +64,7 @@ class View extends \Gcms\View
                     'text' => '{LNG_ID}',
                 ),
                 'topic' => array(
-                    'text' => '{LNG_Name}',
+                    'text' => '{LNG_Detail}',
                 ),
             ),
         ));

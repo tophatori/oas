@@ -93,7 +93,7 @@ class View extends \Gcms\View
             /* ส่วนหัวของตาราง และการเรียงลำดับ (thead) */
             'headers' => array(
                 'product_no' => array(
-                    'text' => '{LNG_Product Code}',
+                    'text' => '{LNG_Product code}',
                     'sort' => 'product_no',
                 ),
                 'topic' => array(
@@ -105,7 +105,7 @@ class View extends \Gcms\View
                     'class' => 'tablet',
                 ),
                 'price' => array(
-                    'text' => '{LNG_Unit Price}',
+                    'text' => '{LNG_Unit price}',
                     'class' => 'center',
                     'sort' => 'price',
                 ),

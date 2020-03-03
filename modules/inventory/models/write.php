@@ -112,7 +112,7 @@ class Model extends \Kotchasan\Model
                             array('product_no', $save['product_no']),
                         ));
                         if ($search !== false && $index['id'] != $search->id) {
-                            $ret['ret_write_product_no'] = Language::replace('This :name already exist', array(':name' => Language::get('Product Code')));
+                            $ret['ret_write_product_no'] = Language::replace('This :name already exist', array(':name' => Language::get('Product code')));
                         }
                     }
                     // ตรวจสอบ topic ซ้ำ
@@ -144,7 +144,6 @@ class Model extends \Kotchasan\Model
                                 $inventory['status'] = 'IN';
                                 $inventory['total'] = $inventory['price'] * $inventory['quantity'];
                                 if ($inventory['vat'] > 0) {
-                                    $vat = (float) number_format(\Kotchasan\Currency::calcVat($inventory['total'], self::$cfg->vat, $inventory['vat'] == 1), 2);
                                     if ($inventory['vat'] == 1) {
                                         // ราคาสินค้าไม่รวม vat
                                         $inventory['vat'] = (float) number_format(\Kotchasan\Currency::calcVat($inventory['total'], self::$cfg->vat, true), 2);

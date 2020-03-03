@@ -50,7 +50,7 @@ class View extends \Gcms\View
             'id' => 'company_type',
             'labelClass' => 'g-input icon-star0',
             'itemClass' => 'width50',
-            'label' => '{LNG_Person Type}',
+            'label' => '{LNG_Person type}',
             'options' => array(0 => '{LNG_Natural Person}', 1 => '{LNG_Juristic Person}'),
             'value' => isset(self::$cfg->type) ? self::$cfg->type : 0,
         ));
@@ -79,7 +79,7 @@ class View extends \Gcms\View
             'id' => 'company_name',
             'labelClass' => 'g-input icon-office',
             'itemClass' => 'item',
-            'label' => '{LNG_Name of Establishment}',
+            'label' => '{LNG_Name of establishment}',
             'comment' => '{LNG_Name of establishment registered VAT}',
             'maxlength' => 150,
             'value' => isset(self::$cfg->company_name) ? self::$cfg->company_name : '',

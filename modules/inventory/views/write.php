@@ -53,7 +53,7 @@ class View extends \Gcms\View
             'id' => 'write_product_no',
             'itemClass' => 'width50',
             'labelClass' => 'g-input icon-number',
-            'label' => '{LNG_Product Code}/{LNG_Barcode}',
+            'label' => '{LNG_Product code}/{LNG_Barcode}',
             'maxlength' => 150,
             'value' => $product['product_no'],
             'placeholder' => '{LNG_Leave empty for generate auto}',
@@ -137,7 +137,7 @@ class View extends \Gcms\View
             'id' => 'write_price',
             'itemClass' => 'width33',
             'labelClass' => 'g-input icon-money',
-            'label' => '{LNG_Sell Price}',
+            'label' => '{LNG_Sell price}',
             'value' => $product['price'],
         ));
         // unit

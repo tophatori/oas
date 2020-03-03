@@ -320,6 +320,10 @@ mark {
   text-shadow: none;
   white-space: nowrap;
 }
+[class^="term"]:hover,
+[class*=" term"]:hover {
+  color: #fff;
+}
 .term0 {
   background-color: #4a5db9;
 }
@@ -610,7 +614,7 @@ input:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  box-shadow: 0 0 3px rgb(59, 153, 252) inset;
+  box-shadow: 0 0 3px rgb(59, 153, 252);
 }
 button::-moz-focus-inner,
 input::-moz-focus-inner {
@@ -2090,7 +2094,8 @@ html[dir="rtl"] a.menu-arrow:after,
   z-index: 3;
   overflow: visible;
   visibility: hidden;
-  height: 0;
+  left: -999em;
+  top: -999em;
   opacity: 0;
   position: absolute;
   -webkit-transition: 0.2s ease-out;
@@ -2104,10 +2109,6 @@ html[dir="rtl"] a.menu-arrow:after,
   -o-transition-property: opacity, height;
   transition-property: opacity, height;
 }
-.sidemenu>ul ul {
-  left: 100%;
-  top: 0;
-}
 .topmenu li:hover>ul,
 .topmenu li:focus>ul,
 .topmenu li.focus>ul,
@@ -2118,7 +2119,16 @@ html[dir="rtl"] a.menu-arrow:after,
 .group-button li.focus>ul {
   visibility: visible;
   opacity: 1;
-  height: auto;
+  top: auto;
+  left: auto;
+}
+.topmenu li:hover>ul ul,
+.topmenu li:focus>ul ul,
+.topmenu li.focus>ul ul,
+.sidemenu li:hover>ul ul,
+.sidemenu li:focus>ul ul {
+  left: 100%;
+  top: 0;
 }
 html[dir="rtl"] .sidemenu li:hover>ul,
 html[dir="rtl"] .sidemenu li.hover>ul,
@@ -2156,9 +2166,6 @@ html[dir="rtl"] .sidemenu a.menu-arrow:after,
 
 /* second level */
 
-.topmenu>ul>li>ul {
-  top: 100%;
-}
 .topmenu.right>ul>li>ul {
   right: 0;
 }
@@ -3485,6 +3492,8 @@ aside.tip {
 }
 #body_msg_div {
   z-index: 2147483646;
+  max-width: 80%;
+  min-width: 200px;
 }
 .alert {
   -webkit-transition: opacity 0.6s;
@@ -3893,6 +3902,12 @@ table p,
 .icons a {
   margin: 0 10px;
 }
+.table_nav .buttons .button {
+  margin: 0;
+}
+.table_nav .buttons label {
+  margin-right: 5px;
+}
 .icons :before {
   margin-right: 0;
 }
@@ -3903,11 +3918,13 @@ td.buttons {
 td.buttons {
   text-align: right;
 }
+.table_nav .buttons .button,
 td.buttons .button {
   border-radius: 0;
   -moz-border-radius: 0;
   -webkit-border-radius: 0;
 }
+.table_nav .buttons .button:first-of-type,
 td.buttons .button:first-child {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
@@ -3916,6 +3933,7 @@ td.buttons .button:first-child {
   -webkit-border-top-left-radius: 5px;
   -webkit-border-bottom-left-radius: 5px;
 }
+.table_nav .buttons .button:last-of-type,
 td.buttons .button:last-child {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
