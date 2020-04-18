@@ -132,10 +132,7 @@ class Model extends \Kotchasan\Model
                         $db->delete($table_stock, array('order_id', $order_id), 0);
                         // save stock
                         foreach ($stock as $save) {
-                            $save['member_id'] = $order['member_id'];
                             $save['order_id'] = $order_id;
-                            $save['status'] = 'IN';
-                            $save['create_date'] = $order['order_date'];
                             $db->insert($table_stock, $save);
                         }
                         // คืนค่า

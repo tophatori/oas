@@ -42,7 +42,7 @@ class View extends \Gcms\View
             /* เรียงลำดับ */
             'sort' => $request->cookie('customer_sort', 'id desc')->toString(),
             /* คอลัมน์ที่สามารถค้นหาได้ */
-            'searchColumns' => array('name', 'email', 'phone', 'branch', 'contactor'),
+            'searchColumns' => array('company', 'email', 'phone', 'branch'),
             /* รายการต่อหน้า */
             'perPage' => $request->cookie('customer_perPage', 30)->toInt(),
             /* ฟังก์ชั่นจัดรูปแบบการแสดงผลแถวของตาราง */

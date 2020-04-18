@@ -10,7 +10,6 @@ body {
 }
 body,
 html {
-  height: 100%;
   min-height: 100%;
 }
 a {
@@ -173,6 +172,8 @@ header.header a {
   display: table;
   width: 100%;
   margin-top: 10px;
+  color: rgba(0, 0, 0, 0.2);
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.4);
 }
 .footer p {
   height: 57px;
@@ -188,7 +189,7 @@ header.header a {
   height: 100%;
 }
 .wrapper {
-  min-height: 100%;
+  min-height: 100vh;
   margin-bottom: -68px;
 }
 .wrapper::after {
@@ -888,5 +889,6 @@ input.result {
   .card {
     width: 100%;
     min-width: auto;
+    float: none;
   }
 }

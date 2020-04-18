@@ -220,7 +220,7 @@ CREATE TABLE `{prefix}_stock` (
   `status` enum('IN','OUT') COLLATE utf8_unicode_ci NOT NULL,
   `create_date` datetime NOT NULL,
   `topic` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `quantity` int(11) NOT NULL,
+  `quantity` float NOT NULL,
   `price` decimal(10,2) DEFAULT 0,
   `vat` decimal(10,2) DEFAULT 0,
   `discount` decimal(10,2) DEFAULT 0,
@@ -287,7 +287,8 @@ ALTER TABLE `{prefix}_orders`
 --
 ALTER TABLE `{prefix}_product`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `product_no` (`product_no`);
+  ADD UNIQUE KEY `product_no` (`product_no`),
+  ADD KEY `category_id` (`category_id`);
 
 --
 -- Indexes for table `{prefix}_stock`
@@ -295,7 +296,6 @@ ALTER TABLE `{prefix}_product`
 ALTER TABLE `{prefix}_stock`
   ADD PRIMARY KEY (`id`),
   ADD KEY `owner_id` (`order_id`) USING BTREE;
-
 
 --
 -- AUTO_INCREMENT for dumped tables

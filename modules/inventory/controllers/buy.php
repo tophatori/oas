@@ -11,6 +11,7 @@
 namespace Inventory\Buy;
 
 use Gcms\Login;
+use Kotchasan\ArrayTool;
 use Kotchasan\Html;
 use Kotchasan\Http\Request;
 use Kotchasan\Language;
@@ -43,7 +44,7 @@ class Controller extends \Gcms\Controller
             // ประเภทการขาย
             $typies = Language::get('BUY_TYPIES');
             // ไม่พบประเภทที่ต้องการ ใช้รายการแรก
-            $typ = isset($typies[$typ]) ? $typ : reset((array_keys($typies)));
+            $typ = isset($typies[$typ]) ? $typ : ArrayTool::getFirstKey($typies);
             // ข้อมูลที่ต้องการ
             $index = \Inventory\Order\Model::get($id, 'IN', $typ);
             if ($index) {

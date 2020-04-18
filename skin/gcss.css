@@ -564,6 +564,8 @@ input[type="color"] {
   -o-transition: border-color linear 0.2s, width linear 0.2s;
   transition: border-color linear 0.2s, width linear 0.2s;
 }
+.radiogroups.g-input,
+.checkboxgroups.g-input,
 .input-gcalendar,
 fieldset.search,
 .g-file~input[type="text"],
@@ -581,7 +583,6 @@ input[type="color"] {
   background-color: #fff;
   border-width: 1px;
   border-style: solid;
-  border-color: #ccc;
   border-color: rgba(0, 0, 0, 0.2);
 }
 input:-webkit-autofill,
@@ -614,7 +615,7 @@ input:focus,
 select:focus,
 textarea:focus {
   outline: none;
-  box-shadow: 0 0 3px rgb(59, 153, 252);
+  box-shadow: 0 0 3px rgb(59, 153, 252) inset;
 }
 button::-moz-focus-inner,
 input::-moz-focus-inner {
@@ -647,7 +648,7 @@ input[type="email"],
 input[type="url"],
 input[type="color"] {
   line-height: 2.3em;
-  height: 2.286em;
+  height: 2.3em;
 }
 .file-preview {
   overflow: hidden;
@@ -740,10 +741,6 @@ optgroup>option {
   display: inline-block;
   vertical-align: middle;
   width: 100%;
-  border-width: 1px;
-  border-color: #ccc;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-style: solid;
 }
 label,
 .label,
@@ -791,7 +788,6 @@ td>.wlabel {
 .g-input>input[type="color"] {
   width: 100%;
   float: left;
-  border: none;
 }
 .g-input[class*=" icon-"]>.input-gcalendar,
 .g-input[class^="icon-"]>.input-gcalendar,
@@ -810,12 +806,7 @@ td>.wlabel {
 .g-input[class*=" icon-"]>input[type="email"],
 .g-input[class^="icon-"]>input[type="email"],
 .g-input[class*=" icon-"]>input[type="url"],
-.g-input[class^="icon-"]>input[type="url"] {
-  padding-left: 2.8em;
-  min-width: 6em;
-  -webkit-appearance: none;
-  -webkit-border-radius: 0;
-}
+.g-input[class^="icon-"]>input[type="url"],
 .g-input[class*=" icon-"]>select,
 .g-input[class^="icon-"]>select {
   padding-left: 2.8em;
@@ -824,21 +815,16 @@ td>.wlabel {
   -moz-appearance: none;
   appearance: none;
 }
-.g-file {
-  width: 100%;
-  float: left;
-}
 .g-input[class*=" icon-"]:before,
 .g-input[class^="icon-"]:before {
   position: absolute;
-  height: 101%;
   line-height: 2.3em;
   width: 2.3em;
   left: 0;
   top: 0;
+  bottom: 0;
   margin: 0;
   text-align: center;
-  background-color: #e5e5e5;
   background-color: rgba(0, 0, 0, 0.1);
   text-shadow: 1px 1px 0 #fff;
   color: inherit;
@@ -1017,7 +1003,7 @@ textarea.cke_editable {
   white-space: nowrap;
   overflow: hidden;
   line-height: 2.3em;
-  height: 2.286em;
+  height: 2.3em;
   padding: 0 0.7em;
   outline: none;
   cursor: pointer;
@@ -2662,7 +2648,7 @@ div.ginput a:hover {
   min-width: 7em;
   padding-left: 0.1em;
   padding-right: 0.1em;
-  height: 2.286em;
+  height: 2.3em;
   line-height: 2.3em;
 }
 div.gcalendar {
@@ -3861,7 +3847,7 @@ fieldset.search {
   -webkit-border-radius: 0.5em;
   border-radius: 0.5em;
   overflow: hidden;
-  height: 2.286em;
+  height: 2.3em;
 }
 fieldset.search input[type="text"] {
   -moz-border-radius: 0.5em 0 0 0.5em;

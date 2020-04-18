@@ -13,7 +13,6 @@ namespace Inventory\Setup;
 use Kotchasan\Currency;
 use Kotchasan\DataTable;
 use Kotchasan\Http\Request;
-use Kotchasan\Language;
 
 /**
  * module=inventory-setup.
@@ -24,10 +23,6 @@ use Kotchasan\Language;
  */
 class View extends \Gcms\View
 {
-    /**
-     * @var mixed
-     */
-    private $tax_status;
     /**
      * @var mixed
      */
@@ -42,7 +37,13 @@ class View extends \Gcms\View
      */
     public function render(Request $request)
     {
-        $this->tax_status = Language::get('TAX_STATUS');
+        $params = array(
+            'module' => 'inventory-setup',
+            'typ' => 'print',
+            'cat' => $request->request('cat')->toInt(),
+            'search' => $request->request('search')->topic(),
+            'sort' => $request->request('sort')->topic(),
+        );
         $this->categories = \Inventory\Category\Model::categories();
         // URL สำหรับส่งให้ตาราง
         $uri = $request->createUriWithGlobals(WEB_URL.'index.php');
@@ -51,11 +52,11 @@ class View extends \Gcms\View
             /* Uri */
             'uri' => $uri,
             /* Model */
-            'model' => \Inventory\setup\Model::toDataTable(),
+            'model' => \Inventory\setup\Model::toDataTable($params),
             /* รายการต่อหน้า */
-            'perPage' => $request->cookie('setup_perPage', 30)->toInt(),
+            'perPage' => $request->cookie('inventorySetup_perPage', 30)->toInt(),
             /* เรียงลำดับ */
-            'sort' => $request->cookie('setup_sort', 'id desc')->toString(),
+            'sort' => $request->cookie('inventorySetup_sort', 'id desc')->toString(),
             /* ฟังก์ชั่นจัดรูปแบบการแสดงผลแถวของตาราง */
             'onRow' => array($this, 'onRow'),
             /* คอลัมน์ที่ไม่ต้องแสดงผล */
@@ -82,12 +83,11 @@ class View extends \Gcms\View
             ),
             /* ตัวเลือกด้านบนของตาราง ใช้จำกัดผลลัพท์การ query */
             'filters' => array(
-                'category_id' => array(
+                array(
                     'name' => 'cat',
-                    'default' => 0,
                     'text' => '{LNG_Category}',
                     'options' => array(0 => '{LNG_all items}') + $this->categories->toSelect(),
-                    'value' => $request->request('cat', 0)->toInt(),
+                    'value' => $params['cat'],
                 ),
             ),
             /* ส่วนหัวของตาราง และการเรียงลำดับ (thead) */
@@ -118,6 +118,10 @@ class View extends \Gcms\View
                     'class' => 'center',
                     'sort' => 'quantity',
                 ),
+                'unit' => array(
+                    'text' => '{LNG_Unit}',
+                    'class' => 'center',
+                ),
             ),
             /* รูปแบบการแสดงผลของคอลัมน์ (tbody) */
             'cols' => array(
@@ -131,6 +135,9 @@ class View extends \Gcms\View
                     'class' => 'center',
                 ),
                 'quantity' => array(
+                    'class' => 'center',
+                ),
+                'unit' => array(
                     'class' => 'center',
                 ),
             ),
@@ -149,8 +156,8 @@ class View extends \Gcms\View
             ),
         ));
         // save cookie
-        setcookie('setup_perPage', $table->perPage, time() + 2592000, '/', HOST, HTTPS, true);
-        setcookie('setup_sort', $table->sort, time() + 2592000, '/', HOST, HTTPS, true);
+        setcookie('inventorySetup_perPage', $table->perPage, time() + 2592000, '/', HOST, HTTPS, true);
+        setcookie('inventorySetup_sort', $table->sort, time() + 2592000, '/', HOST, HTTPS, true);
         // คืนค่า HTML
 
         return $table->render();

@@ -25,21 +25,28 @@ use Kotchasan\Language;
 class Model extends \Kotchasan\Model
 {
     /**
-     * Query ข้อมูลสำหรับส่งให้กับ DataTable.
+     * Query ข้อมูลสำหรับส่งให้กับ DataTable
+     *
+     * @param array $params
      *
      * @return \Kotchasan\Database\QueryBuilder
      */
-    public static function toDataTable()
+    public static function toDataTable($params)
     {
+        $where = array();
+        if ($params['cat'] > 0) {
+            $where[] = array('P.category_id', $params['cat']);
+        }
         $sql = static::createQuery()
             ->select('product_id', Sql::create('SUM(IF(`status`="IN", `quantity`, `quantity`*-1)) AS `quantity`'))
             ->from('stock')
             ->groupBy('product_id');
 
         return static::createQuery()
-            ->select('P.product_no', 'P.topic', 'P.description', 'P.price', 'P.category_id', 'P.id', Sql::create('CASE WHEN P.`count_stock`=1 THEN S.`quantity` ELSE NULL END AS `quantity`'))
+            ->select('P.product_no', 'P.topic', 'P.description', 'P.price', 'P.category_id', 'P.id', Sql::create('CASE WHEN P.`count_stock`=1 THEN S.`quantity` ELSE NULL END AS `quantity`'), 'P.unit')
             ->from('product P')
-            ->join(array($sql, 'S'), 'LEFT', array('S.product_id', 'P.id'));
+            ->join(array($sql, 'S'), 'LEFT', array('S.product_id', 'P.id'))
+            ->where($where);
     }
 
     /**
