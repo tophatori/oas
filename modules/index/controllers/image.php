@@ -34,7 +34,7 @@ class Controller extends \Gcms\Controller
     public function render(Request $request)
     {
         // ข้อความ title bar
-        $this->title = Language::get('Image settings');
+        $this->title = Language::get('Pictures for a receipt');
         // เลือกเมนู
         $this->menu = 'settings';
         // สามารถตั้งค่าระบบได้
@@ -48,12 +48,14 @@ class Controller extends \Gcms\Controller
                 'class' => 'breadcrumbs',
             ));
             $ul = $breadcrumbs->add('ul');
-            $ul->appendChild('<li><a href="index.php" class="icon-home">{LNG_Home}</a></li>');
+            $ul->appendChild('<li><a href="index.php" class="icon-settings">{LNG_Home}</a></li>');
             $ul->appendChild('<li><span>{LNG_Settings}</span></li>');
             $ul->appendChild('<li><span>{LNG_Image}</span></li>');
             $section->add('header', array(
-                'innerHTML' => '<h2 class="icon-config">'.$this->title.'</h2>',
+                'innerHTML' => '<h2 class="icon-image">'.$this->title.'</h2>',
             ));
+            // menu
+            $section->appendChild(\Index\Tabmenus\View::render($request, 'settings', 'image'));
             // แสดงฟอร์ม
             $section->appendChild(createClass('Index\Image\View')->render());
             // คืนค่า HTML

@@ -34,35 +34,45 @@ class Model
         $settings = array();
         if (Login::checkPermission($login, 'can_config')) {
             // สามารถตั้งค่าระบบได้
-            $settings[] = array(
+            $settings['system'] = array(
                 'text' => '{LNG_Site settings}',
                 'url' => 'index.php?module=system',
             );
-            $settings[] = array(
+            $settings['mailserver'] = array(
                 'text' => '{LNG_Email settings}',
                 'url' => 'index.php?module=mailserver',
             );
-            $settings[] = array(
+            $settings['memberstatus'] = array(
                 'text' => '{LNG_Member status}',
                 'url' => 'index.php?module=memberstatus',
             );
-            $settings[] = array(
+            $settings['language'] = array(
                 'text' => '{LNG_Language}',
                 'url' => 'index.php?module=language',
             );
-            $settings[] = array(
+            $settings['company'] = array(
                 'text' => '{LNG_Company profile}',
                 'url' => 'index.php?module=company',
             );
-            $settings[] = array(
+            $settings['image'] = array(
                 'text' => '{LNG_Image}',
                 'url' => 'index.php?module=image',
             );
-            $settings[] = array(
+            $settings['accsettings'] = array(
                 'text' => '{LNG_Accounting settings}',
                 'url' => 'index.php?module=accsettings',
             );
         }
+        $members = array(
+            array(
+                'text' => '{LNG_Member list}',
+                'url' => 'index.php?module=member',
+            ),
+            array(
+                'text' => '{LNG_Register}',
+                'url' => 'index.php?module=register',
+            ),
+        );
         // เมนูหลัก
         $menus = array(
             'home' => array(
@@ -75,16 +85,7 @@ class Model
             ),
             'member' => array(
                 'text' => '{LNG_Users}',
-                'submenus' => array(
-                    array(
-                        'text' => '{LNG_Member list}',
-                        'url' => 'index.php?module=member',
-                    ),
-                    array(
-                        'text' => '{LNG_Register}',
-                        'url' => 'index.php?module=register',
-                    ),
-                ),
+                'submenus' => $members,
             ),
             'report' => array(
                 'text' => '{LNG_Report}',
@@ -92,6 +93,7 @@ class Model
             ),
             'settings' => array(
                 'text' => '{LNG_Settings}',
+                'url' => 'index.php?module=settings',
                 'submenus' => $settings,
             ),
             'signout' => array(

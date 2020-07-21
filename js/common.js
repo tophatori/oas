@@ -327,23 +327,15 @@ function checkPassword() {
 }
 
 function checkIdcard() {
-  var value = this.value;
-  var ids = this.id.split("_");
-  var id = "&id=" + floatval($E(ids[0] + "_id").value);
-  var i, sum;
+  var value = this.value,
+    ids = this.id.split("_"),
+    id = "&id=" + floatval($E(ids[0] + "_id").value);
   if (value.length == 0) {
     this.reset();
-  } else if (value.length != 13) {
+  } else if (value.length < 9) {
     this.invalid(this.title);
   } else {
-    for (i = 0, sum = 0; i < 12; i++) {
-      sum += floatval(value.charAt(i)) * (13 - i);
-    }
-    if ((11 - (sum % 11)) % 10 != floatval(value.charAt(12))) {
-      this.invalid(this.title);
-    } else {
-      return "value=" + encodeURIComponent(value) + "&id=" + id;
-    }
+    return "value=" + encodeURIComponent(value) + "&id=" + id;
   }
 }
 

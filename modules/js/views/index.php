@@ -30,34 +30,33 @@ class View extends \Kotchasan\KBase
         $js = array();
         $js[] = file_get_contents(ROOT_PATH.'js/gajax.js');
         $js[] = file_get_contents(ROOT_PATH.'js/autocomplete.js');
-        $js[] = file_get_contents(ROOT_PATH.'js/datalist.js');
+        $js[] = file_get_contents(ROOT_PATH.'js/calendar.js');
         $js[] = file_get_contents(ROOT_PATH.'js/clock.js');
+        $js[] = file_get_contents(ROOT_PATH.'js/datalist.js');
         $js[] = file_get_contents(ROOT_PATH.'js/ddmenu.js');
         $js[] = file_get_contents(ROOT_PATH.'js/ddpanel.js');
-        $js[] = file_get_contents(ROOT_PATH.'js/editinplace.js');
-        $js[] = file_get_contents(ROOT_PATH.'js/graphs.js');
-        $js[] = file_get_contents(ROOT_PATH.'js/loader.js');
         $js[] = file_get_contents(ROOT_PATH.'js/dragdrop.js');
-        $js[] = file_get_contents(ROOT_PATH.'js/table.js');
-        $js[] = file_get_contents(ROOT_PATH.'js/tooltip.js');
-        $js[] = file_get_contents(ROOT_PATH.'js/multiselect.js');
-        $js[] = file_get_contents(ROOT_PATH.'js/common.js');
+        $js[] = file_get_contents(ROOT_PATH.'js/editinplace.js');
         $js[] = file_get_contents(ROOT_PATH.'js/facebook.js');
         $js[] = file_get_contents(ROOT_PATH.'js/google.js');
+        $js[] = file_get_contents(ROOT_PATH.'js/graphs.js');
+        $js[] = file_get_contents(ROOT_PATH.'js/inputgroup.js');
+        $js[] = file_get_contents(ROOT_PATH.'js/loader.js');
+        $js[] = file_get_contents(ROOT_PATH.'js/multiselect.js');
+        $js[] = file_get_contents(ROOT_PATH.'js/range.js');
+        $js[] = file_get_contents(ROOT_PATH.'js/table.js');
+        $js[] = file_get_contents(ROOT_PATH.'js/tooltip.js');
+        $js[] = file_get_contents(ROOT_PATH.'js/uploads.js');
+        $js[] = file_get_contents(ROOT_PATH.'js/common.js');
+        // โหลดโมดูลที่ติดตั้งแล้ว
+        $modules = \Gcms\Modules::create();
+        // ไดเร็คทอรี่โมดูล
+        $dir = $modules->getDir();
         // js ของโมดูล
-        $dir = ROOT_PATH.'modules/';
-        $f = @opendir($dir);
-        if ($f) {
-            while (false !== ($text = readdir($f))) {
-                if ($text != '.' && $text != '..') {
-                    if (is_dir($dir.$text)) {
-                        if (is_file($dir.$text.'/script.js')) {
-                            $js[] = file_get_contents($dir.$text.'/script.js');
-                        }
-                    }
-                }
+        foreach ($modules->get() as $module) {
+            if (is_file($dir.$module.'/script.js')) {
+                $js[] = file_get_contents($dir.$module.'/script.js');
             }
-            closedir($f);
         }
         $lng = Language::name();
         $data_folder = Language::languageFolder();

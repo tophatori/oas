@@ -116,7 +116,7 @@ class Text
      * แปลง & " ' < > \ { } เป็น HTML entities ใช้แทน htmlspecialchars() ของ PHP.
      *
      * @param string $text
-     * @param bool   $double_encode true (default) แปลง รหัส HTML เช่น &amp; เป็น &amp;amp;, false ไม่แปลง
+     * @param bool $double_encode true (default) แปลง รหัส HTML เช่น &amp; เป็น &amp;amp;, false ไม่แปลง
      *
      * @return string
      */
@@ -149,7 +149,7 @@ class Text
     /**
      * รับค่าสำหรับ password อักขระทุกตัวไม่มีช่องว่าง.
      *
-     * @assert (" 0\n12   34\r\r6\t5ทดสอบ@#$&{}!?+_- ") [==] '0123465ทดสอบ@#$&{}!?+_-='
+     * @assert (" 0\n12   34\r\r6\t5ทดสอบ@#$&{}!?+_-=") [==] '0123465ทดสอบ@#$&{}!?+_-='
      *
      * @param string $text
      *
@@ -237,14 +237,17 @@ class Text
      * เช่นหัวข้อของบทความ
      *
      * @assert (' ทด\/สอบ'."\r\n\t".'<?php echo \'555\'?> ') [==] 'ทด&#92;/สอบ &lt;?php echo &#039;555&#039;?&gt;'
+     * @assert ('&nbsp;') [==] '&amp;nbsp;'
+     * @assert ('&nbsp;', false) [==] '&nbsp;'
      *
      * @param string $text
+     * @param bool $double_encode true (default) แปลง รหัส HTML เช่น &amp; เป็น &amp;amp;, false ไม่แปลง
      *
      * @return string
      */
-    public static function topic($text)
+    public static function topic($text, $double_encode = true)
     {
-        return trim(preg_replace('/[\r\n\s\t]+/', ' ', self::htmlspecialchars($text)));
+        return trim(preg_replace('/[\r\n\s\t]+/', ' ', self::htmlspecialchars($text, $double_encode)));
     }
 
     /**

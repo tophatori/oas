@@ -375,12 +375,13 @@ class InputItem
      *
      * @assert create(0.454)->toDouble() [==] 0.454
      * @assert create(0.545)->toDouble() [==] 0.545
+     * @assert create(15,362.454)->toDouble() [==] 15362.454
      *
      * @return float|array
      */
     public function toDouble()
     {
-        return (float) $this->value;
+        return (float) str_replace(',', '', $this->value);
     }
 
     /**
@@ -440,13 +441,15 @@ class InputItem
      * แปลง tag และ ลบช่องว่างไม่เกิน 1 ช่อง ไม่ขึ้นบรรทัดใหม่
      * เช่นหัวข้อของบทความ
      *
+     * @param bool $double_encode true (default) แปลง รหัส HTML เช่น &amp; เป็น &amp;amp;, false ไม่แปลง
+     *
      * @assert create(' ทด\/สอบ'."\r\n\t".'<?php echo \'555\'?> ')->topic() [==] 'ทด&#92;/สอบ &lt;?php echo &#039;555&#039;?&gt;'
      *
      * @return string|array
      */
-    public function topic()
+    public function topic($double_encode = true)
     {
-        return Text::topic($this->value);
+        return Text::topic($this->value, $double_encode);
     }
 
     /**

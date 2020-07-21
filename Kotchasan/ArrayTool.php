@@ -305,7 +305,7 @@ class ArrayTool
             foreach ($array as $key => $val) {
                 $offset = 0;
                 $found = false;
-                foreach ($temp_array as $tmp_key => $tmp_val) {
+                foreach ($temp_array as $tmp_val) {
                     $v1 = isset($val[$sort_key]) ? strtolower(self::toString('', $val[$sort_key])) : '';
                     $v2 = isset($tmp_val[$sort_key]) ? strtolower(self::toString('', $tmp_val[$sort_key])) : '';
                     if (!$found && $v1 > $v2) {
@@ -385,5 +385,31 @@ class ArrayTool
         }
 
         return $source;
+    }
+
+    /**
+     * ตรวจสอบว่ามี $needle ใน $haystack หรือไม่
+     * ถ้ามีคืนค่า true ถ้าไม่มีคืนค่า false
+     *
+     * @assert (array(1, 2), array(1, 2)) [==] true
+     * @assert (array(2), array(1, 2, 3)) [==] true
+     * @assert (array(1, 2), array(3, 4)) [==] false
+     * @assert (array(), array(3, 4)) [==] false
+     * @assert (array(), array()) [==] false
+     *
+     * @param array $needle แอเรย์ที่ต้องการตรวจสอบ
+     * @param array $haystack แอเรย์ต้นฉบับ
+     *
+     * @return bool
+     */
+    public static function in_array($needle, $haystack)
+    {
+        foreach ($needle as $v) {
+            if (in_array($v, $haystack)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

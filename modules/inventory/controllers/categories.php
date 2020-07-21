@@ -16,7 +16,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * module=inventory-categories.
+ * module=inventory-categories
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -25,7 +25,7 @@ use Kotchasan\Language;
 class Controller extends \Gcms\Controller
 {
     /**
-     * หมวดหมู่หลัก
+     * หมวดหมู่
      *
      * @param Request $request
      *
@@ -44,11 +44,11 @@ class Controller extends \Gcms\Controller
         }
         // ข้อความ title bar
         $title = $index->categories[$index->type];
-        $this->title = Language::trans('{LNG_List of} ').$title;
+        $this->title = Language::trans('{LNG_List of} '.$title);
         // เลือกเมนู
         $this->menu = 'settings';
-        // สามารถตั้งค่าระบบได้
-        if (Login::checkPermission(Login::isMember(), 'can_config')) {
+        // สามารถบริหารจัดการได้
+        if (Login::checkPermission(Login::isMember(), 'can_manage_inventory')) {
             // แสดงผล
             $section = Html::create('section', array(
                 'class' => 'content_bg',
@@ -58,12 +58,14 @@ class Controller extends \Gcms\Controller
                 'class' => 'breadcrumbs',
             ));
             $ul = $breadcrumbs->add('ul');
-            $ul->appendChild('<li><span class="icon-product">{LNG_Settings}</span></li>');
+            $ul->appendChild('<li><span class="icon-settings">{LNG_Settings}</span></li>');
             $ul->appendChild('<li><span>{LNG_Inventory}</span></li>');
             $ul->appendChild('<li><span>'.$title.'</span></li>');
             $section->add('header', array(
                 'innerHTML' => '<h2 class="icon-category">'.$this->title.'</h2>',
             ));
+            // menu
+            $section->appendChild(\Index\Tabmenus\View::render($request, 'settings', 'category'.$index->type));
             // แสดงฟอร์ม
             $section->appendChild(createClass('Inventory\Categories\View')->render($index));
             // คืนค่า HTML

@@ -243,10 +243,8 @@
       var step = floatval(this.input.step),
         ss = this.input.step.split(".");
       value = Math.round(value / step) * step;
-      value = Math.min(
-        floatval(this.input.max),
-        Math.max(floatval(this.input.min), value)
-      );
+      value = Math.min(floatval(this.input.max), value);
+      value = Math.max(floatval(this.input.min), value);
       if (ss[1] && ss[1] != "") {
         value = floatval(value.toFixed(ss[1].length));
       }

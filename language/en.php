@@ -58,7 +58,8 @@ return array(
   ),
   'MAIL_PROGRAMS' => array(
     0 => 'Send with PHP',
-    1 => 'Send with PHPMailer (recommended).'
+    1 => 'Send with PHPMailer+SMTP (recommended)',
+    2 => 'Send with PHPMailer+PHP Mail'
   ),
   'MONTH_LONG' => array(
     1 => 'January',
@@ -88,8 +89,9 @@ return array(
     11 => 'Nov',
     12 => 'Dec'
   ),
+  'Name' => 'Name Surname',
   'PERMISSIONS' => array(
-    'can_config' => 'Can setting up the system',
+    'can_config' => 'Can configure the system',
     'can_customer' => 'Can manage the customer list'
   ),
   'PUBLISHEDS' => array(
@@ -99,6 +101,10 @@ return array(
   'SELL_TYPIES' => array(
     1 => 'Quotation',
     6 => 'Receipt'
+  ),
+  'SEXES' => array(
+    'f' => 'Female',
+    'm' => 'Male'
   ),
   'SMTPSECURIES' => array(
     '' => 'Clear Text',

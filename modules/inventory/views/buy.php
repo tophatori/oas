@@ -190,7 +190,7 @@ class View extends \Gcms\View
         // save_and_create
         $fieldset->add('checkbox', array(
             'id' => 'save_and_create',
-            'label' => '{LNG_Save and create new}&nbsp;',
+            'label' => '&nbsp;{LNG_Save and create new}',
             'value' => 1,
             'checked' => self::$request->cookie('buy_save_and_create')->toInt() == 1,
         ));

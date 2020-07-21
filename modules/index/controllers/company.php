@@ -48,12 +48,14 @@ class Controller extends \Gcms\Controller
                 'class' => 'breadcrumbs',
             ));
             $ul = $breadcrumbs->add('ul');
-            $ul->appendChild('<li><a href="index.php" class="icon-home">{LNG_Home}</a></li>');
+            $ul->appendChild('<li><a href="index.php" class="icon-settings">{LNG_Home}</a></li>');
             $ul->appendChild('<li><span>{LNG_Settings}</span></li>');
             $ul->appendChild('<li><span>{LNG_Company}</span></li>');
             $section->add('header', array(
-                'innerHTML' => '<h2 class="icon-config">'.$this->title.'</h2>',
+                'innerHTML' => '<h2 class="icon-office">'.$this->title.'</h2>',
             ));
+            // menu
+            $section->appendChild(\Index\Tabmenus\View::render($request, 'settings', 'company'));
             // แสดงฟอร์ม
             $section->appendChild(createClass('Index\Company\View')->render());
             // คืนค่า HTML

@@ -34,7 +34,7 @@ final class Language extends \Kotchasan\KBase
     /**
      * รายการภาษา.
      *
-     * @var array
+     * @var object
      */
     private static $languages = null;
 
@@ -236,7 +236,7 @@ final class Language extends \Kotchasan\KBase
     }
 
     /**
-     * กำหนดภาษาที่ต้องการ.
+     * กำหนดภาษาที่ต้องการ
      *
      * @param string $language
      *

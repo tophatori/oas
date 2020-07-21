@@ -1145,6 +1145,9 @@ class DataTable extends \Kotchasan\KBase
      */
     private function addFilter($item)
     {
+        if (isset($item['datalist'])) {
+            $item['type'] = 'text';
+        }
         if (isset($item['type'])) {
             $prop = array();
             $datalist = '';
@@ -1194,7 +1197,7 @@ class DataTable extends \Kotchasan\KBase
                     $prop[$key] = $key.'="'.$value.'"';
                 }
             }
-            $row .= '<a '.implode(' ', $prop).'>'.(isset($item['text']) ? $item['text'] : '').'</a>';
+            $row = '<a '.implode(' ', $prop).'>'.(isset($item['text']) ? $item['text'] : '').'</a>';
         } else {
             $prop = array();
             foreach ($item as $key => $value) {

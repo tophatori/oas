@@ -564,6 +564,7 @@ input[type="color"] {
   -o-transition: border-color linear 0.2s, width linear 0.2s;
   transition: border-color linear 0.2s, width linear 0.2s;
 }
+ul.inputgroups.g-input,
 .radiogroups.g-input,
 .checkboxgroups.g-input,
 .input-gcalendar,
@@ -1272,6 +1273,7 @@ html .button:before,
   clear: both;
   margin: 9px 0 -1px 0;
   text-align: center;
+  position: relative;
 }
 .splitpage a,
 .splitpage strong {
@@ -4173,51 +4175,6 @@ td.buttons .button:last-child {
 #fsUploadProgress .value_graphs.invalid {
   background-color: #f00;
 }
-@media only screen and (max-width: 1360px) {
-  /* side menu */
-  body.responsive .sidemenu.responsive>ul ul a {
-    width: auto;
-  }
-  body.responsive .sidemenu.responsive>ul ul {
-    position: static;
-    margin: 0;
-    border-style: none;
-    -moz-box-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
-  body.responsive .sidemenu.responsive>ul>li>a>span {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-  body.responsive .sidemenu.responsive>ul ul>li>a>span {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-  body.responsive .sidemenu.responsive>ul ul ul>li>a>span {
-    padding-left: 30px;
-    padding-right: 30px;
-  }
-  body.responsive .sidemenu.responsive a.menu-arrow:after {
-    right: 10px;
-    border-style: solid solid none solid;
-    border-top-color: inherit;
-    border-bottom-color: inherit;
-    border-left-color: transparent;
-    border-right-color: transparent;
-  }
-  html[dir="rtl"] body.responsive .sidemenu.responsive a.menu-arrow:after,
-  body.responsive .sidemenu.responsive.right a.menu-arrow:after {
-    left: 10px;
-    right: auto;
-    border-style: solid solid none solid;
-    border-top-color: inherit;
-    border-bottom-color: inherit;
-    border-left-color: transparent;
-    border-right-color: transparent;
-  }
-}
-
 /* phone, tablet */
 
 @media only screen and (max-width: 960px) {

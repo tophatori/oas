@@ -92,8 +92,13 @@ class Email extends \Kotchasan\KBase
             include_once VENDOR_DIR.'PHPMailer/class.phpmailer.php';
             // Create a new PHPMailer instance
             $mail = new \PHPMailer();
-            // Tell PHPMailer to use SMTP
-            $mail->isSMTP();
+            if (self::$cfg->email_use_phpMailer == 1) {
+                // Send messages using SMTP
+                $mail->isSMTP();
+            } else {
+                // Send messages using PHP's mail() function
+                $mail->isMail();
+            }
             // charset
             $mail->CharSet = $charset;
             // use html
@@ -129,11 +134,11 @@ class Email extends \Kotchasan\KBase
             foreach (explode(',', $mailto) as $email) {
                 if (preg_match('/^(.*)<(.*)>$/', $email, $match)) {
                     if ($mail->ValidateAddress($match[1])) {
-                        $mail->AddAddress($match[1], $match[2]);
+                        $mail->addAddress($match[1], $match[2]);
                     }
                 } else {
                     if ($mail->ValidateAddress($email)) {
-                        $mail->AddAddress($email, $email);
+                        $mail->addAddress($email, $email);
                     }
                 }
                 if (false === $mail->send()) {

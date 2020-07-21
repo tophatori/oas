@@ -75,13 +75,13 @@ class Html extends \Kotchasan\KBase
         if ($tag == 'groups' || $tag == 'groups-table') {
             $obj = $this->addGroups($tag, $attributes);
         } elseif ($tag == 'inputgroups') {
-            $obj = self::addInputGroups($attributes);
+            $obj = $this->addInputGroups($attributes);
         } elseif ($tag == 'radiogroups' || $tag == 'checkboxgroups') {
-            $obj = self::addRadioOrCheckbox($tag, $attributes);
+            $obj = $this->addRadioOrCheckbox($tag, $attributes);
         } elseif ($tag == 'menubutton') {
-            $obj = self::addMenuButton($attributes);
+            $obj = $this->addMenuButton($attributes);
         } elseif ($tag == 'ckeditor') {
-            $obj = self::addCKEditor($tag, $attributes);
+            $obj = $this->addCKEditor($tag, $attributes);
         } elseif ($tag == 'row') {
             $obj = new static('div', array(
                 'class' => 'row',
@@ -332,7 +332,7 @@ class Html extends \Kotchasan\KBase
      * @param  $tag
      * @param  $attributes
      *
-     * @return mixed
+     * @return \static
      */
     private function addGroups($tag, $attributes)
     {
@@ -393,7 +393,7 @@ class Html extends \Kotchasan\KBase
     /**
      * @param  $attributes
      *
-     * @return mixed
+     * @return \static
      */
     private function addInputGroups($attributes)
     {
@@ -473,7 +473,7 @@ class Html extends \Kotchasan\KBase
     /**
      * @param  $attributes
      *
-     * @return mixed
+     * @return \static
      */
     private function addMenuButton($attributes)
     {
@@ -530,7 +530,7 @@ class Html extends \Kotchasan\KBase
      * @param  $tag
      * @param  $attributes
      *
-     * @return mixed
+     * @return \static
      */
     private function addRadioOrCheckbox($tag, $attributes)
     {

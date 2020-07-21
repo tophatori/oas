@@ -73,7 +73,11 @@ class Model extends \Kotchasan\Model
                     $stock = array();
                     foreach ($datas['topic'] as $key => $value) {
                         if ($value == '') {
-                            $ret['ret_topic_'.$key] = 'Please fill in';
+                            if (count($datas['topic']) == 1) {
+                                $ret['ret_product_no'] = 'this';
+                            } else {
+                                $ret['ret_topic_'.$key] = 'Please fill in';
+                            }
                         } else {
                             $product_id = $datas['id'][$key];
                             $stock[$product_id] = array(

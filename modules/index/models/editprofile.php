@@ -153,7 +153,7 @@ class Model extends \Kotchasan\Model
                                 if ($isAdmin) {
                                     $save['permission'] = $permission;
                                 }
-                                $save['password'] = $password;
+                                unset($save['password']);
                                 $_SESSION['login'] = ArrayTool::replace($_SESSION['login'], $save);
                                 // reload หน้าเว็บ
                                 $ret['location'] = 'reload';
