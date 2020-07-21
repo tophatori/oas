@@ -143,7 +143,7 @@ return array(
   'Image' => 'ပုံ',
   'Image size is in pixels' => 'ပုံအရွယ်အစားသည် pixel ဖြစ်သည်',
   'Import' => 'သွင်းကုန်',
-  'Incorrect :name' => ':မမှန်ကန်ပါ',
+  'Invalid :name' => ':မမှန်ကန်ပါ',
   'Inventory' => 'ဂိုဒေါင်',
   'INVENTORY_CATEGORIES' => array(
     0 => 'ထုတ်ကုန်အမျိုးအစား',
