@@ -236,55 +236,70 @@ Calendar.prototype = {
       c,
       d,
       e,
+      elem,
+      td,
       self = this;
     forEach(this.events, function() {
       if (this.start) {
-        start_date = this.start.split('T')[0].replace(/-/g, '/').split(' ')[0];
-        a = new Date(start_date);
-        end_date = this.end ? new Date(this.end.split('T')[0].replace(/-/g, '/').split(' ')[0]) : a;
-        diff_end_first = end_date.compare(self.first_day_of_calendar);
-        diff_end_first = diff_end_first.year < 0 ? 0 - diff_end_first.days : diff_end_first.days;
-        diff_start_first = a.compare(self.first_day_of_calendar);
-        diff_start_first = diff_start_first.year < 0 ? 0 - diff_start_first.days : diff_start_first.days;
-        diff = a.compare(end_date);
-        if (
-          (diff_start_first >= 0) ||
-          (diff_start_first < 0 && diff_end_first > 0 && diff_end_first < 42) ||
-          (diff_start_first <= 0 && diff_end_first >= 41)
-        ) {
-          if (diff.days == 0) {
-            c = 'first last';
-          } else if (
+        if (this.type == 'holiday') {
+          elem = $E(self.id + '-' + this.start);
+          if (elem) {
+            td = $G(elem.parentNode);
+            td.addClass('holiday');
+            if (this.title) {
+              a = document.createElement('i');
+              a.innerHTML = this.title;
+              td.appendChild(a);
+            }
+          }
+        } else {
+          start_date = this.start.split('T')[0].replace(/-/g, '/').split(' ')[0];
+          a = new Date(start_date);
+          end_date = this.end ? new Date(this.end.split('T')[0].replace(/-/g, '/').split(' ')[0]) : a;
+          diff_end_first = end_date.compare(self.first_day_of_calendar);
+          diff_end_first = diff_end_first.year < 0 ? 0 - diff_end_first.days : diff_end_first.days;
+          diff_start_first = a.compare(self.first_day_of_calendar);
+          diff_start_first = diff_start_first.year < 0 ? 0 - diff_start_first.days : diff_start_first.days;
+          diff = a.compare(end_date);
+          if (
+            (diff_start_first >= 0) ||
             (diff_start_first < 0 && diff_end_first > 0 && diff_end_first < 42) ||
             (diff_start_first <= 0 && diff_end_first >= 41)
           ) {
-            c = diff_start_first == 0 && diff_end_first == diff.days ? 'first' : 'sub';
-            a = self.first_day_of_calendar;
-            start = Date.parse(a);
-            diff = a.compare(end_date);
-          } else {
-            c = 'first';
-            start = Date.parse(start_date);
-          }
-          e = self._addLabel(a, this, c);
-          if (e) {
-            elems = [e];
-            top = e.offsetTop;
-            for (var i = 1; i <= diff.days; i++) {
-              d = new Date(start + i * 86400000);
-              e = self._addLabel(d, this, i == diff.days ? 'last' : 'sub');
-              if (e) {
-                if (d.getDay() == 0) {
-                  self._align(elems, top);
-                  elems = [e];
-                  top = e.offsetTop;
-                } else {
-                  elems.push(e);
-                  top = Math.max(top, e.offsetTop);
+            if (diff.days == 0) {
+              c = 'first last';
+            } else if (
+              (diff_start_first < 0 && diff_end_first > 0 && diff_end_first < 42) ||
+              (diff_start_first <= 0 && diff_end_first >= 41)
+            ) {
+              c = diff_start_first == 0 && diff_end_first == diff.days ? 'first' : 'sub';
+              a = self.first_day_of_calendar;
+              start = Date.parse(a);
+              diff = a.compare(end_date);
+            } else {
+              c = 'first';
+              start = Date.parse(start_date);
+            }
+            e = self._addLabel(a, this, c);
+            if (e) {
+              elems = [e];
+              top = e.offsetTop;
+              for (var i = 1; i <= diff.days; i++) {
+                d = new Date(start + i * 86400000);
+                e = self._addLabel(d, this, i == diff.days ? 'last' : 'sub');
+                if (e) {
+                  if (d.getDay() == 0) {
+                    self._align(elems, top);
+                    elems = [e];
+                    top = e.offsetTop;
+                  } else {
+                    elems.push(e);
+                    top = Math.max(top, e.offsetTop);
+                  }
                 }
               }
+              self._align(elems, top);
             }
-            self._align(elems, top);
           }
         }
       }

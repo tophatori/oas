@@ -15,7 +15,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * หมวดหมู่.
+ * หมวดหมู่
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -35,21 +35,19 @@ class Model extends \Kotchasan\Model
     {
         // Query ข้อมูลหมวดหมู่จากตาราง category
         $query = static::createQuery()
-            ->select('id', 'category_id', 'topic')
+            ->select('category_id', 'topic')
             ->from('category')
             ->where(array('type', $type))
             ->order('category_id');
         $result = array();
         foreach ($query->execute() as $item) {
-            $result[$item->id] = array(
-                'id' => $item->id,
+            $result[$item->category_id] = array(
                 'category_id' => $item->category_id,
                 'topic' => $item->topic,
             );
         }
         if (empty($result)) {
             $result[0] = array(
-                'id' => 0,
                 'category_id' => 1,
                 'topic' => '',
             );
@@ -59,18 +57,18 @@ class Model extends \Kotchasan\Model
     }
 
     /**
-     * บันทึกหมวดหมู่.
+     * บันทึกหมวดหมู่
      *
      * @param Request $request
      */
     public function submit(Request $request)
     {
         $ret = array();
-        // session, token, can_config
+        // session, token, สามารถบริหารจัดการได้, ไม่ใช่สมาชิกตัวอย่าง
         if ($request->initSession() && $request->isSafe() && $login = Login::isMember()) {
-            if (Login::notDemoMode($login) && Login::checkPermission($login, 'can_config')) {
+            if (Login::notDemoMode($login) && Login::checkPermission($login, 'can_manage_inventory')) {
                 // ค่าที่ส่งมา
-                $type = $request->post('type')->topic();
+                $type = $request->post('type')->filter('a-z_');
                 $save = array();
                 $category_exists = array();
                 foreach ($request->post('category_id')->toInt() as $key => $value) {
@@ -106,6 +104,9 @@ class Model extends \Kotchasan\Model
                     // เคลียร์
                     $request->removeToken();
                 }
+            }
+            if (empty($ret)) {
+                $ret['alert'] = Language::get('Unable to complete the transaction');
             }
             // คืนค่า JSON
             echo json_encode($ret);

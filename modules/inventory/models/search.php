@@ -24,7 +24,7 @@ class Model extends \Kotchasan\Model
 {
     /**
      * ค้นหาสินค้าจาก product_no
-     * คืนค่าเป็น JSON เพียงรายการเดียว.
+     * คืนค่าเป็น JSON เพียงรายการเดียว
      *
      * @param Request $request
      */
@@ -42,7 +42,7 @@ class Model extends \Kotchasan\Model
                 if ($request->post('typ')->toString() == 'buy') {
                     $search = $query->join('stock S', 'LEFT', array(
                         array('S.product_id', 'P.id'),
-                        array('S.status', 'IN'),
+                        array('S.status', self::$cfg->in_stock_status),
                     ))
                         ->first('P.id', 'P.product_no', 'P.topic', 'P.description', 'S.price', 'P.unit', 'S.vat');
                 } else {

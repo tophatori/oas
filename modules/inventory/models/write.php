@@ -38,13 +38,8 @@ class Model extends \Kotchasan\Model
             // query ข้อมูลที่เลือก
             return static::createQuery()
                 ->from('product P')
-                ->join('category C', 'LEFT', array(
-                    array('C.type', 0),
-                    array('C.category_id', 'P.category_id'),
-                ))
-                ->where(array(
-                    array('P.id', $id),
-                ))
+                ->join('category C', 'LEFT', array(array('C.type', 'category_id'), array('C.category_id', 'P.category_id')))
+                ->where(array('P.id', $id))
                 ->toArray()
                 ->first('P.*', 'C.topic category');
         } else {
@@ -78,6 +73,7 @@ class Model extends \Kotchasan\Model
             if (Login::checkPermission($login, 'can_manage_inventory') && Login::notDemoMode($login)) {
                 // รับค่าจากการ POST
                 $save = array(
+                    // product
                     'product_no' => $request->post('write_product_no')->topic(),
                     'topic' => $request->post('write_topic')->topic(),
                     'description' => $request->post('write_description')->topic(),
@@ -85,11 +81,11 @@ class Model extends \Kotchasan\Model
                     'unit' => $request->post('write_unit')->topic(),
                     'vat' => $request->post('write_vat')->toInt(),
                     'count_stock' => $request->post('write_count_stock')->toInt(),
-                );
-                $inventory = array(
-                    'price' => $request->post('write_buy_price')->toDouble(),
+                    'category' => $request->post('write_category')->topic(),
+                    // inventory
+                    'buy_price' => $request->post('write_buy_price')->toDouble(),
                     'quantity' => $request->post('write_quantity')->toDouble(),
-                    'vat' => $request->post('write_buy_vat')->toInt(),
+                    'buy_vat' => $request->post('write_buy_vat')->toInt(),
                     'member_id' => $login['id'],
                     'create_date' => $request->post('write_create_date')->date().date(' H:i:s'),
                 );
@@ -115,7 +111,7 @@ class Model extends \Kotchasan\Model
                             $ret['ret_write_product_no'] = Language::replace('This :name already exist', array(':name' => Language::get('Product code')));
                         }
                     }
-                    // ตรวจสอบ topic ซ้ำ
+                    // ตรวจสอบ topic
                     if (empty($save['topic'])) {
                         $ret['ret_write_topic'] = 'Please fill in';
                     } else {
@@ -123,44 +119,17 @@ class Model extends \Kotchasan\Model
                             array('topic', $save['topic']),
                         ));
                         if ($search !== false && $index['id'] != $search->id) {
-                            $ret['ret_write_opic'] = Language::replace('This :name already exist', array(':name' => Language::get('Product name')));
+                            $ret['ret_write_topic'] = Language::replace('This :name already exist', array(':name' => Language::get('Product name')));
                         }
                     }
                     if (empty($ret)) {
-                        // หมวดหมู่สินค้า
-                        $save['category_id'] = \Inventory\Category\Model::newCategory($request->post('write_category')->topic());
-                        // หน่วยสินค้า
-                        \Inventory\Category\Model::newUnit($save['unit']);
-                        // save product
-                        $save['last_update'] = time();
+                        // save
                         if ($index['id'] == 0) {
-                            // ใหม่
-                            $save['id'] = $db->insert($table_product, $save);
-                            // บันทึก inventory
-                            if ($inventory['quantity'] > 0) {
-                                $table_inventory = $this->getTableName('stock');
-                                $inventory['product_id'] = $save['id'];
-                                $inventory['order_id'] = 0;
-                                $inventory['status'] = 'IN';
-                                $inventory['total'] = $inventory['price'] * $inventory['quantity'];
-                                if ($inventory['vat'] > 0) {
-                                    if ($inventory['vat'] == 1) {
-                                        // ราคาสินค้าไม่รวม vat
-                                        $inventory['vat'] = (float) number_format(\Kotchasan\Currency::calcVat($inventory['total'], self::$cfg->vat, true), 2);
-                                    } else {
-                                        // ราคาสินค้ารวม vat
-                                        $inventory['vat'] = (float) number_format(\Kotchasan\Currency::calcVat($inventory['total'], self::$cfg->vat, false), 2);
-                                        $inventory['total'] = $inventory['total'] - $inventory['vat'];
-                                    }
-                                }
-                                // บันทึก
-                                $db->insert($table_inventory, $inventory);
-                            }
+                            // ใหม่ (เพิ่ม Stock ด้วย)
+                            \Inventory\Product\Model::newProduct($save);
                         } else {
-                            // แก้ไข
-                            $db->update($table_product, array(
-                                array('id', $index['id']),
-                            ), $save);
+                            // แก้ไขรายละเอียดของสินค้าเท่านั้น
+                            \Inventory\Product\Model::updateProduct($index['id'], $save);
                         }
                         // คืนค่า
                         $ret['alert'] = Language::get('Saved successfully');
@@ -170,11 +139,21 @@ class Model extends \Kotchasan\Model
                             // คืนค่าข้อมูล
                             $ret['product_no'] = $save['product_no'];
                         } elseif ($index['id'] == 0) {
-                            // ไปหน้าแรก แสดงรายการใหม่
-                            $ret['location'] = $request->getUri()->postBack('index.php', array('module' => 'inventory-setup', 'id' => null, 'page' => null));
+                            // ใหม่
+                            $save_and_create = $request->post('save_and_create')->toInt();
+                            if ($save_and_create == 1) {
+                                // เพิ่มรายการใหม่
+                                $ret['location'] = 'reload';
+                            } else {
+                                // ไปหน้าแรก แสดงรายการใหม่
+                                $ret['location'] = $request->getUri()->postBack('index.php', array('module' => 'inventory-setup', 'id' => null, 'page' => null));
+                            }
+                            // save cookie
+                            setcookie('save_and_create', $save_and_create, time() + 2592000, '/', HOST, HTTPS, true);
                         } else {
-                            // รีโหลด
-                            $ret['location'] = 'reload';
+                            // แก้ไข กลับไปหน้ารายการสินค้า
+                            $ret['location'] = $request->getUri()->postBack('index.php', array('module' => 'inventory-setup', 'id' => null));
+
                         }
                         // เคลียร์
                         $request->removeToken();

@@ -38,7 +38,7 @@ class Controller extends \Gcms\Controller
         // เลือกเมนู
         $this->menu = 'inventory';
         // สามารถทำรายการสินค้าได้
-        if ($login = Login::checkPermission(Login::isMember(), 'can_manage_inventory')) {
+        if (Login::checkPermission(Login::isMember(), 'can_manage_inventory')) {
             // อ่านข้อมูลที่เลือก
             $product = \Inventory\Write\Model::get($request->request('id')->toInt());
             if ($product) {
@@ -48,7 +48,7 @@ class Controller extends \Gcms\Controller
                     $this->title = Language::get('Add New').' '.$this->title;
                 } else {
                     $title = '{LNG_Detail}';
-                    $this->title = Language::get('Details of').' '.$product['topic'];
+                    $this->title = Language::get('Details of').' '.$product['product_no'];
                 }
                 // แสดงผล
                 $section = Html::create('section', array(
@@ -59,11 +59,11 @@ class Controller extends \Gcms\Controller
                     'class' => 'breadcrumbs',
                 ));
                 $ul = $breadcrumbs->add('ul');
-                $ul->appendChild('<li><a href="index.php" class="icon-home">{LNG_Home}</a></li>');
+                $ul->appendChild('<li><span class="icon-product">{LNG_Inventory}</span></li>');
                 $ul->appendChild('<li><a href="index.php?module=inventory-setup">{LNG_Product}</a></li>');
                 $ul->appendChild('<li><span>'.$title.'</span></li>');
                 $header = $section->add('header', array(
-                    'innerHTML' => '<h2 class="icon-product">'.$this->title.'</h2>',
+                    'innerHTML' => '<h2 class="icon-list">'.$this->title.'</h2>',
                 ));
                 $inline = $header->add('div', array(
                     'class' => 'inline',
@@ -100,13 +100,13 @@ class Controller extends \Gcms\Controller
                     $section->appendChild(createClass('Inventory\Overview\View')->render($request, $product));
                 } elseif ($tab == 'detail' && $product['id'] > 0) {
                     // รายละเอียดสินค้า
-                    $section->appendChild(createClass('Inventory\Detail\View')->render($request, $product, $login));
+                    $section->appendChild(createClass('Inventory\Detail\View')->render($request, $product));
                 } elseif ($tab == 'inventory' && $product['id'] > 0) {
-                    // ตารางสต๊อคสินค้า
-                    $section->appendChild(createClass('Inventory\Inventory\View')->render($request, $product, $login));
+                    // ตารางสต๊อกสินค้า
+                    $section->appendChild(createClass('Inventory\Inventory\View')->render($request, $product));
                 } else {
                     // แสดงฟอร์ม write
-                    $section->appendChild(createClass('Inventory\Write\View')->render($request, $product, $login));
+                    $section->appendChild(createClass('Inventory\Write\View')->render($request, $product));
                 }
                 // คืนค่า HTML
 

@@ -33,14 +33,12 @@ class Controller extends \Gcms\Controller
      */
     public function render(Request $request)
     {
-        // typ = 1 คือ Supplier ถ้าไม่ใช่ คือ Customer
-        $type = Language::get($request->request('typ')->toInt() == 1 ? 'Supplier' : 'Customer');
         // ข้อความ title bar
-        $this->title = $type;
+        $this->title = Language::trans('{LNG_Supplier}/{LNG_Customer}');
         // เลือกเมนู
         $this->menu = 'customer';
         // สามารถดูรายชื่อลูกค้าได้
-        if ($login = Login::checkPermission(Login::isMember(), array('can_buy', 'can_sell', 'can_manage_inventory'))) {
+        if ($login = Login::checkPermission(Login::isMember(), array('can_inventory_order', 'can_inventory_order', 'can_manage_inventory'))) {
             // อ่านข้อมูลลูกค้า
             $customer = \Inventory\Customer\Model::get($request->request('id')->toInt());
             if ($customer) {
@@ -63,7 +61,7 @@ class Controller extends \Gcms\Controller
                     'innerHTML' => '<h2 class="icon-customer">'.$this->title.'</h2>',
                 ));
                 // แสดงฟอร์ม
-                $section->appendChild(createClass('Inventory\Customer\View')->render($customer, $login, $type));
+                $section->appendChild(createClass('Inventory\Customer\View')->render($customer, $login));
 
                 return $section->render();
             }

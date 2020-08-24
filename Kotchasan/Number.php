@@ -54,4 +54,33 @@ class Number
     {
         return empty($divisor) ? 0 : $actual / $divisor;
     }
+
+    /**
+     * จัดรูปแบบตัวเลข รองรับการเติม วัน เดือน ปี
+     *
+     * @assert ('G%04d', 1) [==] "G0001"
+     * @assert ('G-%Y-%m-%d-%04d', 1) [==] "G-63-08-19-0001"
+     * @assert ('G-%y-%m-%d-%04d', 1) [==] "G-20-08-19-0001"
+     * @assert ('G-%YYYY-%m-%d-%04d', 1) [==] "G-2563-08-19-0001"
+     * @assert ('G-%yyyy-%m-%d-%04d', 1) [==] "G-2020-08-19-0001"
+     *
+     * @param string $format
+     * @param mixed $value
+     *
+     * @return string
+     */
+    public static function printf($format, $value)
+    {
+        $year_offset = (int) Language::get('YEAR_OFFSET');
+        $y = date('Y');
+        $Y = $y + $year_offset;
+        $m = date('m');
+        $d = date('d');
+        $format = str_replace(
+            array('%YY', '%yy', '%Y', '%y', '%M', '%m', '%D', '%d'),
+            array($Y, $y, substr($Y, 2, 2), substr($y, 2, 2), $m, $m, $d, $d),
+            $format);
+
+        return sprintf($format, $value);
+    }
 }

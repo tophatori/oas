@@ -33,7 +33,7 @@ function initInventoryWrite() {
     "name",
     "expand", {
       get: function() {
-        return "typ=3&name=" + encodeURIComponent($E("write_unit").value);
+        return "typ=unit&name=" + encodeURIComponent($E("write_unit").value);
       },
       callBack: function() {
         $G("write_unit").setValue(this.name).reset();
@@ -46,7 +46,7 @@ function initInventoryWrite() {
     "name",
     "category", {
       get: function() {
-        return "typ=0&name=" + encodeURIComponent($E("write_category").value);
+        return "typ=category_id&name=" + encodeURIComponent($E("write_category").value);
       },
       callBack: function() {
         $G("write_category").setValue(this.name).reset();
@@ -78,10 +78,10 @@ function initInventoryOverview(id) {
   });
 }
 
-function initInventoryInOut(vat_percent, typ) {
+function initInventoryOrder(vat_percent, typ) {
   var tbody = $G("tb_products");
   var addCustomer = function() {
-    showModal("xhr.php", "class=Inventory\\Customer\\Controller&method=showModal&typ=1&name=" + encodeURIComponent($E("customer").value), function() {
+    showModal("xhr.php", "class=Inventory\\Customer\\Controller&method=showModal&name=" + encodeURIComponent($E("customer").value), function() {
       $E("customer").focus();
     });
   };

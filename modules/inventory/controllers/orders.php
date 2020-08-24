@@ -1,6 +1,6 @@
 <?php
 /**
- * @filesource modules/inventory/controllers/inward.php
+ * @filesource modules/inventory/controllers/orders.php
  *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
@@ -8,7 +8,7 @@
  * @see http://www.kotchasan.com/
  */
 
-namespace Inventory\Inward;
+namespace Inventory\Orders;
 
 use Gcms\Login;
 use Kotchasan\Html;
@@ -16,7 +16,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * module=inventory-inward.
+ * module=inventory-orders
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -25,7 +25,7 @@ use Kotchasan\Language;
 class Controller extends \Gcms\Controller
 {
     /**
-     * รายงานการซื้อสินค้า.
+     * รายการ Orders
      *
      * @param Request $request
      *
@@ -33,19 +33,30 @@ class Controller extends \Gcms\Controller
      */
     public function render(Request $request)
     {
-        // เลือกเมนู
-        $this->menu = 'buy';
-        // member, can_buy
-        if ($login = Login::checkPermission(Login::isMember(), 'can_buy')) {
-            // ค่าที่ส่งมา
-            $owner = (object) array(
-                'typies' => Language::get('BUY_TYPIES'),
-                'year' => $request->request('year', date('Y'))->toInt(),
-                'month' => $request->request('month', date('m'))->toInt(),
-                'status' => $request->request('status')->toInt(),
-            );
-            $owner->status = isset($owner->typies[$owner->status]) ? $owner->status : self::$cfg->inward_status;
-            $title = '{LNG_Order report} '.$owner->typies[$owner->status];
+        // ค่าที่ส่งมา
+        $owner = (object) array(
+            'order_status' => Language::get('ORDER_STATUS'),
+            'year' => $request->request('year', date('Y'))->toInt(),
+            'month' => $request->request('month', date('m'))->toInt(),
+            'day' => $request->request('day', date('d'))->toInt(),
+            'status' => $request->request('status')->filter('A-Z'),
+        );
+        if (in_array($owner->status, self::$cfg->buy_status)) {
+            $this->menu = 'buy';
+            $sub_title = '{LNG_Buy}';
+            $title = '{LNG_Order report} ';
+        } else {
+            $owner->status = isset($owner->order_status[$owner->status]) ? $owner->status : 'OUT';
+            $this->menu = 'sell';
+            $sub_title = '{LNG_Sell}';
+            $title = '{LNG_Sales report} ';
+        }
+        // สามารถ ซื้อ/ขาย ได้
+        if (Login::checkPermission(Login::isMember(), 'can_inventory_order')) {
+            $title .= $owner->order_status[$owner->status];
+            if ($owner->day > 0) {
+                $title .= ' {LNG_date}  '.$owner->day;
+            }
             if ($owner->month > 0) {
                 $title .= ' {LNG_month}  '.Language::find('MONTH_LONG', null, $owner->month);
             }
@@ -63,13 +74,13 @@ class Controller extends \Gcms\Controller
             ));
             $ul = $breadcrumbs->add('ul');
             $ul->appendChild('<li><a href="index.php" class="icon-home">{LNG_Home}</a></li>');
-            $ul->appendChild('<li><span>{LNG_Buy}</span></li>');
+            $ul->appendChild('<li><span>'.$sub_title.'</span></li>');
             $ul->appendChild('<li><span>{LNG_Report}</span></li>');
             $section->add('header', array(
                 'innerHTML' => '<h2 class="icon-report">'.$this->title.'</h2>',
             ));
             // แสดงตาราง
-            $section->appendChild(createClass('Inventory\Inward\View')->render($request, $owner));
+            $section->appendChild(createClass('Inventory\Orders\View')->render($request, $owner));
             // คืนค่า HTML
 
             return $section->render();

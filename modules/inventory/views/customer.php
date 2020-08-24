@@ -22,15 +22,14 @@ use Kotchasan\Html;
 class View extends \Gcms\View
 {
     /**
-     * ฟอร์มเพิ่ม-แก้ไข ลูกค้า/ผู้จำหน่าย.
+     * ฟอร์มเพิ่ม-แก้ไข ลูกค้า/ผู้จำหน่าย
      *
      * @param array  $customer
      * @param array  $login
-     * @param string $type     Customer, Supplier
      *
      * @return string
      */
-    public function render($customer, $login, $type)
+    public function render($customer, $login)
     {
         // register form
         $form = Html::create('form', array(
@@ -43,7 +42,7 @@ class View extends \Gcms\View
             'ajax' => true,
         ));
         $fieldset = $form->add('fieldset', array(
-            'title' => '{LNG_Details of} '.$type,
+            'title' => '{LNG_Details of} {LNG_Supplier}/{LNG_Customer}',
         ));
         $groups = $fieldset->add('groups');
         // company

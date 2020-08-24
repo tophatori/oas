@@ -41,14 +41,15 @@ class Model extends \Kotchasan\KBase
                 $config->authorized = $request->post('company_authorized')->topic();
                 $config->email = $request->post('company_email')->url();
                 $config->product_no = $request->post('product_no')->topic();
-                $config->order_no = $request->post('order_no')->topic();
-                $config->billing_no = $request->post('billing_no')->topic();
                 $config->currency_unit = $request->post('currency_unit')->filter('A-Z');
                 $config->bank = $request->post('bank')->topic();
                 $config->bank_name = $request->post('bank_name')->filter('a-z');
                 $config->bank_no = $request->post('bank_no')->topic();
                 $config->inventory_w = $request->post('inventory_w')->toInt();
                 $config->inventory_h = $request->post('inventory_h')->toInt();
+                foreach (Language::get('ORDER_STATUS') as $s => $label) {
+                    $config->{$s.'_NO'} = $request->post($s.'_NO')->topic();
+                }
                 // save config
                 if (Config::save($config, ROOT_PATH.'settings/config.php')) {
                     $ret['alert'] = Language::get('Saved successfully');

@@ -15,10 +15,6 @@ return array(
     0 => 'Disable',
     1 => 'Enabled'
   ),
-  'BUY_TYPIES' => array(
-    1 => 'Purchase Order',
-    6 => 'Receiving Inventory'
-  ),
   'COUNT_STOCK' => array(
     0 => 'Not counting stock',
     1 => 'Stock count'
@@ -49,8 +45,8 @@ return array(
     6 => 'Sa'
   ),
   'INVENTORY_CATEGORIES' => array(
-    0 => 'Product Category',
-    3 => 'Product Unit'
+    'category_id' => 'Product Category',
+    'unit' => 'Product Unit'
   ),
   'INVENTORY_STATUS' => array(
     'OUT' => 'Sale/Removed from inventory',
@@ -90,6 +86,12 @@ return array(
     12 => 'Dec'
   ),
   'Name' => 'Name Surname',
+  'ORDER_STATUS' => array(
+    'QUO' => 'Quotation',
+    'OUT' => 'Receipt',
+    'PO' => 'Purchase Order',
+    'IN' => 'Receiving Inventory'
+  ),
   'PERMISSIONS' => array(
     'can_config' => 'Can configure the system',
     'can_customer' => 'Can manage the customer list'
@@ -97,10 +99,6 @@ return array(
   'PUBLISHEDS' => array(
     0 => 'Unpublished',
     1 => 'Published'
-  ),
-  'SELL_TYPIES' => array(
-    1 => 'Quotation',
-    6 => 'Receipt'
   ),
   'SEXES' => array(
     'f' => 'Female',

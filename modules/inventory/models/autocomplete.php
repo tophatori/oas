@@ -14,7 +14,7 @@ use Gcms\Login;
 use Kotchasan\Http\Request;
 
 /**
- * ค้นหาสมาชิก สำหรับ autocomplete.
+ * ค้นหาสมาชิก สำหรับ autocomplete
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -85,7 +85,7 @@ class Model extends \Kotchasan\Model
 
     /**
      * ค้นหาสินค้า สำหรับ autocomplete
-     * คืนค่าเป็น JSON.
+     * คืนค่าเป็น JSON
      *
      * @param Request $request
      */
@@ -94,7 +94,6 @@ class Model extends \Kotchasan\Model
         if ($request->initSession() && $request->isReferer() && Login::isMember()) {
             $search = $request->post('name')->topic();
             $where = array();
-            $select = array('id', 'name', 'email');
             $order = array();
             foreach (explode(',', $request->post('from', 'product_no,topic')->filter('a-z_,')) as $item) {
                 if ($item == 'product_no') {

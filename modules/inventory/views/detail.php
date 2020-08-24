@@ -28,11 +28,10 @@ class View extends \Gcms\View
      *
      * @param Request $request
      * @param array   $product
-     * @param array   $login
      *
      * @return string
      */
-    public function render(Request $request, $product, $login)
+    public function render(Request $request, $product)
     {
         // form
         $form = Html::create('form', array(

@@ -10,8 +10,6 @@
 
 namespace Inventory\Home;
 
-use Kotchasan\Database\Sql;
-
 /**
  * ค้นหาสินค้า.
  *
@@ -26,7 +24,7 @@ class Model extends \Kotchasan\Model
      *
      * @param array $login
      *
-     * @return int
+     * @return object
      */
     public static function getCardData($login)
     {
@@ -37,16 +35,13 @@ class Model extends \Kotchasan\Model
         $sql1 = array($db->createQuery()->selectCount()->from('customer'), 'customers');
         $sql2 = array($db->createQuery()->selectCount()->from('product'), 'products');
         $sql3 = array($db->createQuery()->selectCount()->from('orders')->where(array(
-            array('stock_status', 'IN'),
-            array('status', 1),
-            array(Sql::YEAR('order_date'), date('Y')),
-            array(Sql::MONTH('order_date'), date('m')),
-        )), 'purcashe_order');
-        $sql4 = array($db->createQuery()->selectCount()->from('orders')->where(array(
-            array('stock_status', 'OUT'),
-            array('status', self::$cfg->outstock_status),
+            array('status', 'OUT'),
             array('order_date', date('Y-m-d')),
-        )), 'receipt');
+        )), 'sell');
+        $sql4 = array($db->createQuery()->selectCount()->from('orders')->where(array(
+            array('status', 'PO'),
+            array('order_date', date('Y-m-d')),
+        )), 'purcashe_order');
 
         return $db->createQuery()->first($sql1, $sql2, $sql3, $sql4);
     }

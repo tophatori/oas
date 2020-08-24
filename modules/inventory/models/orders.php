@@ -1,6 +1,6 @@
 <?php
 /**
- * @filesource modules/inventory/models/inward.php
+ * @filesource modules/inventory/models/orders.php
  *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
@@ -8,7 +8,7 @@
  * @see http://www.kotchasan.com/
  */
 
-namespace Inventory\Inward;
+namespace Inventory\Orders;
 
 use Gcms\Login;
 use Kotchasan\Database\Sql;
@@ -16,7 +16,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * โมเดลสำหรับ (setup.php).
+ * module=inventory-orders
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -25,7 +25,7 @@ use Kotchasan\Language;
 class Model extends \Kotchasan\Model
 {
     /**
-     * Query ข้อมูลสำหรับส่งให้กับ DataTable.
+     * Query ข้อมูลสำหรับส่งให้กับ DataTable
      *
      * @param object $owner
      *
@@ -39,10 +39,7 @@ class Model extends \Kotchasan\Model
             ->join('customer C', 'LEFT', array(
                 array('C.id', 'O.customer_id'),
             ))
-            ->where(array(
-                array('O.status', $owner->status),
-                array('O.stock_status', 'IN'),
-            ));
+            ->where(array('O.status', $owner->status));
     }
 
     /**
@@ -53,9 +50,9 @@ class Model extends \Kotchasan\Model
     public function action(Request $request)
     {
         $ret = array();
-        // session, referer, can_buy, ไม่ใช่สมาชิกตัวอย่าง
+        // session, referer, สามารถ ซื้อ/ขาย ได้, ไม่ใช่สมาชิกตัวอย่าง
         if ($request->initSession() && $request->isReferer() && $login = Login::isMember()) {
-            if (Login::checkPermission($login, 'can_buy') && Login::notDemoMode($login)) {
+            if (Login::checkPermission($login, 'can_inventory_order') && Login::notDemoMode($login)) {
                 // รับค่าจากการ POST
                 $action = $request->post('action')->toString();
                 // id ที่ส่งมา

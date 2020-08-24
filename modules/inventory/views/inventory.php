@@ -10,16 +10,16 @@
 
 namespace Inventory\Inventory;
 
-use Inventory\Stock\Model as Stock;
 use Kotchasan\Currency;
 use Kotchasan\DataTable;
 use Kotchasan\Date;
 use Kotchasan\Html;
 use Kotchasan\Http\Request;
 use Kotchasan\Language;
+use Kotchasan\Number;
 
 /**
- * module=inventory-write&tab=inventory.
+ * module=inventory-write&tab=inventory
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -28,16 +28,24 @@ use Kotchasan\Language;
 class View extends \Gcms\View
 {
     /**
-     * @var int
+     * @var float
      */
     private $total = 0;
     /**
-     * @var int
+     * @var float
      */
     private $quantity = 0;
+    /**
+     * @var float
+     */
+    private $vat = 0;
+    /**
+     * @var string
+     */
+    private $status;
 
     /**
-     * ตารางสต๊อคสินค้า.
+     * ตารางสต๊อกสินค้า.
      *
      * @param array $product
      *
@@ -45,6 +53,13 @@ class View extends \Gcms\View
      */
     public function render(Request $request, $product)
     {
+        $this->status = $request->request('status')->filter('A-Z');
+        $params = array(
+            'id' => $product['id'],
+            'status' => $this->status,
+            'year' => $request->request('year', date('Y'))->toInt(),
+            'month' => $request->request('month')->toInt(),
+        );
         // ตาราง
         $table = new DataTable(array(
             'id' => 'inventory_table',
@@ -55,29 +70,26 @@ class View extends \Gcms\View
             /* เรียงลำดับ */
             'sort' => $request->cookie('inventory_sort', 'create_date desc')->toString(),
             /* Model */
-            'model' => \Inventory\Stock\Model::toDataTable($product['id']),
+            'model' => \Inventory\Inventory\Model::toDataTable($params),
             /* ตัวเลือกด้านบนของตาราง ใช้จำกัดผลลัพท์การ query */
             'filters' => array(
-                'status' => array(
+                array(
                     'name' => 'status',
-                    'default' => '',
                     'text' => '{LNG_Status}',
-                    'options' => Language::get('INVENTORY_STATUS'),
-                    'value' => $request->request('status', 'OUT')->filter('A-Z'),
+                    'options' => array('' => '{LNG_all items}') + Language::get('INVENTORY_STATUS'),
+                    'value' => $params['status'],
                 ),
-                'YEAR(`create_date`)' => array(
+                array(
                     'name' => 'year',
-                    'default' => 0,
                     'text' => '{LNG_year}',
-                    'options' => array('' => '{LNG_all items}') + Stock::listYears($product['id']),
-                    'value' => $request->request('year', date('Y'))->toInt(),
+                    'options' => array('' => '{LNG_all items}')+\Inventory\Stock\Model::listYears($product['id']),
+                    'value' => $params['year'],
                 ),
-                'MONTH(`create_date`)' => array(
+                array(
                     'name' => 'month',
-                    'default' => 0,
                     'text' => '{LNG_month}',
                     'options' => array(0 => '{LNG_all items}') + Language::get('MONTH_LONG'),
-                    'value' => $request->request('month')->toInt(),
+                    'value' => $params['month'],
                 ),
             ),
             /* ฟังก์ชั่นจัดรูปแบบการแสดงผลแถวของตาราง */
@@ -104,8 +116,12 @@ class View extends \Gcms\View
                     'text' => '{LNG_Unit price}',
                     'class' => 'center',
                 ),
+                'vat' => array(
+                    'text' => '{LNG_VAT}',
+                    'class' => 'center',
+                ),
                 'total' => array(
-                    'text' => '{LNG_Total}',
+                    'text' => '{LNG_Amount}',
                     'class' => 'center',
                     'sort' => 'total',
                 ),
@@ -118,6 +134,9 @@ class View extends \Gcms\View
                 'price' => array(
                     'class' => 'right',
                 ),
+                'vat' => array(
+                    'class' => 'right',
+                ),
                 'total' => array(
                     'class' => 'right',
                 ),
@@ -126,12 +145,11 @@ class View extends \Gcms\View
         // save cookie
         setcookie('inventory_perPage', $table->perPage, time() + 2592000, '/', HOST, HTTPS, true);
         setcookie('inventory_sort', $table->sort, time() + 2592000, '/', HOST, HTTPS, true);
-        $table->script('initModal("inventory_table");');
         // คืนค่า section
 
         return Html::create('section', array(
             'id' => 'inventory',
-            'innerHTML' => '<h3>{LNG_Inventory} '.$product['topic'].' {LNG_Product code} '.$product['product_no'].'</h3>'.$table->render(),
+            'innerHTML' => '<h3>{LNG_Inventory}</h3>'.$table->render(),
         ))->render();
     }
 
@@ -144,17 +162,28 @@ class View extends \Gcms\View
      */
     public function onRow($item, $o, $prop)
     {
-        $this->total += $item['total'];
-        $this->quantity += $item['quantity'];
+        $this->vat += $item['vat'];
         $item['create_date'] = Date::format($item['create_date'], 'd M Y');
-        $item['quantity'] = '<span class=status'.($item['status'] == 'IN' ? 0 : 1).'>'.$item['quantity'].'</span>';
         $item['price'] = Currency::format($item['price']);
-        $item['total'] = Currency::format($item['total']);
+        $item['vat'] = Currency::format($item['vat']);
+        $total = $item['total'];
+        $quantity = $item['quantity'];
+        if ($this->status == '') {
+            if (in_array($item['status'], self::$cfg->in_stock_status)) {
+                $total = -$item['total'];
+            } else {
+                $quantity = -$item['quantity'];
+            }
+        }
+        $this->total += $total;
+        $this->quantity += $quantity;
+        $item['quantity'] = '<span class=status'.(in_array($item['status'], self::$cfg->in_stock_status) ? 0 : 1).'>'.Number::format($quantity).'</span>';
+        $item['total'] = Currency::format($total);
         if ($item['order_id'] == 0) {
             // ยอดเริ่มต้น
             $item['order_no'] = '{LNG_Beginning Inventory}';
         } else {
-            $item['order_no'] = '<a href="index.php?module=inventory-'.($item['status'] == 'IN' ? 'buy' : 'sell').'&id='.$item['order_id'].'">'.$item['order_no'].'</a>';
+            $item['order_no'] = '<a href="index.php?module=inventory-order&id='.$item['order_id'].'">'.$item['order_no'].'</a>';
         }
 
         return $item;
@@ -167,6 +196,6 @@ class View extends \Gcms\View
      */
     public function onCreateFooter()
     {
-        return '<tr><td class=right colspan=2>{LNG_Total}</td><td class=center>'.$this->quantity.'</td><td></td><td class=right>'.Currency::format($this->total).'</td></tr>';
+        return '<tr><td class=right colspan=2>{LNG_Total}</td><td class=center>'.$this->quantity.'</td><td colspan=2 class=right>'.Currency::format($this->vat).'</td><td class=right>'.Currency::format($this->total).'</td></tr>';
     }
 }

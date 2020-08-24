@@ -392,18 +392,24 @@ class Request extends AbstractRequest implements \Psr\Http\Message\RequestInterf
     }
 
     /**
-     * อ่านค่าจากตัวแปร $_POST $_GET ตามลำดับ
+     * อ่านค่าจากตัวแปร $_POST $_GET $_COOKIE(options) ตามลำดับ
      * คืนค่ารายการแรกที่พบ ถ้าไม่พบเลยคืนค่า $default
-     * คืนค่า InputItem หรือ แอเรย์ของ InputItem.
+     * คืนค่า InputItem หรือ แอเรย์ของ InputItem
      *
      * @param string $name    ชื่อตัวแปร
      * @param mixed  $default ค่าเริ่มต้นหากไม่พบตัวแปร
+     * @param mixed  $cookie  false (default) ไม่อ่านจาก cookie, true อ่านจาก cookie ด้วย
      *
      * @return \Kotchasan\InputItem|\Kotchasan\Inputs
      */
-    public function request($name, $default = null)
+    public function request($name, $default = null, $cookie = false)
     {
-        return $this->globals(array('POST', 'GET'), $name, $default);
+        $from = array('POST', 'GET');
+        if ($cookie) {
+            $from[] = 'COOKIE';
+        }
+
+        return $this->globals($from, $name, $default);
     }
 
     /**

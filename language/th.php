@@ -33,6 +33,7 @@ return array(
     'gsb' => 'ธนาคารทหารไทย'
   ),
   'Barcode' => 'บาร์โค้ด',
+  'Beginning Inventory' => 'ยอดยกมา',
   'Billing No.' => 'เลขที่ใบเสร็จ',
   'BOOLEANS' => array(
     0 => 'ปิดใช้งาน',
@@ -42,14 +43,11 @@ return array(
   'Browse file' => 'เลือกไฟล์',
   'Browse image uploaded, type :type size :width*:height pixel' => 'เลือกรูปภาพอัปโหลด ชนิด :type ขนาด :width*:height พิกเซล',
   'Buy' => 'ซื้อ',
-  'BUY_TYPIES' => array(
-    1 => 'ใบสั่งซื้อ',
-    6 => 'ใบรับสินค้า'
-  ),
   'Can make an order' => 'สามารถทำรายการสั่งซื้อสินค้าได้',
   'Can manage the inventory' => 'สามารถบริหารจัดการคลังสินค้าได้',
   'Can not be performed this request. Because they do not find the information you need or you are not allowed' => 'ไม่สามารถดำเนินการตามที่ร้องขอได้ เนื่องจากไม่พบข้อมูลที่ต้องการ หรือ คุณไม่มีสิทธิ์',
   'Can sell items' => 'สามารถทำรายการขายสินค้าได้',
+  'Cash' => 'เงินสด',
   'Category' => 'หมวดหมู่',
   'Change language' => 'สลับภาษา',
   'click to edit' => 'คลิกเพื่อแก้ไข',
@@ -59,7 +57,10 @@ return array(
   'Company logo' => 'โลโกของบริษัท',
   'Company name' => 'ชื่อบริษัท',
   'Company profile' => 'ข้อมูลบริษัท',
+  'Contact name If the customer is an agency or company' => 'ชื่อผู้ติดต่อหากลูกค้าเป็นหน่วยงานหรือบริษัท',
+  'Contactor' => 'ผู้ติดต่อ',
   'Corporate information and contacts' => 'ข้อมูลทั่วไปของบริษัทและการติดต่อ',
+  'Cost' => 'ต้นทุน',
   'COUNT_STOCK' => array(
     0 => 'ไม่นับสต๊อก',
     1 => 'นับสต๊อก'
@@ -79,6 +80,7 @@ return array(
   'Current staff' => 'พนักงานปัจจุบัน',
   'Customer' => 'ลูกค้า',
   'Customer list' => 'รายชื่อลูกค้า',
+  'Cut stock' => 'การตัดสต๊อก',
   'Dashboard' => 'แผงควบคุมหลัก',
   'date' => 'วันที่',
   'DATE_FORMAT' => 'd M Y เวลา H:i น.',
@@ -132,6 +134,7 @@ return array(
   'From' => 'จาก',
   'General' => 'ทั่วไป',
   'General site settings' => 'ตั้งค่าพื้นฐานของเว็บไซต์',
+  'Get into stock' => 'รับเข้าสต๊อก',
   'Get new password' => 'ขอรหัสผ่าน',
   'go to page' => 'ไปหน้าที่',
   'Grand total' => 'รวมราคาทั้งสิ้น',
@@ -146,8 +149,8 @@ return array(
   'Invalid :name' => ':name ไม่ถูกต้อง',
   'Inventory' => 'คลังสินค้า',
   'INVENTORY_CATEGORIES' => array(
-    0 => 'หมวดหมู่สินค้า',
-    3 => 'หน่วยนับสินค้า'
+    'category_id' => 'หมวดหมู่สินค้า',
+    'unit' => 'หน่วยนับสินค้า'
   ),
   'INVENTORY_STATUS' => array(
     'OUT' => 'ขาย/จ่ายออก',
@@ -210,13 +213,17 @@ return array(
     11 => 'พ.ย.',
     12 => 'ธ.ค.'
   ),
+  'monthly' => 'รายเดือน',
   'Name' => 'ชื่อ นามสกุล',
   'Name of establishment' => 'ชื่อสถานประกอบการ',
   'Name of establishment registered VAT' => 'ชื่อสถานประกอบการที่จดทะเบียนภาษีมูลค่าเพิ่ม',
+  'Name of the person or company&#039;s name' => 'ชื่อของบุคคลหรือชื่อบริษัท',
   'Natural Person' => 'บุคคลธรรมดา',
   'New' => 'ใหม่',
   'No need to fill in English text. If the English text matches the Key' => 'ไม่จำเป็นต้องกรอกข้อความในภาษาอังกฤษ หากข้อความในภาษาอังกฤษตรงกับคีย์',
+  'No need to fill in the purchase price if the product is not counting stock' => 'ไม่จำเป็นต้องกรอกราคาซื้อหากสินค้าไม่นับสต๊อก',
   'not a registered user' => 'ไม่พบสมาชิกนี้ลงทะเบียนไว้',
+  'Not enough products, Remaining :stock' => 'มีสินค้าไม่เพียงพอ คงเหลือ :stock',
   'not required' => 'ไม่มีไม่ต้องกรอก',
   'number format such as %04d (%04d means the number on 4 digits, up to 11 digits)' => 'รูปแบบรหัสตัวเลข เช่น %04d (%04d หมายถึงตัวเลขจำนวนสี่หลัก, สูงสุดไม่เกิน 11 หลัก)',
   'Number of transactions' => 'เลขที่การทำรายการ',
@@ -225,6 +232,12 @@ return array(
   'Order details' => 'รายละเอียดการสั่งซื้อ',
   'Order No.' => 'เลขที่ใบสั่งซื้อ',
   'Order report' => 'รายงานการสั่งซื้อ',
+  'ORDER_STATUS' => array(
+    'QUO' => 'ใบเสนอราคา',
+    'OUT' => 'ใบเสร็จรับเงิน',
+    'PO' => 'ใบสั่งซื้อ',
+    'IN' => 'ใบรับสินค้า'
+  ),
   'Other' => 'อื่นๆ',
   'Other details' => 'รายละเอียดอื่นๆ',
   'Overview' => 'ภาพรวม',
@@ -254,6 +267,7 @@ return array(
     0 => 'ระงับการเผยแพร่',
     1 => 'เผยแพร่'
   ),
+  'Purchase price' => 'ราคาซื้อ',
   'Quantity' => 'จำนวน',
   'Register' => 'สมัครสมาชิก',
   'Register successfully, We have sent complete registration information to :email' => 'ลงทะเบียนสมาชิกใหม่เรียบร้อย เราได้ส่งข้อมูลการลงทะเบียนไปยัง :email เรียบร้อยแล้ว',
@@ -261,7 +275,9 @@ return array(
   'remove this photo' => 'ลบรูปภาพนี้ออก',
   'Repassword' => 'ยืนยันรหัสผ่าน',
   'Report' => 'รายงาน',
+  'Sales items that can be cut stock' => 'รายการขายที่ตัดสต๊อก',
   'Sales report' => 'รายงานการขาย',
+  'Sales today' => 'ยอดขายวันนี้',
   'Save' => 'บันทึก',
   'Save and create new' => 'บันทึกแล้วสร้างใหม่',
   'Save and email completed' => 'บันทึก และส่งอีเมลเรียบร้อย',
@@ -271,10 +287,6 @@ return array(
   'Select an image size 500 * 500 pixel jpg, png types' => 'เลือกรูปภาพ ขนาด 500 * 500 พิกเซล ชนิด jpg และ png',
   'Sell' => 'ขาย',
   'Sell price' => 'ราคาขาย',
-  'SELL_TYPIES' => array(
-    1 => 'ใบเสนอราคา',
-    6 => 'ใบเสร็จ'
-  ),
   'Send a welcome email to new members' => 'ส่งข้อความต้อนรับสมาชิกใหม่',
   'Server time' => 'เวลาของเซิร์ฟเวอร์',
   'Service' => 'บริการ',
@@ -289,6 +301,7 @@ return array(
   ),
   'Short description about your website' => 'ข้อความสั้นๆอธิบายว่าเป็นเว็บไซต์เกี่ยวกับอะไร',
   'Show' => 'แสดง',
+  'show on receipt' => 'แสดงในใบเสร็จ',
   'Site Name' => 'ชื่อของเว็บไซต์',
   'Site settings' => 'ตั้งค่าเว็บไซต์',
   'Size of' => 'ขนาดของ',
@@ -298,6 +311,7 @@ return array(
     '' => 'การเชื่อมต่อแบบปกติ',
     'ssl' => 'การเชื่อมต่อที่ปลอดภัย (SSL)'
   ),
+  'Some items can not be removed because it is in use' => 'บางรายการไม่สามารถลบได้ เนื่องจากมีการใช้งานอยู่',
   'Sorry' => 'ขออภัย',
   'Sorry, cannot find a page called Please check the URL or try the call again.' => 'ขออภัย ไม่พบหน้าที่เรียก กรุณาตรวจสอบ URL หรือลองเรียกใหม่อีกครั้ง',
   'Sorry, Item not found It&#39;s may be deleted' => 'ขออภัย ไม่พบรายการที่เลือก รายการนี้อาจถูกลบไปแล้ว',
@@ -343,6 +357,7 @@ return array(
   'Username' => 'ชื่อผู้ใช้',
   'Username for the mail server. (To change, enter a new value.)' => 'ชื่อผู้ใช้ของเมล์เซิร์ฟเวอร์ (ต้องการเปลี่ยน ให้กรอก)',
   'Users' => 'สมาชิก',
+  'Waiting for payment' => 'รอชำระเงิน',
   'Website title' => 'ชื่อเว็บ',
   'Welcome' => 'สวัสดี',
   'Welcome %s, login complete' => 'สวัสดี คุณ %s ยินดีต้อนรับเข้าสู่ระบบ',

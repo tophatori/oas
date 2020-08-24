@@ -33,6 +33,7 @@ return array(
     'gsb' => 'ธนาคารทหารไทย'
   ),
   'Barcode' => 'ບາໂຄດ',
+  'Beginning Inventory' => 'ການເລີ່ມຕົ້ນດຸ່ນດ່ຽງ',
   'Billing No.' => 'ເລກທີໃບຮັບເງິນ',
   'BOOLEANS' => array(
     0 => 'ປິດໃຊ້ວຽກ',
@@ -42,14 +43,11 @@ return array(
   'Browse file' => 'ເລືອກໄຟລ໌',
   'Browse image uploaded, type :type size :width*:height pixel' => 'ເລືອກຮູບພາບອັບໂຫຼດຊະນິດ :type ຂະໜາດ :width*:height ຟິດເຊວล',
   'Buy' => 'ຊື້',
-  'BUY_TYPIES' => array(
-    1 => 'ສັ່ງຊື້',
-    6 => 'ໃບຮັບຜະລິດຕະພັນ'
-  ),
   'Can make an order' => 'ສາມາດສັ່ງຊື້ໄດ້',
   'Can manage the inventory' => 'ສາມາດຄຸ້ມຄອງສາງ',
   'Can not be performed this request. Because they do not find the information you need or you are not allowed' => 'ບໍ່ສາມາດດຳເນີນການຕາມທີ່ຮ້ອງຂໍໄດ້ເນື່ອງຈາກບໍ່ພົບຂໍ້ມູນທີ່ຕ້ອງການ ຫຼື ທ່ານບໍ່ມີສິດ',
   'Can sell items' => 'ສາມາດສ້າງລາຍການຂາຍໄດ້',
+  'Cash' => 'ເງິນສົດ',
   'Category' => 'ໝວດ',
   'Change language' => 'ສະຫລັບພາສາ',
   'click to edit' => 'ກົດເພື່ອແກ້ໄຂ',
@@ -59,7 +57,10 @@ return array(
   'Company logo' => 'ໂລໂກ້ຂອງບໍລິສັດ',
   'Company name' => 'ຊື່ບໍລິສັດ',
   'Company profile' => 'ຂໍ້ມູນບໍລິສັດ',
+  'Contact name If the customer is an agency or company' => 'ຊື່ຕິດຕໍ່ຖ້າລູກຄ້າແມ່ນອົງການຫລືບໍລິສັດ',
+  'Contactor' => 'ຜູ້ຕິດຕໍ່',
   'Corporate information and contacts' => 'ຂໍ້ມູນແລະການຕິດຕໍ່ຂອງບໍລິສັດ',
+  'Cost' => 'ຕົ້ນທຶນ',
   'COUNT_STOCK' => array(
     0 => 'ບໍ່ນັບຫຼັກຊັບ',
     1 => 'ນັບຫຸ້ນ'
@@ -79,6 +80,7 @@ return array(
   'Current staff' => 'ພະນັກງານໃນປະຈຸບັນ',
   'Customer' => 'ລູກຄ້າ',
   'Customer list' => 'ລາຍຊື່ລູກຄ້າ',
+  'Cut stock' => 'ຕັດຫຸ້ນ',
   'Dashboard' => 'ແຜງຄວບຄຸມ',
   'date' => 'ວັນທີ',
   'DATE_FORMAT' => 'd M Y ເວລາ H:i ນ.',
@@ -132,6 +134,7 @@ return array(
   'From' => 'ຈາກ',
   'General' => 'ທົ່ວໄປ',
   'General site settings' => 'ຕັ້ງຄ່າພື້ນຖານຂອງເວັບໄຊ',
+  'Get into stock' => 'ເຂົ້າໄປໃນຫຸ້ນ',
   'Get new password' => 'ຂໍລະຫັດຜ່ານ',
   'go to page' => 'ໄປທີ່ໜ້າ',
   'Grand total' => 'ລວມ​ທັງ​ຫມົດ',
@@ -146,8 +149,8 @@ return array(
   'Invalid :name' => ':name ບໍ່ຖືກຕ້ອງ',
   'Inventory' => 'ສາງ',
   'INVENTORY_CATEGORIES' => array(
-    0 => 'ໝວດສິນຄ້າ',
-    3 => 'ໜ່ວຍນັບຜະລິດຕະພັນ'
+    'category_id' => 'ໝວດສິນຄ້າ',
+    'unit' => 'ໜ່ວຍນັບຜະລິດຕະພັນ'
   ),
   'INVENTORY_STATUS' => array(
     'OUT' => 'ຂາຍ/ຈ່າຍອອກ',
@@ -210,13 +213,17 @@ return array(
     11 => 'ພ.ຈ.',
     12 => 'ທ.ວ.'
   ),
+  'monthly' => 'ລາຍເດືອນ',
   'Name' => 'ຊື່ ນາມສະກຸນ',
   'Name of establishment' => 'ການສະຖາບັນການຄ້າ',
   'Name of establishment registered VAT' => 'ຊື່ຂອງການສ້າງຕັ້ງຂຶ້ນທະບຽນ VAT',
+  'Name of the person or company&#039;s name' => 'ຊື່ຂອງບຸກຄົນຫຼືຊື່ບໍລິສັດ',
   'Natural Person' => 'ບຸກຄົນ',
   'New' => 'ໃໝ່',
   'No need to fill in English text. If the English text matches the Key' => 'ບໍ່ຈຳເປັນເພີ່ມຂໍ້ຄວາມໃນພາສາອັງກິດຫາກຂໍ້ຄວາມໃນພາສານອັງກົງກັບແປ້ນພີມ',
+  'No need to fill in the purchase price if the product is not counting stock' => 'ບໍ່ຈຳເປັນຕ້ອງຕື່ມລາຄາຊື້ຖ້າສິນຄ້າບໍ່ຢູ່ໃນສະຕັອກ',
   'not a registered user' => 'ບໍ່ພົບສະມາຊິກນີ້ລົງທະບຽນໄວ້',
+  'Not enough products, Remaining :stock' => 'ຜະລິດຕະພັນບໍ່ພຽງພໍ, ຍັງເຫຼືອ :stock',
   'not required' => 'ບໍ່ຕ້ອງການ',
   'number format such as %04d (%04d means the number on 4 digits, up to 11 digits)' => 'ຮູບແບບລະຫັດຂອງຕົວເລກ, ເຊັ່ນວ່າ %04d (%04d ໝາຍ ຄວາມວ່າ 4 ຕົວເລກ, ສູງເຖິງ 11 ຕົວເລກ)',
   'Number of transactions' => 'ໝາຍເລກການເຮັດທຸລະກຳ',
@@ -225,6 +232,12 @@ return array(
   'Order details' => 'ລາຍລະອຽດການສັ່ງຊື້',
   'Order No.' => 'ຈໍານວນຄໍາສັ່ງ',
   'Order report' => 'ລາຍງານການສັ່ງຊື້',
+  'ORDER_STATUS' => array(
+    'QUO' => 'ວົງຢືມ',
+    'OUT' => 'ໃບຮັບເງິນ',
+    'PO' => 'ສັ່ງຊື້',
+    'IN' => 'ໃບຮັບ'
+  ),
   'Other' => 'ອື່ນໆ',
   'Other details' => 'ລາຍລະອຽດອື່ນໆ',
   'Overview' => 'ພາບລວມ',
@@ -253,6 +266,7 @@ return array(
     0 => 'ໂຈະການພິມເຜີຍແຜ່',
     1 => 'ເຜີຍແຜ່'
   ),
+  'Purchase price' => 'ລາຄາຊື້',
   'Quantity' => 'ຈຳນວນ',
   'Register' => 'ສະໝັກສະມາຊິກ',
   'Register successfully, We have sent complete registration information to :email' => 'ລົງທະບຽນຢ່າງປະສົບຜົນ ສຳ ເລັດ, ພວກເຮົາໄດ້ສົ່ງຂໍ້ມູນການລົງທະບຽນຄົບຖ້ວນໃຫ້ :email',
@@ -260,7 +274,9 @@ return array(
   'remove this photo' => 'ເອົາຮູບນີ້ອອກ',
   'Repassword' => 'ຢືນຢັນລະຫັດຜ່ານ',
   'Report' => 'ບົດລາຍງານ',
+  'Sales items that can be cut stock' => 'ລາຍການຂາຍທີ່ສາມາດຕັດຫຸ້ນໄດ້',
   'Sales report' => 'ລາຍງານການຂາຍ',
+  'Sales today' => 'ຂາຍມື້ນີ້',
   'Save' => 'ບັນທຶກ',
   'Save and create new' => 'ບັນທຶກແລະສ້າງໃໝ່',
   'Save and email completed' => 'ບັນທຶກແລະສົ່ງອີເມວຮຽນຮ້ອຍ',
@@ -270,10 +286,6 @@ return array(
   'Select an image size 500 * 500 pixel jpg, png types' => 'ເລືອກຂະ ໜາດ ຮູບພາບ 500 * 500 ພິກະເຊນ, jpg ແລະ png ປະເພດ',
   'Sell' => 'ຂາຍ',
   'Sell price' => 'ລາຄາຂາຍ',
-  'SELL_TYPIES' => array(
-    1 => 'ວົງຢືມ',
-    6 => 'ໃບຮັບເງິນ'
-  ),
   'Send a welcome email to new members' => 'ສົ່ງອີເມວຕ້ອນຮັບກັບສະມາຊິກໃຫມ່',
   'Server time' => 'ເວລາຂອງເຊີບເວີ',
   'Service' => 'ການບໍລິການ',
@@ -288,6 +300,7 @@ return array(
   ),
   'Short description about your website' => 'ຂໍ້ຄວາມສັ້ນໆ ອະທິບາຍວ່າເປັນເວັບໄຊກ່ຽວກັບຫຍັງ',
   'Show' => 'ສະແດງ',
+  'show on receipt' => 'ສະແດງໃສ່ໃບຮັບເງິນ',
   'Site Name' => 'ຊື່ຂອງເວັບໄຊ',
   'Site settings' => 'ຕັ້ງຄ່າເວັບໄຊ',
   'Size of' => 'ຂະໜາດຂອງ',
@@ -297,6 +310,7 @@ return array(
     '' => 'ການເຊື່ອມຕໍ່ແບບປົກກະຕິ',
     'ssl' => 'ການເຊື່ອມຕໍ່ທີ່ປອດໄຟ (SSL)'
   ),
+  'Some items can not be removed because it is in use' => 'ບາງລາຍການບໍ່ສາມາດລຶບໄດ້ເພາະມັນກຳລັງໃຊ້ຢູ່',
   'Sorry' => 'ຂໍໂທດ',
   'Sorry, cannot find a page called Please check the URL or try the call again.' => 'ຂໍອະໄພ, ບໍ່ສາມາດຊອກຫາໜ້າທີ່ເອີ້ນວ່າກະລຸນາກວດສອບ URL ຫຼືລອງໂທອີກເທື່ອໜຶ່ງ',
   'Sorry, Item not found It&#39;s may be deleted' => 'ຂໍໂທດ ບໍ່ພົບລາຍການທີ່ເລືອກ ລາຍການນີ້ອາດຖືກລຶບໄປແລ້ວ',
@@ -342,6 +356,7 @@ return array(
   'Username' => 'ຊື່ຜູ້ໃຊ້',
   'Username for the mail server. (To change, enter a new value.)' => 'ຊື່ຜູ້ໃຊ້ຂອງເມວເຊີບເວີ (ຕ້ອງການປ່ຽນ ໃຫ້ເພີ່ມ)',
   'Users' => 'ສະມາຊິກ',
+  'Waiting for payment' => 'ລໍຖ້າການຈ່າຍເງິນ',
   'Website title' => 'ຊື່ເວັບ',
   'Welcome' => 'ສະບາຍດີ',
   'Welcome %s, login complete' => 'ສະບາຍດີທ່ານ %s ຍິນດີຕ້ອນຮັບເຂົ້າສູ່ລະບົບ',

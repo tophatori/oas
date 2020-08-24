@@ -292,6 +292,19 @@ var dataTableActionCallback = function(xhr) {
   }
 };
 
+function checkEmail() {
+  var value = this.value;
+  var ids = this.id.split("_");
+  var id = "&id=" + floatval($E(ids[0] + "_id").value);
+  if (value == "") {
+    this.invalid(this.title);
+  } else if (/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/.test(value)) {
+    return "value=" + encodeURIComponent(value) + id;
+  } else {
+    this.invalid(this.title);
+  }
+}
+
 function checkUsername() {
   var patt = /[a-zA-Z0-9@\.\-_]+/;
   var value = this.value;
@@ -613,18 +626,6 @@ function initCalendarRange(minDate, maxDate, minChanged) {
   }
 }
 
-function initCompany() {
-  var doChanged = function() {
-    var t = $E('company_type').value;
-    $E('tax_id').disabled = t == 0;
-    $E('idcard').disabled = t == 1;
-    $E('tax_id').parentNode.parentNode.className = t == 0 ? 'hidden' : 'item';
-    $E('idcard').parentNode.parentNode.className = t == 1 ? 'hidden' : 'item';
-  };
-  initEditProfile('company');
-  $G('company_type').addEvent('change', doChanged);
-  doChanged();
-}
 var createLikeButton;
 
 function initWeb(module) {
@@ -768,4 +769,17 @@ function barcodeEnabled(inputs) {
       });
     });
   });
+}
+
+function initCompany() {
+  var doChanged = function() {
+    var t = $E('company_type').value;
+    $E('tax_id').disabled = t == 0;
+    $E('idcard').disabled = t == 1;
+    $E('tax_id').parentNode.parentNode.className = t == 0 ? 'hidden' : 'item';
+    $E('idcard').parentNode.parentNode.className = t == 1 ? 'hidden' : 'item';
+  };
+  initEditProfile('company');
+  $G('company_type').addEvent('change', doChanged);
+  doChanged();
 }

@@ -92,7 +92,7 @@ class Model extends \Kotchasan\Model
 
     /**
      * ค้นหาหมวดหมู่ สำหรับ autocomplete
-     * คืนค่าเป็น JSON.
+     * คืนค่าเป็น JSON
      *
      * @param Request $request
      */
@@ -104,7 +104,7 @@ class Model extends \Kotchasan\Model
                 ->select('category_id id', 'topic name')
                 ->from('category')
                 ->where(array(
-                    array('type', $request->post('typ')->toInt()),
+                    array('type', $request->post('typ')->filter('a-z_')),
                 ))
                 ->order('topic')
                 ->limit($request->post('count')->toInt())

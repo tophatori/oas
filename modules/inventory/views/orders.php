@@ -1,6 +1,6 @@
 <?php
 /**
- * @filesource modules/inventory/views/outward.php
+ * @filesource modules/inventory/views/orders.php
  *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
@@ -8,7 +8,7 @@
  * @see http://www.kotchasan.com/
  */
 
-namespace Inventory\Outward;
+namespace Inventory\Orders;
 
 use Kotchasan\Currency;
 use Kotchasan\DataTable;
@@ -17,7 +17,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * module=inventory-outward.
+ * module=inventory-orders
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -26,7 +26,7 @@ use Kotchasan\Language;
 class View extends \Gcms\View
 {
     /**
-     * รายการสินค้าขาย.
+     * รายการ Order
      *
      * @param Request $request
      * @param object  $owner
@@ -35,12 +35,15 @@ class View extends \Gcms\View
      */
     public function render(Request $request, $owner)
     {
-        // ปี พศ.
         $year_offset = Language::get('YEAR_OFFSET');
         // ปี เริ่มต้น 2017
         $years = array(0 => '{LNG_all items}');
         for ($y = 2017; $y <= date('Y'); ++$y) {
             $years[$y] = $y + $year_offset;
+        }
+        $days = array(0 => '{LNG_all items}');
+        for ($d = 1; $d < 32; $d++) {
+            $days[$d] = $d;
         }
         // URL สำหรับส่งให้ตาราง
         $uri = $request->createUriWithGlobals(WEB_URL.'index.php');
@@ -49,11 +52,11 @@ class View extends \Gcms\View
             /* Uri */
             'uri' => $uri,
             /* Model */
-            'model' => \Inventory\Outward\Model::toDataTable($owner),
+            'model' => \Inventory\Orders\Model::toDataTable($owner),
             /* รายการต่อหน้า */
-            'perPage' => $request->cookie('outward_perPage', 30)->toInt(),
+            'perPage' => $request->cookie('orders_perPage', 30)->toInt(),
             /* เรียงลำดับ */
-            'sort' => $request->cookie('outward_sort', 'order_date desc')->toString(),
+            'sort' => $request->cookie('orders_sort', 'order_date desc')->toString(),
             /* ฟังก์ชั่นจัดรูปแบบการแสดงผลแถวของตาราง */
             'onRow' => array($this, 'onRow'),
             /* คอลัมน์ที่ไม่ต้องแสดงผล */
@@ -61,7 +64,7 @@ class View extends \Gcms\View
             /* คอลัมน์ที่สามารถค้นหาได้ */
             'searchColumns' => array('order_no', 'company'),
             /* ตั้งค่าการกระทำของของตัวเลือกต่างๆ ด้านล่างตาราง ซึ่งจะใช้ร่วมกับการขีดถูกเลือกแถว */
-            'action' => 'index.php/inventory/model/outward/action',
+            'action' => 'index.php/inventory/model/orders/action',
             'actionCallback' => 'dataTableActionCallback',
             'actions' => array(
                 array(
@@ -74,12 +77,19 @@ class View extends \Gcms\View
                 ),
                 array(
                     'class' => 'button pink icon-plus',
-                    'href' => $uri->createBackUri(array('module' => 'inventory-sell', 'id' => '0', 'typ' => $owner->status)),
-                    'text' => '{LNG_Add New} '.$owner->typies[$owner->status],
+                    'href' => $uri->createBackUri(array('module' => 'inventory-order', 'id' => '0', 'status' => $owner->status)),
+                    'text' => '{LNG_Add New} '.$owner->order_status[$owner->status],
                 ),
             ),
             /* ตัวเลือกด้านบนของตาราง ใช้จำกัดผลลัพท์การ query */
             'filters' => array(
+                'DAY(`order_date`)' => array(
+                    'name' => 'day',
+                    'text' => '{LNG_date}',
+                    'options' => $days,
+                    'default' => 0,
+                    'value' => $owner->day,
+                ),
                 'MONTH(`order_date`)' => array(
                     'name' => 'month',
                     'text' => '{LNG_month}',
@@ -106,7 +116,7 @@ class View extends \Gcms\View
                     'sort' => 'order_no',
                 ),
                 'company' => array(
-                    'text' => '{LNG_Name}',
+                    'text' => '{LNG_Supplier}',
                     'sort' => 'company',
                 ),
                 'total' => array(
@@ -130,14 +140,14 @@ class View extends \Gcms\View
                 ),
                 array(
                     'class' => 'icon-edit button green notext',
-                    'href' => $uri->createBackUri(array('module' => 'inventory-sell', 'id' => ':id')),
+                    'href' => $uri->createBackUri(array('module' => 'inventory-order', 'id' => ':id')),
                     'title' => '{LNG_Edit}',
                 ),
             ),
         ));
         // save cookie
-        setcookie('outward_perPage', $table->perPage, time() + 2592000, '/', HOST, HTTPS, true);
-        setcookie('outward_sort', $table->sort, time() + 2592000, '/', HOST, HTTPS, true);
+        setcookie('orders_perPage', $table->perPage, time() + 2592000, '/', HOST, HTTPS, true);
+        setcookie('orders_sort', $table->sort, time() + 2592000, '/', HOST, HTTPS, true);
         // คืนค่า HTML
 
         return $table->render();

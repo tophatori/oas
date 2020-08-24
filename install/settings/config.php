@@ -3,7 +3,7 @@
 /* config.php */
 
 return array(
-    'version' => '2.2.2',
+    'version' => '3.0.0',
     'web_title' => 'OAS',
     'web_description' => 'Online Accounting System',
     'timezone' => 'Asia/Bangkok',

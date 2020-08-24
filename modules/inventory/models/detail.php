@@ -26,11 +26,11 @@ class Model extends \Kotchasan\Model
 {
     /**
      * อ่านข้อมูลสินค้าที่ $id
-     * $id = 0 หมายถึงสินค้าใหม่.
+     * $id = 0 หมายถึงสินค้าใหม่
      *
      * @param int $id
      *
-     * @return array|null คืนค่า Object ของข้อมูล ไม่พบคืนค่า null
+     * @return object|null
      */
     public static function get($id)
     {

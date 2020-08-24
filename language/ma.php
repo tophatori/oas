@@ -33,6 +33,7 @@ return array(
     'gsb' => 'ธนาคารทหารไทย'
   ),
   'Barcode' => 'ဘားကုဒ်',
+  'Beginning Inventory' => 'လက်ကျန်ငွေ',
   'Billing No.' => 'ငွေလက်ခံဖြတ်ပိုင်းနံပါတ်',
   'BOOLEANS' => array(
     0 => 'ပိတ်',
@@ -42,14 +43,11 @@ return array(
   'Browse file' => 'ဖိုင်ရွေးပါ',
   'Browse image uploaded, type :type size :width*:height pixel' => 'တင်တင်အမျိုးအစားတစ်ခုကိုရွေးပါ :type အရွယ်အစား :width*:height Pixels',
   'Buy' => 'ဝယ်ပါ',
-  'BUY_TYPIES' => array(
-    1 => 'ဝယ်ယူရန်မှာကြားလွှာ',
-    6 => 'ကုန်ပစ္စည်းလက်ခံရရှိမှု'
-  ),
   'Can make an order' => 'မှာယူနိုင်ပါတယ်',
   'Can manage the inventory' => 'စာရင်းစီမံခန့်ခွဲနိုင်ပါ',
   'Can not be performed this request. Because they do not find the information you need or you are not allowed' => 'ဒီတောင်းဆိုမှုကိုလုပ်ဆောင်လို့မရပါ ဘာဖြစ်လို့လဲဆိုတော့သူတို့ကသင်လိုအပ်တဲ့သတင်းအချက်အလက်ကိုမတွေ့ဘူး၊',
   'Can sell items' => 'အရောင်းစာရင်းလုပ်နိုင်စွမ်း',
+  'Cash' => 'ငွေသား',
   'Category' => 'အမျိုးအစား',
   'Change language' => 'ဘာသာစကားများပြောင်းပါ',
   'click to edit' => 'တည်းဖြတ်ရန်နှိပ်ပါ',
@@ -59,7 +57,10 @@ return array(
   'Company logo' => 'ကုမ္ပဏီတံဆိပ်',
   'Company name' => 'ကုမ္ပဏီအမည်',
   'Company profile' => 'ကုမ္ပဏီ၏ကိုယ်ရေးအကျဉ်း',
+  'Contact name If the customer is an agency or company' => 'ဆက်သွယ်ရန်အမည်ဖောက်သည်ကိုယ်စားလှယ်သို့မဟုတ်ကုမ္ပဏီဖြစ်ပါက',
+  'Contactor' => 'ဆက်သွယ်ရန်ပုဂ္ဂိုလ်',
   'Corporate information and contacts' => 'ကော်ပိုရိတ်သတင်းအချက်အလက်နှင့်အဆက်အသွယ်',
+  'Cost' => 'ကုန်ကျစရိတ်',
   'COUNT_STOCK' => array(
     0 => 'စတော့ရှယ်ယာရေတွက်မ',
     1 => 'စတော့ရှယ်ယာအရေအတွက်'
@@ -79,6 +80,7 @@ return array(
   'Current staff' => 'လက်ရှိဝန်ထမ်း',
   'Customer' => 'ဖောက်သည်',
   'Customer list' => 'ဖောက်သည်စာရင်း',
+  'Cut stock' => 'စတော့ရှယ်ယာဖြတ်ယူ',
   'Dashboard' => 'ဒိုင်ခွက်',
   'date' => 'ရက်စွဲ',
   'DATE_FORMAT' => 'd M Y အချိန် H:i N.',
@@ -132,6 +134,7 @@ return array(
   'From' => 'မှ',
   'General' => 'အထွေထွေ',
   'General site settings' => 'ဝဘ်ဆိုက်အခြေခံဆက်တင်များ',
+  'Get into stock' => 'စတော့ရှယ်ယာသို့ရယူပါ',
   'Get new password' => 'စကားဝှက်အသစ်ရယူပါ',
   'go to page' => 'စာမျက်နှာသို့သွားပါ',
   'Grand total' => 'စုစုပေါင်း',
@@ -146,8 +149,8 @@ return array(
   'Invalid :name' => ':မမှန်ကန်ပါ',
   'Inventory' => 'ဂိုဒေါင်',
   'INVENTORY_CATEGORIES' => array(
-    0 => 'ထုတ်ကုန်အမျိုးအစား',
-    3 => 'ကုန်ပစ္စည်းရေတွက်ယူနစ်'
+    'category_id' => 'ထုတ်ကုန်အမျိုးအစား',
+    'unit' => 'ကုန်ပစ္စည်းရေတွက်ယူနစ်'
   ),
   'INVENTORY_STATUS' => array(
     'OUT' => 'ရောင်း/ထွက်ပေးဆောင်',
@@ -209,13 +212,17 @@ return array(
     11 => 'NOV.',
     12 => 'DEC.'
   ),
+  'monthly' => 'လစဉ်',
   'Name' => 'ပထမအမည်',
   'Name of establishment' => 'တည်ထောင်သည့်အမည်',
   'Name of establishment registered VAT' => 'VAT မှတ်ပုံတင်တည်ထောင်သည့်အမည်',
+  'Name of the person or company&#039;s name' => 'လူတစ် ဦး သို့မဟုတ်ကုမ္ပဏီအမည်',
   'Natural Person' => 'သဘာဝပုဂ္ဂိုလ်',
   'New' => 'အသစ်',
   'No need to fill in English text. If the English text matches the Key' => 'အင်္ဂလိပ်စာသားဖြည့်ရန်မလိုအပ်ပါ။ အင်္ဂလိပ်စာသားသော့နှင့်ကိုက်ညီလျှင်',
+  'No need to fill in the purchase price if the product is not counting stock' => 'အကယ်၍ ကုန်ပစ္စည်းသည်ကုန်ပစ္စည်းမရှိလျှင်ဖြည့်ရန်မလိုပါ။',
   'not a registered user' => 'အသင်း ၀ င်မရှိပါ',
+  'Not enough products, Remaining :stock' => 'ကုန်ပစ္စည်းမလုံလောက်ပါ၊ ကျန် :stock',
   'not required' => 'မလိုအပ်ပါ',
   'number format such as %04d (%04d means the number on 4 digits, up to 11 digits)' => '%04d ကဲ့သို့နံပါတ်ကုဒ်ပုံစံ (%04d သည်ဂဏန်း ၄ လုံး၊ ၁၁ လုံးအထိ)',
   'Number of transactions' => 'ငွေသွင်းငွေထုတ်နံပါတ်',
@@ -224,6 +231,12 @@ return array(
   'Order details' => 'အော်ဒါအသေးစိတ်များ',
   'Order No.' => 'အော်ဒါနံပါတ်',
   'Order report' => 'အမိန့်အစီရင်ခံစာ',
+  'ORDER_STATUS' => array(
+    'QUO' => 'ဈေးနှုန်း',
+    'OUT' => 'လက်ခံဖြတ်ပိုင်း',
+    'PO' => 'ဝယ်ယူရန်မှာကြားလွှာ',
+    'IN' => 'ကုန်ပစ္စည်းလက်ခံရရှိမှု'
+  ),
   'Other' => 'အခြား',
   'Other details' => 'အခြားအသေးစိတ်အချက်အလက်များ',
   'Overview' => 'ခြုံငုံသုံးသပ်ချက်',
@@ -252,6 +265,7 @@ return array(
     0 => 'ရပ်ဆိုင်းထားသည်',
     1 => 'ထုတ်ဝေမှု'
   ),
+  'Purchase price' => '၀ ယ်ယူသည့်စျေးနှုန်း',
   'Quantity' => 'အရေအတွက်',
   'Register' => 'အသင်း ၀ င်ပါ',
   'Register successfully, We have sent complete registration information to :email' => 'အောင်မြင်စွာမှတ်ပုံတင်ပါ၊ ကျွန်ုပ်တို့သည် :email သို့မှတ်ပုံတင်ခြင်းဆိုင်ရာအချက်အလက်အပြည့်အစုံကိုပေးပို့ပြီးပါပြီ',
@@ -259,7 +273,9 @@ return array(
   'remove this photo' => 'ဒီပုံကိုဖျက်ပါ',
   'Repassword' => 'စကားလုံး',
   'Report' => 'အစီရင်ခံစာ',
+  'Sales items that can be cut stock' => 'စတော့ရှယ်ယာဖြတ်တောက်နိုင်သောအရောင်းပစ္စည်းများ',
   'Sales report' => 'အရောင်းအစီရင်ခံစာ',
+  'Sales today' => 'ဒီနေ့အရောင်း',
   'Save' => 'သိမ်းဆည်းပါ',
   'Save and create new' => 'အသစ်သိမ်းဆည်းနှင့်ဖန်တီးပါ',
   'Save and email completed' => 'အီးမေးလ်များကိုသိမ်းဆည်းပြီးပေးပို့ပြီးပါပြီ',
@@ -269,10 +285,6 @@ return array(
   'Select an image size 500 * 500 pixel jpg, png types' => 'ဓာတ်ပုံအရွယ်အစား 500 * 500 pixel jpg, png အမျိုးအစားများကိုရွေးချယ်ပါ',
   'Sell' => 'ရောင်းမည်',
   'Sell price' => 'စျေးနှုန်းရောင်း',
-  'SELL_TYPIES' => array(
-    1 => 'ဈေးနှုန်း',
-    6 => 'လက်ခံဖြတ်ပိုင်း'
-  ),
   'Send a welcome email to new members' => 'အသင်းဝင်အသစ်များသို့ကြိုဆိုစာများပို့ပါ။',
   'Server time' => 'ဆာဗာအချိန်',
   'Service' => 'ဝန်ဆောင်မှု',
@@ -287,6 +299,7 @@ return array(
   ),
   'Short description about your website' => 'ဝက်ဘ်ဆိုက်အကြောင်းဘာကိုရှင်းပြတဲ့တိုတောင်းတဲ့စာသား',
   'Show' => 'ပြပါ',
+  'show on receipt' => 'ငွေလက်ခံဖြတ်ပိုင်းတွင်ပြပါ',
   'Site Name' => 'ဝဘ်ဆိုက်နာမည်',
   'Site settings' => 'ဝဘ်ဆိုက်ဆက်တင်များ',
   'Size of' => 'အရွယ်အစား',
@@ -296,6 +309,7 @@ return array(
     '' => 'ပုံမှန်ဆက်သွယ်မှု',
     'ssl' => 'လုံခြုံသောဆက်သွယ်မှု (SSL)'
   ),
+  'Some items can not be removed because it is in use' => 'အချို့ပစ္စည်းများကိုမဖျက်နိုင်ပါ။ ဒါကြောင့်အသုံးပြုမှုအတွက်ကြောင့်ဖြစ်သည်',
   'Sorry' => 'တောင်းပန်ပါတယ်',
   'Sorry, cannot find a page called Please check the URL or try the call again.' => 'ကျေးဇူးပြု၍ ကျေးဇူးပြု၍ ခေါ်ဆိုသောစာမျက်နှာကိုရှာမရပါ ကျေးဇူးပြု၍ URL ကိုစစ်ဆေးပါသို့မဟုတ်ထပ်မံခေါ်ဆိုပါ။',
   'Sorry, Item not found It&#39;s may be deleted' => 'စိတ်မကောင်းပါ၊ ရွေးချယ်ထားသောပစ္စည်းကိုရှာမရပါ ဤပစ္စည်းအားဖျက်ပြီးပါက',
@@ -341,6 +355,7 @@ return array(
   'Username' => 'အသုံးပြုသူအမည်',
   'Username for the mail server. (To change, enter a new value.)' => 'မေးလ်ဆာဗာအတွက်အသုံးပြုသူအမည် (ပြောင်းလဲရန်တန်ဖိုးအသစ်တစ်ခုကိုထည့်ပါ။ )',
   'Users' => 'အသင်းဝင်',
+  'Waiting for payment' => 'ငွေပေးချေမှုကိုစောင့်ဆိုင်း',
   'Website title' => 'ဝဘ်ဆိုက်ခေါင်းစဉ်',
   'Welcome' => 'ကြိုဆိုပါတယ်',
   'Welcome %s, login complete' => 'ကြိုဆိုပါတယ် %s ကြိုဆိုပါတယ်',

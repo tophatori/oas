@@ -42,7 +42,7 @@ class View extends \Gcms\View
         }
         $rows = '';
         // สรุปรายงานสินค้าคงคลัง รายเดือน
-        foreach (\Inventory\Stock\Model::inventory($product['id'], $year) as $k => $item) {
+        foreach (\Inventory\Stock\Model::monthlyReport($product['id'], $year) as $k => $item) {
             $rows .= '<tr><th>{LNG_'.$k.'}</th>';
             for ($i = 1; $i < 13; ++$i) {
                 $rows .= '<td class=center>'.(empty($item[$i]) ? 0 : $item[$i]).'</td>';
@@ -56,7 +56,7 @@ class View extends \Gcms\View
             $option .= '<option value='.$k.$sel.'>'.$v.'</option>';
         }
         $content .= '<article id=year_graph class=ggraphs>';
-        $content .= '<header><h3>{LNG_Product activity report} '.$product['topic'].' {LNG_Product code} '.$product['product_no'].'<label>&nbsp;{LNG_year} <select id=year>'.$option.'</select></label></h3></header>';
+        $content .= '<header><h3>{LNG_Product activity report}<label>&nbsp;{LNG_year} <select id=year>'.$option.'</select></label></h3></header>';
         $content .= '<canvas></canvas>';
         $content .= '<table class=hidden>';
         $content .= '<thead><tr><th>{LNG_monthly}</th>'.$thead.'</tr></thead>';

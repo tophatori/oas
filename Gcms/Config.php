@@ -138,21 +138,36 @@ class Config extends \Kotchasan\Config
      */
     public $member_only = true;
     /**
-     * สถานะของบัญชีที่นับสต๊อก (ซื้อ).
-     *
-     * @var int
-     */
-    public $instock_status = 6;
-    /**
-     * สถานะของบัญชีที่ตัดสต๊อก (ขาย).
-     *
-     * @var int
-     */
-    public $outstock_status = 6;
-    /**
      * VAT.
      *
      * @var int
      */
     public $vat = 7;
+
+    /**
+     * สถานะซื้อ
+     *
+     * @var array
+     */
+    public $buy_status = array('PO', 'IN');
+
+    /**
+     * รายการรับเข้า Stock
+     *
+     * @var array
+     */
+    public $in_stock_status = array('IN');
+    /**
+     * สถานะขาย
+     *
+     * @var array
+     */
+    public $sell_status = array('OUT', 'QUO');
+
+    /**
+     * รายการตัด Stock
+     *
+     * @var array
+     */
+    public $out_stock_status = array('OUT');
 }

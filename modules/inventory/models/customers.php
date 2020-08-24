@@ -43,7 +43,7 @@ class Model extends \Kotchasan\Model
     {
         // session, referer, สามารถขายได้, ไม่ใช่สมาชิกตัวอย่าง
         if ($request->initSession() && $request->isReferer() && $login = Login::isMember()) {
-            if (Login::checkPermission($login, array('can_buy', 'can_sell', 'can_manage_inventory')) && Login::notDemoMode($login)) {
+            if (Login::checkPermission($login, array('can_inventory_order', 'can_manage_inventory')) && Login::notDemoMode($login)) {
                 // id ที่ส่งมา
                 if ($request->post('action')->toString() === 'delete' && preg_match_all('/,?([0-9]+),?/', $request->post('id')->toString(), $match)) {
                     // ลบลูกค้ายังไม่เคยทำรายการสั่งซื้อสินค้า

@@ -10,6 +10,8 @@
 
 namespace Inventory\Number;
 
+use Kotchasan\Number;
+
 /**
  * คลาสสำหรับจัดการ Running Number.
  *
@@ -50,7 +52,7 @@ class Model extends \Kotchasan\Model
             }
             // ตรวจสอบ order_no ซ้ำ
             while (true) {
-                $result = sprintf(self::$cfg->$name, $next_id);
+                $result = Number::printf(self::$cfg->$name, $next_id);
                 $search = $db->first($table_name, array(
                     array($field, $result),
                 ));

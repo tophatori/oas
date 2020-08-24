@@ -1,6 +1,6 @@
 <?php
 /**
- * @filesource modules/inventory/views/setup.php
+ * @filesource modules/inventory/views/products.php
  *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
@@ -8,14 +8,14 @@
  * @see http://www.kotchasan.com/
  */
 
-namespace Inventory\Setup;
+namespace Inventory\Products;
 
 use Kotchasan\Currency;
 use Kotchasan\DataTable;
 use Kotchasan\Http\Request;
 
 /**
- * module=inventory-setup.
+ * module=inventory-products
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -38,7 +38,7 @@ class View extends \Gcms\View
     public function render(Request $request)
     {
         $params = array(
-            'module' => 'inventory-setup',
+            'module' => 'inventory-products',
             'typ' => 'print',
             'category_id' => $request->request('category_id')->toInt(),
             'search' => $request->request('search')->topic(),
@@ -52,35 +52,17 @@ class View extends \Gcms\View
             /* Uri */
             'uri' => $uri,
             /* Model */
-            'model' => \Inventory\Setup\Model::toDataTable($params),
+            'model' => \Inventory\Products\Model::toDataTable($params),
             /* รายการต่อหน้า */
-            'perPage' => $request->cookie('inventorySetup_perPage', 30)->toInt(),
+            'perPage' => $request->cookie('inventoryProducts_perPage', 30)->toInt(),
             /* เรียงลำดับ */
-            'sort' => $request->cookie('inventorySetup_sort', 'id desc')->toString(),
+            'sort' => $request->cookie('inventoryProducts_sort', 'id desc')->toString(),
             /* ฟังก์ชั่นจัดรูปแบบการแสดงผลแถวของตาราง */
             'onRow' => array($this, 'onRow'),
             /* คอลัมน์ที่ไม่ต้องแสดงผล */
             'hideColumns' => array('id'),
             /* คอลัมน์ที่สามารถค้นหาได้ */
             'searchColumns' => array('product_no', 'topic'),
-            /* ตั้งค่าการกระทำของของตัวเลือกต่างๆ ด้านล่างตาราง ซึ่งจะใช้ร่วมกับการขีดถูกเลือกแถว */
-            'action' => 'index.php/inventory/model/setup/action',
-            'actionCallback' => 'dataTableActionCallback',
-            'actions' => array(
-                array(
-                    'id' => 'action',
-                    'class' => 'ok',
-                    'text' => '{LNG_With selected}',
-                    'options' => array(
-                        'delete' => '{LNG_Delete}',
-                    ),
-                ),
-                array(
-                    'class' => 'button pink icon-plus',
-                    'href' => $uri->createBackUri(array('module' => 'inventory-write', 'id' => 0)),
-                    'text' => '{LNG_Add New} {LNG_Product}',
-                ),
-            ),
             /* ตัวเลือกด้านบนของตาราง ใช้จำกัดผลลัพท์การ query */
             'filters' => array(
                 array(
@@ -109,11 +91,6 @@ class View extends \Gcms\View
                     'class' => 'center',
                     'sort' => 'price',
                 ),
-                'cost' => array(
-                    'text' => '{LNG_Cost}',
-                    'class' => 'center',
-                    'sort' => 'cost',
-                ),
                 'stock' => array(
                     'text' => '{LNG_Stock}',
                     'class' => 'center',
@@ -128,9 +105,6 @@ class View extends \Gcms\View
                 'price' => array(
                     'class' => 'right',
                 ),
-                'cost' => array(
-                    'class' => 'right',
-                ),
                 'category_id' => array(
                     'class' => 'center',
                 ),
@@ -138,23 +112,10 @@ class View extends \Gcms\View
                     'class' => 'center',
                 ),
             ),
-            /* ปุ่มแสดงในแต่ละแถว */
-            'buttons' => array(
-                array(
-                    'class' => 'icon-report button orange',
-                    'href' => $uri->createBackUri(array('module' => 'inventory-write', 'tab' => 'overview', 'id' => ':id')),
-                    'text' => '{LNG_Detail}',
-                ),
-                array(
-                    'class' => 'icon-edit button green',
-                    'href' => $uri->createBackUri(array('module' => 'inventory-write', 'tab' => 'product', 'id' => ':id')),
-                    'text' => '{LNG_Edit}',
-                ),
-            ),
         ));
         // save cookie
-        setcookie('inventorySetup_perPage', $table->perPage, time() + 2592000, '/', HOST, HTTPS, true);
-        setcookie('inventorySetup_sort', $table->sort, time() + 2592000, '/', HOST, HTTPS, true);
+        setcookie('inventoryProducts_perPage', $table->perPage, time() + 2592000, '/', HOST, HTTPS, true);
+        setcookie('inventoryProducts_sort', $table->sort, time() + 2592000, '/', HOST, HTTPS, true);
         // คืนค่า HTML
 
         return $table->render();
@@ -172,7 +133,6 @@ class View extends \Gcms\View
     public function onRow($item, $o, $prop)
     {
         $item['price'] = Currency::format($item['price']);
-        $item['cost'] = Currency::format($item['cost']);
         $item['category_id'] = $this->categories->get($item['category_id']);
 
         return $item;

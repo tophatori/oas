@@ -73,26 +73,18 @@ class View extends \Gcms\View
             'placeholder' => 'P%04d',
             'value' => isset(self::$cfg->product_no) ? self::$cfg->product_no : 'P%04d',
         ));
-        // order_no
-        $fieldset->add('text', array(
-            'id' => 'order_no',
-            'labelClass' => 'g-input icon-number',
-            'itemClass' => 'item',
-            'label' => '{LNG_Order No.} ({LNG_Buy})',
-            'comment' => '{LNG_number format such as %04d (%04d means the number on 4 digits, up to 11 digits)}',
-            'placeholder' => 'O%04d',
-            'value' => isset(self::$cfg->order_no) ? self::$cfg->order_no : 'O%04d',
-        ));
-        // billing_no
-        $fieldset->add('text', array(
-            'id' => 'billing_no',
-            'labelClass' => 'g-input icon-number',
-            'itemClass' => 'item',
-            'label' => '{LNG_Billing No.} ({LNG_Sell})',
-            'comment' => '{LNG_number format such as %04d (%04d means the number on 4 digits, up to 11 digits)}',
-            'placeholder' => 'R%04d',
-            'value' => isset(self::$cfg->billing_no) ? self::$cfg->billing_no : 'R%04d',
-        ));
+        foreach (Language::get('ORDER_STATUS') as $s => $label) {
+            // Order Number
+            $fieldset->add('text', array(
+                'id' => $s.'_NO',
+                'labelClass' => 'g-input icon-number',
+                'itemClass' => 'item',
+                'label' => $label,
+                'comment' => '{LNG_number format such as %04d (%04d means the number on 4 digits, up to 11 digits)}',
+                'placeholder' => $s.'%Y%M%D-%04d',
+                'value' => isset(self::$cfg->{$s.'_NO'}) ? self::$cfg->{$s.'_NO'} : $s.'%Y%M%D-%04d',
+            ));
+        }
         // currency_unit
         $fieldset->add('select', array(
             'id' => 'currency_unit',

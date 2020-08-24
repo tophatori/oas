@@ -2869,6 +2869,17 @@ div.gcalendar td.month {
   font-weight: bold;
   color: #f00;
 }
+.event-calendar td.holiday {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+.event-calendar td.holiday >i {
+  font-style: normal;
+  font-size: 1em;
+  line-height: 1;
+  display: block;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.1);
+}
 .event-calendar-buttons .button,
 .event-calendar td a {
   background-color: #2196f3;
@@ -4175,6 +4186,7 @@ td.buttons .button:last-child {
 #fsUploadProgress .value_graphs.invalid {
   background-color: #f00;
 }
+
 /* phone, tablet */
 
 @media only screen and (max-width: 960px) {
@@ -4217,14 +4229,23 @@ td.buttons .button:last-child {
   body.responsive .topmenu.responsive>ul ul a {
     width: auto;
   }
-  body.responsive .sidemenu.responsive>ul ul,
-  body.responsive .topmenu.responsive>ul ul {
+  .sidemenu.responsive>ul ul,
+  .topmenu.responsive>ul ul {
     position: static;
     margin: 0;
     -moz-box-shadow: none;
     -webkit-box-shadow: none;
     box-shadow: none;
     border-style: none;
+    height: 0;
+  }
+  .topmenu.responsive>ul ul {
+    background-color: inherit;
+    color: inherit;
+  }
+  body.responsive .topmenu.responsive li:hover>ul,
+  body.responsive .sidemenu.responsive li:hover>ul {
+    height: auto;
   }
   body.responsive .topmenu.responsive>ul>li>a {
     display: block;

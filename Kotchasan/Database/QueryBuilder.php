@@ -168,7 +168,7 @@ class QueryBuilder extends \Kotchasan\Database\Query
      */
     public function execute()
     {
-        $result = $this->db->execQuery($this->sqls, $this->values);
+        $result = $this->db->execQuery($this->sqls, $this->values, $this->debugger);
         if ($this->toArray) {
             $this->toArray = false;
         } elseif (is_array($result)) {

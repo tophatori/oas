@@ -15,7 +15,7 @@ use Kotchasan\Form;
 use Kotchasan\Html;
 
 /**
- * module=inventory-categories.
+ * module=inventory-categories
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -32,7 +32,6 @@ class View extends \Gcms\View
      */
     public function render($index)
     {
-        // form
         $form = Html::create('form', array(
             'id' => 'setup_frm',
             'class' => 'setup_frm',
@@ -51,8 +50,6 @@ class View extends \Gcms\View
             'datas' => \Inventory\Categories\Model::toDataTable($index->type),
             /* ฟังก์ชั่นจัดรูปแบบการแสดงผลแถวของตาราง */
             'onRow' => array($this, 'onRow'),
-            /* คอลัมน์ที่ไม่ต้องแสดงผล */
-            'hideColumns' => array('id'),
             /* กำหนดให้ input ตัวแรก (id) รับค่าเป็นตัวเลขเท่านั้น */
             'onInitRow' => 'initFirstRowNumberOnly',
             'border' => true,
@@ -85,7 +82,7 @@ class View extends \Gcms\View
             'id' => 'type',
             'value' => $index->type,
         ));
-        // คืนค่าฟอร์ม
+        // คืนค่า HTML
 
         return $form->render();
     }

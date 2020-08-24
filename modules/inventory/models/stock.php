@@ -23,14 +23,14 @@ class Model extends \Kotchasan\Model
 {
     /**
      * อ่านรายการสินค้าในใบเสร็จ
-     * ถ้าไมมีคืนค่ารายการว่าง 1 รายการ.
+     * ถ้าไมมีคืนค่ารายการว่าง 1 รายการ
      *
-     * @param int    $order_id
-     * @param string $typ      IN หรือ OUT
+     * @param int $order_id
+     * @param string $status
      *
      * @return array
      */
-    public static function get($order_id, $typ)
+    public static function get($order_id, $status)
     {
         if ($order_id > 0) {
             $result = static::createQuery()
@@ -39,7 +39,7 @@ class Model extends \Kotchasan\Model
                 ->join('product P', 'LEFT', array(array('P.id', 'S.product_id')))
                 ->where(array(
                     array('S.order_id', $order_id),
-                    array('S.status', $typ),
+                    array('S.status', $status),
                 ))
                 ->order('S.id')
                 ->toArray()
@@ -73,7 +73,7 @@ class Model extends \Kotchasan\Model
      *
      * @return array
      */
-    public static function inventory($id, $year)
+    public static function monthlyReport($id, $year)
     {
         $model = new \Kotchasan\Model();
         $db = $model->db();
@@ -84,11 +84,15 @@ class Model extends \Kotchasan\Model
             ->where(array(
                 array('S.product_id', $id),
                 array(Sql::YEAR('S.create_date'), $year),
-                Sql::create('(S.`order_id`=0 OR O.`status`=(CASE WHEN S.`status`="IN" THEN '.self::$cfg->instock_status.' ELSE '.self::$cfg->outstock_status.' END))'),
+                Sql::create('(S.`order_id`=0 OR O.`status`=S.`status`)'),
             ))
             ->groupBy('m', 'S.status');
         $query = $db->createQuery()
-            ->select('m', Sql::create("SUM(IF(`status`='IN', `quantity`, NULL)) AS `Buy`"), Sql::create("SUM(IF(`status`='OUT', `quantity`, NULL)) AS `Sell`"))
+            ->select(
+                'm',
+                Sql::create("SUM(IF(`status` IN ('".implode("','", self::$cfg->in_stock_status)."'), `quantity`, NULL)) AS `Buy`"),
+                Sql::create("SUM(IF(`status` IN ('".implode("','", self::$cfg->out_stock_status)."'), `quantity`, NULL)) AS `Sell`")
+            )
             ->from(array($q1, 'Q'))
             ->groupBy('m')
             ->toArray();
@@ -129,26 +133,5 @@ class Model extends \Kotchasan\Model
         $result[$y] = $y + $year_offset;
 
         return $result;
-    }
-
-    /**
-     * อ่านข้อมูลสำหรับใส่ลงในตาราง.
-     *
-     * @param int $id
-     *
-     * @return \Kotchasan\Database\QueryBuilder
-     */
-    public static function toDataTable($id)
-    {
-        return static::createQuery()
-            ->select('C.create_date', 'C.order_id', 'O.order_no', 'C.quantity', 'C.price', 'C.total', 'C.id', 'C.status')
-            ->from('stock C')
-            ->join('orders O', 'LEFT', array(
-                array('O.id', 'C.order_id'),
-            ))
-            ->where(array(
-                array('C.product_id', $id),
-                Sql::create('(C.`order_id`=0 OR O.`status`=(CASE WHEN C.`status`="IN" THEN '.self::$cfg->instock_status.' ELSE '.self::$cfg->outstock_status.' END))'),
-            ));
     }
 }

@@ -40,7 +40,7 @@ class ApcCache extends Cache
      */
     public function clear()
     {
-        return apc_clear_cache('user');
+        return \apc_clear_cache('user');
     }
 
     /**
@@ -55,7 +55,7 @@ class ApcCache extends Cache
     {
         if ($this->cache_dir) {
             foreach ($keys as $key) {
-                apc_delete($key);
+                \apc_delete($key);
             }
         }
 
@@ -73,7 +73,7 @@ class ApcCache extends Cache
     {
         $resuts = array();
         $success = false;
-        $values = apc_fetch($keys, $success);
+        $values = \apc_fetch($keys, $success);
         if ($success && is_array($values)) {
             foreach ($values as $key => $value) {
                 $item = new Item($key);
@@ -94,7 +94,7 @@ class ApcCache extends Cache
      */
     public function hasItem($key)
     {
-        return apc_exists($key);
+        return \apc_exists($key);
     }
 
     /**
@@ -109,6 +109,6 @@ class ApcCache extends Cache
      */
     public function save(CacheItemInterface $item)
     {
-        return apc_store($item->getKey(), $item->get(), self::$cfg->get('cache_expire', 5));
+        return \apc_store($item->getKey(), $item->get(), self::$cfg->get('cache_expire', 5));
     }
 }

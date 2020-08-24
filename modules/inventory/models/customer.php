@@ -73,7 +73,7 @@ class Model extends \Kotchasan\Model
         $ret = array();
         // session, token, สามารถขายได้, ไม่ใช่สมาชิกตัวอย่าง
         if ($request->initSession() && $request->isSafe() && $login = Login::isMember()) {
-            if (Login::checkPermission($login, array('can_buy', 'can_sell', 'can_manage_inventory')) && Login::notDemoMode($login)) {
+            if (Login::checkPermission($login, array('can_inventory_order', 'can_manage_inventory')) && Login::notDemoMode($login)) {
                 // รับค่าจากการ POST
                 $save = array(
                     'company' => $request->post('register_company')->topic(),

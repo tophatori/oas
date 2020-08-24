@@ -1,6 +1,6 @@
 <?php
 /**
- * @filesource modules/inventory/views/sell.php
+ * @filesource modules/inventory/views/order.php
  *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
@@ -8,14 +8,14 @@
  * @see http://www.kotchasan.com/
  */
 
-namespace Inventory\Sell;
+namespace Inventory\Order;
 
 use Kotchasan\Currency;
 use Kotchasan\Html;
 use Kotchasan\Language;
 
 /**
- * ฟอร์มเพิ่ม/แก้ไข ออเดอร์.
+ * module=inventory-order
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -24,27 +24,26 @@ use Kotchasan\Language;
 class View extends \Gcms\View
 {
     /**
-     * module=inventory-sell.
+     * เพิ่ม-แก้ไข Order
      *
      * @param object $index
-     * @param array  $login
      *
      * @return string
      */
-    public function render($index, $login)
+    public function render($index)
     {
-        // form
         $form = Html::create('form', array(
             'id' => 'order_frm',
             'class' => 'setup_frm',
             'autocomplete' => 'off',
-            'action' => 'index.php/inventory/model/sell/submit',
+            'action' => 'index.php/inventory/model/order/submit',
             'onsubmit' => 'doFormSubmit',
             'ajax' => true,
             'token' => true,
         ));
+
         $fieldset = $form->add('fieldset', array(
-            'title' => '{LNG_Details of} {LNG_Customer}',
+            'title' => '{LNG_Details of} {LNG_Customer}/{LNG_Supplier}',
             'titleClass' => 'icon-profile',
         ));
         $groups = $fieldset->add('groups');
@@ -53,9 +52,9 @@ class View extends \Gcms\View
             'id' => 'customer',
             'labelClass' => 'g-input icon-customer',
             'itemClass' => 'width90',
-            'label' => '{LNG_Customer}<span class=tablet> (F2)</span>',
+            'label' => '{LNG_Customer}/{LNG_Supplier}<span class=tablet> (F2)</span>',
             'placeholder' => Language::replace('Fill some of the :name to find', array(':name' => '{LNG_Company name}, {LNG_Name}, {LNG_Email}, {LNG_Phone}')),
-            'title' => '{LNG_Customer}',
+            'title' => '{LNG_Customer}/{LNG_Supplier}',
             'value' => $index->customer,
             'autofocus' => true,
         ));
@@ -66,7 +65,7 @@ class View extends \Gcms\View
             'labelClass' => 'g-input',
             'class' => 'green button wide center icon-register',
             'label' => '&nbsp;',
-            'value' => '<span class=mobile>{LNG_Add New} {LNG_Customer}</span>',
+            'value' => '<span class=mobile>{LNG_Add New} {LNG_Customer}/{LNG_Supplier}</span>',
         ));
         $fieldset = $form->add('fieldset', array(
             'title' => '{LNG_Transaction details}',
@@ -77,7 +76,7 @@ class View extends \Gcms\View
         $groups->add('text', array(
             'id' => 'order_no',
             'labelClass' => 'g-input icon-number',
-            'itemClass' => 'width50',
+            'itemClass' => $index->status == 'IN' ? 'width33' : 'width50',
             'label' => '{LNG_Order No.}',
             'placeholder' => '{LNG_Leave empty for generate auto}',
             'value' => $index->order_no,
@@ -87,10 +86,20 @@ class View extends \Gcms\View
         $groups->add('date', array(
             'id' => 'order_date',
             'labelClass' => 'g-input icon-calendar',
-            'itemClass' => 'width50',
+            'itemClass' => $index->status == 'IN' ? 'width33' : 'width50',
             'label' => '{LNG_Transaction date}',
             'value' => $order_date[0],
         ));
+        if ($index->status == 'IN') {
+            // บันทึกรายจ่าย/เจ้าหนี้ due_date
+            $groups->add('date', array(
+                'id' => 'due_date',
+                'labelClass' => 'g-input icon-calendar',
+                'itemClass' => 'width33',
+                'label' => '{LNG_Due date}',
+                'value' => $index->due_date,
+            ));
+        }
         $groups = $fieldset->add('groups');
         // product_quantity
         $groups->add('number', array(
@@ -129,7 +138,7 @@ class View extends \Gcms\View
         $currency_unit = Language::find('CURRENCY_UNITS', null, self::$cfg->currency_unit);
         $table .= '<th class=center colspan=2>{LNG_Amount} ('.$currency_unit.')</th>';
         $table .= '</tr></thead><tbody id=tb_products>';
-        foreach (\Inventory\Stock\Model::get($index->id, 'OUT') as $item) {
+        foreach (\Inventory\Stock\Model::get($index->id, $index->status) as $item) {
             $table .= '<tr'.($index->id == 0 ? ' class=hidden' : '').'>';
             $table .= '<td><label class="g-input"><input type=text name=quantity[] size=2 value="'.$item['quantity'].'" class=num></label></td>';
             $table .= '<td><label class="g-input"><input type=text name=topic[] value="'.$item['topic'].'"></label></td>';
@@ -164,7 +173,7 @@ class View extends \Gcms\View
         $table .= '<tr class=due><td class=right>{LNG_Payment Amount}</td><td colspan=2 class="total right" id=payment_amount>0.00</td><td class=right>'.$currency_unit.'</td></tr>';
         // status
         $table .= '<tr><td class=right><label for=status>{LNG_Status}<span class=tablet> (F9)</span></label></td><td colspan=3><span class="g-input icon-star0"><select id=status name=status>';
-        foreach (Language::get('SELL_TYPIES') as $k => $v) {
+        foreach ($index->order_status as $k => $v) {
             $sel = $k == $index->status ? ' selected' : '';
             $table .= '<option value='.$k.$sel.'>'.$v.'</option>';
         }
@@ -182,7 +191,7 @@ class View extends \Gcms\View
             'id' => 'save_and_create',
             'label' => '&nbsp;{LNG_Save and create new}',
             'value' => 1,
-            'checked' => self::$request->cookie('sell_save_and_create')->toInt() == 1,
+            'checked' => self::$request->cookie('save_and_create')->toInt() == 1,
         ));
         // submit
         $fieldset->add('submit', array(
@@ -201,7 +210,7 @@ class View extends \Gcms\View
             'value' => $index->customer_id,
         ));
         // Javascript
-        $form->script('initInventoryInOut('.self::$cfg->vat.', "sell");');
+        $form->script('initInventoryOrder('.self::$cfg->vat.', "'.$index->menu.'");');
         // คืนค่า HTML
 
         return $form->render();

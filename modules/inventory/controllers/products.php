@@ -1,6 +1,6 @@
 <?php
 /**
- * @filesource modules/inventory/controllers/setup.php
+ * @filesource modules/inventory/controllers/products.php
  *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
@@ -8,7 +8,7 @@
  * @see http://www.kotchasan.com/
  */
 
-namespace Inventory\Setup;
+namespace Inventory\Products;
 
 use Gcms\Login;
 use Kotchasan\Html;
@@ -16,7 +16,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * module=inventory-setup
+ * module=inventory-products
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -36,9 +36,9 @@ class Controller extends \Gcms\Controller
         // ข้อความ title bar
         $this->title = Language::trans('{LNG_List of} {LNG_Product}');
         // เลือกเมนู
-        $this->menu = 'inventory';
-        // สามารถบริหารจัดการคลังสินค้าได้
-        if (Login::checkPermission(Login::isMember(), 'can_manage_inventory')) {
+        $this->menu = 'products';
+        // สามารถขายได้
+        if (Login::checkPermission(Login::isMember(), 'can_inventory_order')) {
             // แสดงผล
             $section = Html::create('section', array(
                 'class' => 'content_bg',
@@ -53,10 +53,8 @@ class Controller extends \Gcms\Controller
             $section->add('header', array(
                 'innerHTML' => '<h2 class="icon-list">'.$this->title.'</h2>',
             ));
-            // menu
-            $section->appendChild(\Index\Tabmenus\View::render($request, 'settings', 'inventory'));
             // แสดงตาราง
-            $section->appendChild(createClass('Inventory\Setup\View')->render($request));
+            $section->appendChild(createClass('Inventory\Products\View')->render($request));
             // คืนค่า HTML
 
             return $section->render();

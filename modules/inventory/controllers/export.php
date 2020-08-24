@@ -26,7 +26,7 @@ use Kotchasan\Language;
 class Controller extends \Kotchasan\Controller
 {
     /**
-     * ส่งออกไฟล์ csv หรือ การพิมพ์.
+     * ส่งออกไฟล์ csv หรือ การพิมพ์
      *
      * @param Request $request
      */
@@ -35,27 +35,23 @@ class Controller extends \Kotchasan\Controller
         // สมาชิก
         if (Login::isMember()) {
             // อ่านข้อมูลที่เลือก
-            $index = \Inventory\Order\Model::get($request->get('id')->toInt());
+            $index = \Inventory\Order\Model::get($request->get('id')->toInt(), 'IN');
             // template
             $templates = array(
-                'IN' => array(
-                    1 => 'purchaseorder',
-                    6 => 'receivinginventory',
-                ),
-                'OUT' => array(
-                    1 => 'quotation',
-                    6 => 'receipt',
-                ),
+                'PO' => 'purchaseorder',
+                'IN' => 'receivinginventory',
+                'QUO' => 'quotation',
+                'OUT' => 'receipt',
             );
-            if ($index && isset($templates[$index->stock_status][$index->status])) {
+            if ($index && isset($templates[$index->status])) {
                 // โหลด template
-                $billing = $this->getTemplate($templates[$index->stock_status][$index->status]);
+                $billing = $this->getTemplate($templates[$index->status]);
                 // ข้อมูลการทำรายการ
                 $detail = '';
                 $i = 0;
                 $subtotal = 0;
                 $vat = 0;
-                foreach (\Inventory\Stock\Model::get($index->id, $index->stock_status) as $item) {
+                foreach (\Inventory\Stock\Model::get($index->id, $index->status) as $item) {
                     ++$i;
                     $detail .= '<tr>';
                     foreach ($billing['details'] as $col) {

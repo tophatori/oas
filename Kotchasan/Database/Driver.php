@@ -233,14 +233,23 @@ abstract class Driver extends Query
      *
      * @param array $sqls
      * @param array $values ถ้าระบุตัวแปรนี้จะเป็นการบังคับใช้คำสั่ง prepare แทน query
+     * @param bool $debugger แสดงผล Query
      *
      * @return mixed
      */
-    public function execQuery($sqls, $values = array())
+    public function execQuery($sqls, $values = array(), $debugger = false)
     {
         $sql = $this->makeQuery($sqls);
         if (isset($sqls['values'])) {
             $values = ArrayTool::replace($sqls['values'], $values);
+        }
+        if ($debugger) {
+            echo '<pre>';
+            echo $sql;
+            if (!empty($values)) {
+                echo var_export($values, true);
+            }
+            echo '</pre>';
         }
         if ($sqls['function'] == 'customQuery') {
             $result = $this->customQuery($sql, true, $values);

@@ -33,7 +33,7 @@ class Model extends \Kotchasan\Model
         $query = static::create()->db()->createQuery()
             ->select('category_id', 'topic')
             ->from('category')
-            ->where(array('type', 0))
+            ->where(array('type', 'category_id'))
             ->order('category_id')
             ->toArray()
             ->cacheOn();
@@ -112,7 +112,7 @@ class Model extends \Kotchasan\Model
         $result['start'] = $list_per_page * ($result['page'] - 1);
         // query
         $result['items'] = $query->order('id')
-            ->select('id', 'product_no', 'topic', 'description', 'detail', 'price', 'url', Sql::create('IFNULL(`image`,CONCAT("' . WEB_URL . 'datas/inventory/",`id`,".jpg")) AS image'), 'vat', 'unit', 'category_id', 'count_stock')
+            ->select('id', 'product_no', 'topic', 'description', 'detail', 'price', 'url', Sql::create('IFNULL(`image`,CONCAT("'.WEB_URL.'datas/inventory/",`id`,".jpg")) AS image'), 'vat', 'unit', 'category_id', 'count_stock')
             ->order('topic', 'product_no')
             ->limit($list_per_page, $result['start'])
             ->cacheOn()
@@ -147,6 +147,6 @@ class Model extends \Kotchasan\Model
             ->where(array('id', $request->get('id')->toInt()))
             ->cacheOn()
             ->toArray()
-            ->first('id', 'product_no', 'topic', 'description', 'detail', 'price', 'url', Sql::create('IFNULL(`image`,CONCAT("' . WEB_URL . 'datas/inventory/",`id`,".jpg")) AS image'), 'vat', 'unit', 'category_id', 'count_stock');
+            ->first('id', 'product_no', 'topic', 'description', 'detail', 'price', 'url', Sql::create('IFNULL(`image`,CONCAT("'.WEB_URL.'datas/inventory/",`id`,".jpg")) AS image'), 'vat', 'unit', 'category_id', 'count_stock');
     }
 }

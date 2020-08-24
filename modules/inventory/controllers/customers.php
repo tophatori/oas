@@ -16,7 +16,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * module=inventory-customers.
+ * module=inventory-customers
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -37,8 +37,8 @@ class Controller extends \Gcms\Controller
         $this->title = Language::get('Customer list');
         // เลือกเมนู
         $this->menu = 'customer';
-        // สามารถดูรายชื่อลูกค้าได้
-        if (Login::checkPermission(Login::isMember(), array('can_buy', 'can_sell', 'can_manage_inventory'))) {
+        // สามารถขายได้
+        if (Login::checkPermission(Login::isMember(), array('can_inventory_order', 'can_manage_inventory'))) {
             // แสดงผล
             $section = Html::create('section', array(
                 'class' => 'content_bg',

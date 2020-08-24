@@ -166,17 +166,22 @@ class Currency
 
     /**
      * ฟังก์ชั่น แปลงตัวเลขเป็นจำนวนเงิน
-     * คืนค่าข้อความจำนวนเงิน.
+     * คืนค่าข้อความจำนวนเงิน
      *
-     * @param float  $amount        จำนวนเงิน
-     * @param int    $digit         จำนวนทศนิยม (optional) ค่าเริ่มต้น 2 หลัก
+     * @param float $amount จำนวนเงิน
+     * @param int $digit จำนวนทศนิยม (optional) ค่าเริ่มต้น 2 หลัก
      * @param string $thousands_sep (optional) เครื่องหมายหลักพัน (default ,)
+     * @param bool $round (optional) true (default) หลังจุดทศนิยมในหลักที่เกินตั้งแต่ 5 ขึ้นไปปัดขึ้น (round), false ตัดหลักที่เกินทิ้ง (floor)
      *
      * @return string
      */
-    public static function format($amount, $digit = 2, $thousands_sep = ',')
+    public static function format($amount, $digit = 2, $thousands_sep = ',', $round = true)
     {
-        return number_format((float) $amount, $digit, '.', $thousands_sep);
+        if (!$round && preg_match('/^([0-9]+)(\.[0-9]{'.$digit.','.$digit.'})[0-9]+$/', (string) $amount, $match)) {
+            return number_format(floatval($match[1].$match[2]), $digit, '.', $thousands_sep);
+        } else {
+            return number_format((float) $amount, $digit, '.', $thousands_sep);
+        }
     }
 
     /**

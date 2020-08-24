@@ -13,7 +13,7 @@ namespace Index\Category;
 use Kotchasan\Database\Sql;
 
 /**
- * Model สำหรับจัดการหมวดหมู่ต่างๆ.
+ * Model สำหรับจัดการหมวดหมู่ต่างๆ
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -28,17 +28,17 @@ class Model extends \Kotchasan\Model
 
     /**
      * อ่านรายชื่อหมวดหมู่จากฐานข้อมูลตามภาษาปัจจุบัน
-     * สำหรับการแสดงผล.
+     * สำหรับการแสดงผล
      *
-     * @param int $type_id
+     * @param string $type
      *
      * @return \static
      */
-    public static function init($type_id)
+    public static function init($type)
     {
         $obj = new static();
         // อ่านรายชื่อตำแหน่งจากฐานข้อมูล
-        foreach (self::generate($type_id) as $item) {
+        foreach (self::generate($type) as $item) {
             $obj->datas[$item['category_id']] = $item['topic'];
         }
 
@@ -46,22 +46,22 @@ class Model extends \Kotchasan\Model
     }
 
     /**
-     * Query ข้อมูลหมวดหมู่จากฐานข้อมูล.
+     * Query ข้อมูลหมวดหมู่จากฐานข้อมูล
      *
-     * @param int $type_id
+     * @param string $type
      *
      * @return array
      */
-    public static function generate($type_id)
+    public static function generate($type)
     {
         // Model
         $model = new static();
         // Query
         $query = $model->db()->createQuery()
-            ->select('id', 'category_id', 'topic')
+            ->select('category_id', 'topic')
             ->from('category')
             ->where(array(
-                array('type', $type_id),
+                array('type', $type),
             ))
             ->order('category_id')
             ->toArray()
@@ -69,7 +69,6 @@ class Model extends \Kotchasan\Model
         $result = array();
         foreach ($query->execute() as $item) {
             $result[$item['category_id']] = array(
-                'id' => $item['id'],
                 'category_id' => $item['category_id'],
                 'topic' => $item['topic'],
             );
@@ -80,18 +79,18 @@ class Model extends \Kotchasan\Model
 
     /**
      * อ่านหมวดหมู่สำหรับใส่ลงใน DataTable
-     * ถ้าไม่มีคืนค่าข้อมูลเปล่าๆ 1 แถว.
+     * ถ้าไม่มีคืนค่าข้อมูลเปล่าๆ 1 แถว
      *
-     * @param int $type_id
+     * @param string $type
      *
      * @return array
      */
-    public static function toDataTable($type_id)
+    public static function toDataTable($type)
     {
         // Query ข้อมูลหมวดหมู่จากฐานข้อมูล
-        $result = self::generate($type_id);
+        $result = self::generate($type);
         if (empty($result)) {
-            $result = array(array('id' => 0, 'category_id' => 1, 'topic' => ''));
+            $result = array(array('category_id' => 1, 'topic' => ''));
         }
 
         return $result;
@@ -122,14 +121,14 @@ class Model extends \Kotchasan\Model
     }
 
     /**
-     * ฟังก์ชั่นอ่านหมวดหมู่ หรือ บันทึก ถ้าไม่มีหมวดหมู่.
+     * ฟังก์ชั่นอ่านหมวดหมู่ หรือ บันทึก ถ้าไม่มีหมวดหมู่
      *
-     * @param int    $type_id
+     * @param string    $type
      * @param string $topic
      *
      * @return int คืนค่า category_id
      */
-    protected static function check($type_id, $topic)
+    protected static function check($type, $topic)
     {
         $topic = trim($topic);
         if ($topic == '') {
@@ -139,7 +138,7 @@ class Model extends \Kotchasan\Model
             $search = $model->db()->createQuery()
                 ->from('category')
                 ->where(array(
-                    array('type', $type_id),
+                    array('type', $type),
                     array('topic', $topic),
                 ))
                 ->toArray()
@@ -151,13 +150,13 @@ class Model extends \Kotchasan\Model
                 // ไม่มีหมวดหมู่ ตรวจสอบ category_id ใหม่
                 $search = $model->db()->createQuery()
                     ->from('category')
-                    ->where(array('type', $type_id))
+                    ->where(array('type', $type))
                     ->toArray()
                     ->first(Sql::MAX('category_id', 'category_id'));
                 $category_id = empty($search['category_id']) ? 1 : (1 + (int) $search['category_id']);
                 // save
                 $model->db()->insert($model->getTableName('category'), array(
-                    'type' => $type_id,
+                    'type' => $type,
                     'category_id' => $category_id,
                     'topic' => $topic,
                 ));

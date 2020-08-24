@@ -11,12 +11,11 @@
 namespace Inventory\Setup;
 
 use Gcms\Login;
-use Kotchasan\Database\Sql;
 use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * โมเดลสำหรับ (setup.php).
+ * model=inventory-setup
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -34,23 +33,18 @@ class Model extends \Kotchasan\Model
     public static function toDataTable($params)
     {
         $where = array();
-        if ($params['cat'] > 0) {
-            $where[] = array('P.category_id', $params['cat']);
+        if (!empty($params['category_id'])) {
+            $where[] = array('P.category_id', $params['category_id']);
         }
-        $sql = static::createQuery()
-            ->select('product_id', Sql::create('SUM(IF(`status`="IN", `quantity`, `quantity`*-1)) AS `quantity`'))
-            ->from('stock')
-            ->groupBy('product_id');
 
         return static::createQuery()
-            ->select('P.product_no', 'P.topic', 'P.description', 'P.price', 'P.category_id', 'P.id', Sql::create('CASE WHEN P.`count_stock`=1 THEN S.`quantity` ELSE NULL END AS `quantity`'), 'P.unit')
+            ->select('P.product_no', 'P.topic', 'P.category_id', 'P.price', 'P.cost', 'P.id', 'P.stock')
             ->from('product P')
-            ->join(array($sql, 'S'), 'LEFT', array('S.product_id', 'P.id'))
             ->where($where);
     }
 
     /**
-     * รับค่าจาก action.
+     * รับค่าจาก action (setup.php)
      *
      * @param Request $request
      */
@@ -64,35 +58,16 @@ class Model extends \Kotchasan\Model
                 $action = $request->post('action')->toString();
                 // id ที่ส่งมา
                 if (preg_match_all('/,?([0-9]+),?/', $request->post('id')->toString(), $match)) {
-                    // ตาราง user
+                    // ตาราง product
                     $table = $this->getTableName('product');
                     if ($action === 'delete') {
-                        // ลบสินค้า ไม่สามารถลบรายการที่ขายไปแล้วได้
-                        $query = $this->db()->createQuery()
-                            ->select('P.id')
-                            ->from('product P')
-                            ->where(array(
-                                array('P.id', $match[1]),
-                            ))
-                            ->notExists('stock', array(
-                                array('product_id', 'P.id'),
-                                array('status', 'OUT'),
-                            ))
-                            ->toArray();
-                        $ids = array();
-                        foreach ($query->execute() as $item) {
-                            $ids[] = $item['id'];
-                        }
-                        if (!empty($ids)) {
-                            // ลบสินค้า
-                            $this->db()->delete($table, array('id', $ids), 0);
-                            // ลบ inventory
-                            $this->db()->delete($this->getTableName('stock'), array('product_id', $ids), 0);
-                        }
-                        $ret = array();
-                        if (count($ids) != count($match[1])) {
-                            // บางรายการลบไม่ได้
-                            $ret['alert'] = Language::get('Some items can not be removed because it is in use');
+                        // ลบสินค้า
+                        $this->db()->delete($table, array('id', $match[1]), 0);
+                        // ลบไฟล์
+                        foreach ($match[1] as $id) {
+                            if (file_exists(ROOT_PATH.DATA_FOLDER.'inventory/'.$id.'.jpg')) {
+                                unlink(ROOT_PATH.DATA_FOLDER.'inventory/'.$id.'.jpg');
+                            }
                         }
                         // reload
                         $ret['location'] = 'reload';

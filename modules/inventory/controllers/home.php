@@ -32,9 +32,11 @@ class Controller extends \Kotchasan\KBase
      */
     public static function addCard(Request $request, $card, $login)
     {
+        $order_status = Language::get('ORDER_STATUS');
         $datas = \Inventory\Home\Model::getCardData($login);
-        Home::renderCard($card, 'icon-billing', Language::find('SELL_TYPIES', null, self::$cfg->outstock_status), number_format($datas->receipt), '{LNG_Sales today}', 'index.php?module=inventory-outward&status='.self::$cfg->outstock_status);
-        Home::renderCard($card, 'icon-cart', Language::find('BUY_TYPIES', null, 1), number_format($datas->purcashe_order), '{LNG_Waiting for payment}', 'index.php?module=inventory-inward&status=1');
+        $url = 'index.php?module=inventory-orders&day='.date('d').'&month='.date('m').'&year='.date('Y');
+        Home::renderCard($card, 'icon-billing', $order_status['OUT'], number_format($datas->sell), '{LNG_Sales today}', $url.'&status=OUT');
+        Home::renderCard($card, 'icon-cart', $order_status['PO'], number_format($datas->purcashe_order), '{LNG_Waiting for payment}', $url.'&status=PO');
         Home::renderCard($card, 'icon-customer', '{LNG_Customer}', number_format($datas->customers), '{LNG_Customer list}', 'index.php?module=inventory-customers');
         Home::renderCard($card, 'icon-product', '{LNG_Inventory}', number_format($datas->products), '{LNG_List of} {LNG_Product}', 'index.php?module=inventory-setup&amp;sort=quantity%20asc');
     }
@@ -48,11 +50,8 @@ class Controller extends \Kotchasan\KBase
      */
     public static function addMenu(Request $request, $menu, $login)
     {
-        foreach (Language::get('SELL_TYPIES') as $k => $label) {
-            Home::renderQuickMenu($menu, 'icon-plus', '{LNG_Add New} '.$label, 'index.php?module=inventory-sell&amp;typ='.$k);
-        }
-        foreach (Language::get('BUY_TYPIES') as $k => $label) {
-            Home::renderQuickMenu($menu, 'icon-plus', '{LNG_Add New} '.$label, 'index.php?module=inventory-buy&amp;typ='.$k);
+        foreach (Language::get('ORDER_STATUS') as $k => $label) {
+            Home::renderQuickMenu($menu, 'icon-plus', '{LNG_Add New} '.$label, 'index.php?module=inventory-order&amp;typ='.$k);
         }
     }
 }

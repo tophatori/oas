@@ -20,17 +20,17 @@ namespace Inventory\Category;
 class Model extends \Index\Category\Model
 {
     /**
-     * คืนค่าหมวดหมู่สินค้า.
+     * คืนค่าหมวดหมู่สินค้า
      *
      * @return \static
      */
     public static function categories()
     {
-        return self::init(0);
+        return self::init('category_id');
     }
 
     /**
-     * หมวดหมู่สินค้า.
+     * หมวดหมู่สินค้า
      *
      * @param string $topic
      *
@@ -38,11 +38,11 @@ class Model extends \Index\Category\Model
      */
     public static function newCategory($topic)
     {
-        return self::check(0, $topic);
+        return self::check('category_id', $topic);
     }
 
     /**
-     * หน่วยของสินค้า.
+     * หน่วยของสินค้า
      *
      * @param string $topic
      *
@@ -50,6 +50,6 @@ class Model extends \Index\Category\Model
      */
     public static function newUnit($topic)
     {
-        return self::check(3, $topic);
+        return self::check('unit', $topic);
     }
 }

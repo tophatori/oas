@@ -40,7 +40,7 @@ abstract class Query extends \Kotchasan\Database\Db
      */
     public function debug()
     {
-        echo '<pre>'.$this->text().'</pre>';
+        $this->debugger = true;
 
         return $this;
     }

@@ -15,7 +15,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * module=inventory-write.
+ * module=inventory-write
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -28,13 +28,11 @@ class View extends \Gcms\View
      *
      * @param Request $request
      * @param array   $product
-     * @param array   $login
      *
      * @return string
      */
-    public function render(Request $request, $product, $login)
+    public function render(Request $request, $product)
     {
-        // form
         $form = Html::create('form', array(
             'id' => 'product',
             'class' => 'setup_frm',
@@ -55,6 +53,7 @@ class View extends \Gcms\View
             'labelClass' => 'g-input icon-number',
             'label' => '{LNG_Product code}/{LNG_Barcode}',
             'maxlength' => 150,
+            'autofocus' => true,
             'value' => $product['product_no'],
             'placeholder' => '{LNG_Leave empty for generate auto}',
         ));
@@ -106,14 +105,14 @@ class View extends \Gcms\View
             ));
             // ใหม่
             $groups = $fieldset->add('groups', array(
-                'comment' => '{LNG_Do not enter the Buy Price and Stock If a product is unlimited}',
+                'comment' => '{LNG_No need to fill in the purchase price if the product is not counting stock}',
             ));
             // buy_price
             $groups->add('currency', array(
                 'id' => 'write_buy_price',
                 'itemClass' => 'width33',
                 'labelClass' => 'g-input icon-money',
-                'label' => '{LNG_Buy Price}',
+                'label' => '{LNG_Purchase price} ({LNG_Cost})',
             ));
             // quantity
             $groups->add('number', array(
@@ -130,6 +129,28 @@ class View extends \Gcms\View
                 'label' => '{LNG_VAT}',
                 'options' => Language::get('TAX_STATUS'),
             ));
+        } else {
+            $groups = $fieldset->add('groups');
+            // buy_price
+            $groups->add('currency', array(
+                'id' => 'write_buy_price',
+                'itemClass' => 'width50',
+                'labelClass' => 'g-input icon-money',
+                'label' => '{LNG_Purchase price} ({LNG_Cost})',
+                'disabled' => true,
+                'value' => $product['cost'],
+            ));
+            if ($product['count_stock'] == 1) {
+                // quantity
+                $groups->add('number', array(
+                    'id' => 'write_quantity',
+                    'itemClass' => 'width50',
+                    'labelClass' => 'g-input icon-number',
+                    'label' => '{LNG_Stock}',
+                    'disabled' => true,
+                    'value' => $product['stock'],
+                ));
+            }
         }
         $groups = $fieldset->add('groups');
         // price
@@ -166,6 +187,15 @@ class View extends \Gcms\View
             'class' => 'button save large icon-save',
             'value' => '{LNG_Save}',
         ));
+        if ($product['id'] == 0) {
+            // save_and_create
+            $fieldset->add('checkbox', array(
+                'id' => 'save_and_create',
+                'label' => '&nbsp;{LNG_Save and create new}',
+                'value' => 1,
+                'checked' => self::$request->cookie('save_and_create')->toInt() == 1,
+            ));
+        }
         // id
         $fieldset->add('hidden', array(
             'id' => 'write_id',
