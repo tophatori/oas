@@ -222,7 +222,6 @@ return array(
   'No need to fill in English text. If the English text matches the Key' => 'အင်္ဂလိပ်စာသားဖြည့်ရန်မလိုအပ်ပါ။ အင်္ဂလိပ်စာသားသော့နှင့်ကိုက်ညီလျှင်',
   'No need to fill in the purchase price if the product is not counting stock' => 'အကယ်၍ ကုန်ပစ္စည်းသည်ကုန်ပစ္စည်းမရှိလျှင်ဖြည့်ရန်မလိုပါ။',
   'not a registered user' => 'အသင်း ၀ င်မရှိပါ',
-  'Not enough products, Remaining :stock' => 'ကုန်ပစ္စည်းမလုံလောက်ပါ၊ ကျန် :stock',
   'not required' => 'မလိုအပ်ပါ',
   'number format such as %04d (%04d means the number on 4 digits, up to 11 digits)' => '%04d ကဲ့သို့နံပါတ်ကုဒ်ပုံစံ (%04d သည်ဂဏန်း ၄ လုံး၊ ၁၁ လုံးအထိ)',
   'Number of transactions' => 'ငွေသွင်းငွေထုတ်နံပါတ်',
@@ -309,7 +308,6 @@ return array(
     '' => 'ပုံမှန်ဆက်သွယ်မှု',
     'ssl' => 'လုံခြုံသောဆက်သွယ်မှု (SSL)'
   ),
-  'Some items can not be removed because it is in use' => 'အချို့ပစ္စည်းများကိုမဖျက်နိုင်ပါ။ ဒါကြောင့်အသုံးပြုမှုအတွက်ကြောင့်ဖြစ်သည်',
   'Sorry' => 'တောင်းပန်ပါတယ်',
   'Sorry, cannot find a page called Please check the URL or try the call again.' => 'ကျေးဇူးပြု၍ ကျေးဇူးပြု၍ ခေါ်ဆိုသောစာမျက်နှာကိုရှာမရပါ ကျေးဇူးပြု၍ URL ကိုစစ်ဆေးပါသို့မဟုတ်ထပ်မံခေါ်ဆိုပါ။',
   'Sorry, Item not found It&#39;s may be deleted' => 'စိတ်မကောင်းပါ၊ ရွေးချယ်ထားသောပစ္စည်းကိုရှာမရပါ ဤပစ္စည်းအားဖျက်ပြီးပါက',

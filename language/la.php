@@ -146,6 +146,10 @@ return array(
   'Image' => 'ຮູບພາບ',
   'Image size is in pixels' => 'ຂະໜາດຂອງຮູບພາບເປັນພິກເຊວ',
   'Import' => 'ນຳເຂົ້າ',
+  'IMPORT_TYPE' => array(
+    'stock' => 'ອັບເດດຮຸ້ນ',
+    'price' => 'ລາຄາປັບປຸງ'
+  ),
   'Invalid :name' => ':name ບໍ່ຖືກຕ້ອງ',
   'Inventory' => 'ສາງ',
   'INVENTORY_CATEGORIES' => array(
@@ -223,7 +227,6 @@ return array(
   'No need to fill in English text. If the English text matches the Key' => 'ບໍ່ຈຳເປັນເພີ່ມຂໍ້ຄວາມໃນພາສາອັງກິດຫາກຂໍ້ຄວາມໃນພາສານອັງກົງກັບແປ້ນພີມ',
   'No need to fill in the purchase price if the product is not counting stock' => 'ບໍ່ຈຳເປັນຕ້ອງຕື່ມລາຄາຊື້ຖ້າສິນຄ້າບໍ່ຢູ່ໃນສະຕັອກ',
   'not a registered user' => 'ບໍ່ພົບສະມາຊິກນີ້ລົງທະບຽນໄວ້',
-  'Not enough products, Remaining :stock' => 'ຜະລິດຕະພັນບໍ່ພຽງພໍ, ຍັງເຫຼືອ :stock',
   'not required' => 'ບໍ່ຕ້ອງການ',
   'number format such as %04d (%04d means the number on 4 digits, up to 11 digits)' => 'ຮູບແບບລະຫັດຂອງຕົວເລກ, ເຊັ່ນວ່າ %04d (%04d ໝາຍ ຄວາມວ່າ 4 ຕົວເລກ, ສູງເຖິງ 11 ຕົວເລກ)',
   'Number of transactions' => 'ໝາຍເລກການເຮັດທຸລະກຳ',
@@ -310,7 +313,6 @@ return array(
     '' => 'ການເຊື່ອມຕໍ່ແບບປົກກະຕິ',
     'ssl' => 'ການເຊື່ອມຕໍ່ທີ່ປອດໄຟ (SSL)'
   ),
-  'Some items can not be removed because it is in use' => 'ບາງລາຍການບໍ່ສາມາດລຶບໄດ້ເພາະມັນກຳລັງໃຊ້ຢູ່',
   'Sorry' => 'ຂໍໂທດ',
   'Sorry, cannot find a page called Please check the URL or try the call again.' => 'ຂໍອະໄພ, ບໍ່ສາມາດຊອກຫາໜ້າທີ່ເອີ້ນວ່າກະລຸນາກວດສອບ URL ຫຼືລອງໂທອີກເທື່ອໜຶ່ງ',
   'Sorry, Item not found It&#39;s may be deleted' => 'ຂໍໂທດ ບໍ່ພົບລາຍການທີ່ເລືອກ ລາຍການນີ້ອາດຖືກລຶບໄປແລ້ວ',

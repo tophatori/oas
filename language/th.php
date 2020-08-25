@@ -223,7 +223,6 @@ return array(
   'No need to fill in English text. If the English text matches the Key' => 'ไม่จำเป็นต้องกรอกข้อความในภาษาอังกฤษ หากข้อความในภาษาอังกฤษตรงกับคีย์',
   'No need to fill in the purchase price if the product is not counting stock' => 'ไม่จำเป็นต้องกรอกราคาซื้อหากสินค้าไม่นับสต๊อก',
   'not a registered user' => 'ไม่พบสมาชิกนี้ลงทะเบียนไว้',
-  'Not enough products, Remaining :stock' => 'มีสินค้าไม่เพียงพอ คงเหลือ :stock',
   'not required' => 'ไม่มีไม่ต้องกรอก',
   'number format such as %04d (%04d means the number on 4 digits, up to 11 digits)' => 'รูปแบบรหัสตัวเลข เช่น %04d (%04d หมายถึงตัวเลขจำนวนสี่หลัก, สูงสุดไม่เกิน 11 หลัก)',
   'Number of transactions' => 'เลขที่การทำรายการ',
@@ -311,7 +310,6 @@ return array(
     '' => 'การเชื่อมต่อแบบปกติ',
     'ssl' => 'การเชื่อมต่อที่ปลอดภัย (SSL)'
   ),
-  'Some items can not be removed because it is in use' => 'บางรายการไม่สามารถลบได้ เนื่องจากมีการใช้งานอยู่',
   'Sorry' => 'ขออภัย',
   'Sorry, cannot find a page called Please check the URL or try the call again.' => 'ขออภัย ไม่พบหน้าที่เรียก กรุณาตรวจสอบ URL หรือลองเรียกใหม่อีกครั้ง',
   'Sorry, Item not found It&#39;s may be deleted' => 'ขออภัย ไม่พบรายการที่เลือก รายการนี้อาจถูกลบไปแล้ว',
