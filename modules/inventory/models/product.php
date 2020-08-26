@@ -30,7 +30,6 @@ class Model extends \Kotchasan\KBase
     {
         // product
         $product = array(
-            'warehouse' => $save['warehouse'],
             'category_id' => empty($save['category']) ? 0 : \Inventory\Category\Model::newCategory($save['category']),
             'product_no' => $save['product_no'],
             'topic' => $save['topic'],
@@ -92,7 +91,6 @@ class Model extends \Kotchasan\KBase
     {
         // product
         $product = array(
-            'warehouse' => $save['warehouse'],
             'category_id' => \Inventory\Category\Model::newCategory($save['category']),
             'product_no' => $save['product_no'],
             'topic' => $save['topic'],
@@ -129,7 +127,7 @@ class Model extends \Kotchasan\KBase
             'topic' => $save['topic'],
             'last_update' => date('Y-m-d H:i:s'),
         );
-        $columns = array('warehouse', 'price', 'description', 'vat', 'count_stock');
+        $columns = array('price', 'description', 'vat', 'count_stock');
         foreach ($columns as $key) {
             if (isset($save[$key])) {
                 $product[$key] = $save[$key];
