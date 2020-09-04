@@ -20,7 +20,7 @@ namespace Inventory\Fifo;
 class Model extends \Kotchasan\Model
 {
     /**
-     * อัปเดต stock และ ราคา
+     * อัพเดต stock และ ราคา
      *
      * @param int|array $products Product ID
      */
@@ -98,7 +98,7 @@ class Model extends \Kotchasan\Model
                 }
             }
         }
-        // อัปเดต product
+        // อัพเดต product
         $table_product = $model->getTableName('product');
         foreach ($product as $id => $item) {
             if (empty($item['stock'])) {
@@ -106,7 +106,7 @@ class Model extends \Kotchasan\Model
             }
             $db->update($table_product, $id, $item);
         }
-        // อัปเดต stock
+        // อัพเดต stock
         $table_stock = $model->getTableName('stock');
         foreach ($order as $product_id => $items) {
             foreach ($items as $stock_id => $item) {

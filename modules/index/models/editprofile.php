@@ -16,7 +16,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * module=editprofile.
+ * module=editprofile
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -26,7 +26,7 @@ class Model extends \Kotchasan\Model
 {
     /**
      * อ่านข้อมูลสมาชิกที่ $id
-     * คืนค่าข้อมูล array ไม่พบคืนค่า false.
+     * คืนค่าข้อมูล array ไม่พบคืนค่า false
      *
      * @param int $id
      *
@@ -52,7 +52,7 @@ class Model extends \Kotchasan\Model
     }
 
     /**
-     * บันทึกข้อมูล (editprofile.php).
+     * บันทึกข้อมูล (editprofile.php)
      *
      * @param Request $request
      */
@@ -62,53 +62,51 @@ class Model extends \Kotchasan\Model
         // session, token, สมาชิก และไม่ใช่สมาชิกตัวอย่าง
         if ($request->initSession() && $request->isSafe() && $login = Login::isMember()) {
             if (Login::notDemoMode($login)) {
-                // รับค่าจากการ POST
-                $save = array(
-                    'name' => $request->post('register_name')->topic(),
-                    'sex' => $request->post('register_sex')->topic(),
-                    'phone' => $request->post('register_phone')->topic(),
-                    'id_card' => $request->post('register_id_card')->number(),
-                    'address' => $request->post('register_address')->topic(),
-                    'provinceID' => $request->post('register_provinceID')->number(),
-                    'province' => $request->post('register_province')->topic(),
-                    'zipcode' => $request->post('register_zipcode')->number(),
-                    'country' => $request->post('register_country')->filter('A-Z'),
-                    'status' => $request->post('register_status')->toInt(),
-                );
-                // ชื่อตาราง user
-                $table_user = $this->getTableName('user');
-                // database connection
-                $db = $this->db();
-                // แอดมิน
-                $isAdmin = Login::isAdmin();
-                // ตรวจสอบค่าที่ส่งมา
-                $user = self::get($request->post('register_id')->toInt());
-                if ($user) {
-                    // ตัวเอง ไม่สามารถอัปเดต status ได้
-                    if ($login['id'] == $user['id']) {
-                        unset($save['status']);
+                try {
+                    // รับค่าจากการ POST
+                    $save = array(
+                        'name' => $request->post('register_name')->topic(),
+                        'sex' => $request->post('register_sex')->topic(),
+                        'phone' => $request->post('register_phone')->topic(),
+                        'id_card' => $request->post('register_id_card')->number(),
+                        'address' => $request->post('register_address')->topic(),
+                        'provinceID' => $request->post('register_provinceID')->number(),
+                        'province' => $request->post('register_province')->topic(),
+                        'zipcode' => $request->post('register_zipcode')->number(),
+                        'country' => $request->post('register_country')->filter('A-Z'),
+                    );
+                    // ชื่อตาราง user
+                    $table_user = $this->getTableName('user');
+                    // database connection
+                    $db = $this->db();
+                    // แอดมิน
+                    $isAdmin = Login::isAdmin();
+                    // ตรวจสอบค่าที่ส่งมา
+                    $user = self::get($request->post('register_id')->toInt());
+                    if ($user) {
+                        if ($isAdmin) {
+                            // แอดมิน
+                            $permission = $request->post('register_permission', array())->topic();
+                            $save['permission'] = empty($permission) ? '' : ','.implode(',', $permission).',';
+                            // แอดมินและไม่ใช่ตัวเอง สามารถอัพเดต status ได้
+                            if ($login['id'] != $user['id']) {
+                                $save['status'] = $request->post('register_status')->toInt();
+                            }
+                        } elseif ($login['id'] != $user['id']) {
+                            // ไม่ใช่แอดมินแก้ไขได้แค่ตัวเองเท่านั้น
+                            $user = null;
+                        }
                     }
-                    if ($isAdmin) {
-                        // แอดมิน
-                        $permission = $request->post('register_permission', array())->topic();
-                        $save['permission'] = empty($permission) ? '' : ','.implode(',', $permission).',';
-                    } elseif ($login['id'] != $user['id']) {
-                        // ไม่ใช่แอดมินแก้ไขได้แค่ตัวเองเท่านั้น
-                        $user = null;
-                    } else {
-                        // ไม่ใช่แอดมินและไม่ใช่ตัวเอง ไม่สามารถอัปเดตได้
-                        unset($save['status']);
-                    }
-                }
-                if ($user) {
-                    $save['username'] = $request->post('register_username', $user['username'])->username();
-                    if ($user['active'] == 1 && $save['username'] == '') {
-                        // สามารถเข้าระบบได้ และ ไม่ได้กรอก username
-                        $ret['ret_register_username'] = 'Please fill in';
-                    } elseif ($save['name'] == '') {
-                        // ไม่ได้กรอก ชื่อ
-                        $ret['ret_register_name'] = 'Please fill in';
-                    } else {
+                    if ($user) {
+                        $save['username'] = $request->post('register_username', $user['username'])->username();
+                        if ($user['active'] == 1 && $save['username'] == '') {
+                            // สามารถเข้าระบบได้ และ ไม่ได้กรอก username
+                            $ret['ret_register_username'] = 'Please fill in';
+                        }
+                        if ($save['name'] == '') {
+                            // ไม่ได้กรอก ชื่อ
+                            $ret['ret_register_name'] = 'Please fill in';
+                        }
                         // ตรวจสอบค่าที่ส่งมา
                         $requirePassword = false;
                         // ตรวจสอบ username ซ้ำ
@@ -149,7 +147,7 @@ class Model extends \Kotchasan\Model
                             // แก้ไข
                             $db->update($table_user, $user['id'], $save);
                             if ($login['id'] == $user['id']) {
-                                // ตัวเอง อัปเดตข้อมูลการ login
+                                // ตัวเอง อัพเดตข้อมูลการ login
                                 if ($isAdmin) {
                                     $save['permission'] = $permission;
                                 }
@@ -166,10 +164,12 @@ class Model extends \Kotchasan\Model
                             // เคลียร์
                             $request->removeToken();
                         }
+                    } else {
+                        // ไม่พบข้อมูลที่แก้ไข หรือ ไม่มีสิทธิ์
+                        $ret['alert'] = Language::get('not a registered user');
                     }
-                } else {
-                    // ไม่พบข้อมูลที่แก้ไข หรือ ไม่มีสิทธิ์
-                    $ret['alert'] = Language::get('not a registered user');
+                } catch (\Kotchasan\InputItemException $e) {
+                    $ret['alert'] = $e->getMessage();
                 }
             }
         }

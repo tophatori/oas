@@ -13,7 +13,7 @@ namespace Index\Forgot;
 use Kotchasan\Language;
 
 /**
- * คลาสสำหรับการขอรหัสผ่านใหม่.
+ * คลาสสำหรับการขอรหัสผ่านใหม่
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -22,7 +22,7 @@ use Kotchasan\Language;
 class Model extends \Kotchasan\KBase
 {
     /**
-     * ฟังก์ชั่นส่งอีเมลขอรหัสผ่านใหม่.
+     * ฟังก์ชั่นส่งอีเมลขอรหัสผ่านใหม่
      *
      * @param int    $id
      * @param string $username
@@ -42,7 +42,7 @@ class Model extends \Kotchasan\KBase
             // คืนค่า error
             return strip_tags($err->getErrorMessage());
         } else {
-            // อัปเดตรหัสผ่านใหม่
+            // อัพเดตรหัสผ่านใหม่
             $model = new \Kotchasan\Model();
             $salt = uniqid();
             $model->db()->update($model->getTableName('user'), (int) $id, array(

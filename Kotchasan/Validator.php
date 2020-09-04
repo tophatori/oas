@@ -11,7 +11,7 @@
 namespace Kotchasan;
 
 /**
- * คลาสสำหรับตรวจสอบความถูกต้องของตัวแปรต่างๆ.
+ * คลาสสำหรับตรวจสอบความถูกต้องของตัวแปรต่างๆ
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -21,7 +21,7 @@ class Validator extends \Kotchasan\KBase
 {
     /**
      * ตรวจสอบความถูกของอีเมล
-     * คืนค่า true ถ้ารูปแบบอีเมลถูกต้อง.
+     * คืนค่า true ถ้ารูปแบบอีเมลถูกต้อง
      *
      * @assert ('admin@localhost.com') [==] true
      * @assert ('admin@localhost') [==] true
@@ -42,30 +42,6 @@ class Validator extends \Kotchasan\KBase
         } else {
             return false;
         }
-    }
-
-    /**
-     * ฟังก์ชั่นสำหรับตรวจสอบความถูกต้องของเลขประชาชน.
-     *
-     * @assert ('0123456789016') [==] true
-     * @assert ('0123456789015') [==] false
-     *
-     * @param string $id ตัวเลข 13 หลัก
-     *
-     * @return bool คืนค่า true=ถูกต้อง และ false=ไม่ถูกต้อง
-     */
-    public static function idCard($id)
-    {
-        if (preg_match('/^[0-9]{13,13}$/', $id)) {
-            for ($i = 0, $sum = 0; $i < 12; ++$i) {
-                $sum += (int) ($id[$i]) * (13 - $i);
-            }
-            if ((11 - ($sum % 11)) % 10 == (int) ($id[12])) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**

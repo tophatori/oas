@@ -16,7 +16,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * module=member.
+ * module=member
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *

@@ -362,8 +362,8 @@ class ArrayTool
      *
      * @assert ('') [==] array()
      * @assert (serialize(array(1, 2, 3))) [==] array(1, 2, 3)
-     * @assert (serialize(array(1 => 'One', 2 => 'Two', 3 => 'Three')), array(3 => 3, 4 => 'Four'), true) [==] array(1 => 'One', 2 => 'Two', 3 => 'Three', 4 => 'Four')
-     * @assert (serialize(array(1 => 'One', 2 => 'Two', 3 => 'Three')), array(3 => 3, 4 => 'Four'), false) [==] array(1 => 'One', 2 => 'Two', 3 => 3, 4 => 'Four')
+     * @assert (serialize(array(1 => 'One', 2 => 'Two', 3 => 'Three')), array(3 => 3, 4 => 'Four'), true) [==] array(3 => 'Three', 4 => 'Four', 1 => 'One', 2 => 'Two')
+     * @assert (serialize(array(1 => 'One', 2 => 'Two', 3 => 'Three')), array(3 => 3, 4 => 'Four'), false) [==] array(3 => 3, 4 => 'Four', 1 => 'One', 2 => 'Two')
      *
      * @param string $str     ข้อมูล serialize
      * @param array  $source  ข้อมูลตั้งต้น ถ้าใช้ฟังก์ชั่นนี้ในการแปลงข้อมูล ค่านี้จะเป็นแอเรย์ว่าง (ค่าเริ่มต้น)

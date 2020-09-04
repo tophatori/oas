@@ -47,7 +47,7 @@ class Model extends \Kotchasan\Orm\Field
                 if ($action == 'delete') {
                     $model = new \Kotchasan\Model();
                     $model->db()->delete($model->getTableName('language'), array('id', explode(',', $id)), 0);
-                    // อัปเดตไฟล์ ภาษา
+                    // อัพเดตไฟล์ ภาษา
                     $error = self::updateLanguageFile();
                     if (empty($error)) {
                         $ret['location'] = 'reload';
@@ -70,7 +70,7 @@ class Model extends \Kotchasan\Orm\Field
     }
 
     /**
-     * อัปเดตไฟล์ ภาษา.
+     * อัพเดตไฟล์ ภาษา.
      */
     public static function updateLanguageFile()
     {

@@ -66,6 +66,8 @@ class Csv
      * @param string   $file  ชื่อไฟล์รวมพาธ
      * @param function $onRow ฟังก์ชั่นรับค่าแต่ละแถว function($data){}
      * @param array $headers แอเรย์เก็บชื่อคอลัมน์สำหรับการทดสอบความถูกต้อง ถ้าไม่ระบุจะไม่ตรวจสอบ
+     *
+     * @throws Exception ถ้า Header ของไฟล์ CSV ไม่ถูกต้อง
      */
     public static function read($file, $onRow, $headers = array())
     {

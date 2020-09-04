@@ -41,7 +41,7 @@ echo '<meta charset=utf-8>';
 echo '<title>'.$title.'</title>';
 echo '<link rel=stylesheet href="../skin/gcss.css">';
 echo '<link rel=stylesheet href="../skin/fonts.css">';
-echo '<link rel=stylesheet href="style.css">';
+echo '<link rel=stylesheet href="./style.css">';
 echo '</head>';
 echo '<body>';
 echo '<main>';

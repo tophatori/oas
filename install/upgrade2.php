@@ -38,7 +38,7 @@ if (defined('ROOT_PATH')) {
                 // ตาราง user
                 $table = $db_config['prefix'].'_user';
                 if (empty($config['password_key'])) {
-                    // อัปเดทข้อมูลผู้ดูแลระบบ
+                    // อัพเดตข้อมูลผู้ดูแลระบบ
                     $config['password_key'] = uniqid();
                 }
                 // ตรวจสอบการ login
@@ -92,6 +92,13 @@ if (defined('ROOT_PATH')) {
     }
 }
 
+/**
+ * @param Database $conn
+ * @param string $table_name
+ * @param string $username
+ * @param string $password
+ * @param string $password_key
+ */
 function updateAdmin($conn, $table_name, $username, $password, $password_key)
 {
     $query = $conn->prepare("SELECT `id`,`username`,`password`,`salt` FROM `$table_name` WHERE `username`=:username AND `status`=1 LIMIT 1");
@@ -112,11 +119,11 @@ function updateAdmin($conn, $table_name, $username, $password, $password_key)
 }
 
 /**
- * ตรวจสอบฟิลด์.
+ * ตรวจสอบฟิลด์
  *
- * @param resource $conn
- * @param string   $table_name
- * @param string   $field
+ * @param Database $conn
+ * @param string $table_name
+ * @param string $field
  *
  * @return bool
  */
@@ -129,11 +136,11 @@ function fieldExists($conn, $table_name, $field)
 }
 
 /**
- * ตรวจสอบ index ซ้ำ.
+ * ตรวจสอบ index ซ้ำ
  *
- * @param $conn
- * @param $table_name
- * @param $index
+ * @param Database $conn
+ * @param string $table_name
+ * @param string $index
  */
 function indexExists($conn, $table_name, $index)
 {
@@ -144,8 +151,8 @@ function indexExists($conn, $table_name, $index)
 }
 
 /**
- * @param $config
- * @param $file
+ * @param array $config
+ * @param string $file
  */
 function save($config, $file)
 {

@@ -364,17 +364,16 @@ function initMailserver() {
   doChanged.call(el);
 }
 
-function replaceURL(key, value) {
+function replaceURL(key, value, url) {
   var q,
     prop,
-    urls = window.location
-    .toString()
-    .replace(/\#/g, "&")
-    .replace(/\?/g, "&")
-    .split("&"),
     new_url = new Object(),
-    qs = Array(),
-    l = urls.length;
+    qs = Array();
+  url = url || window.location.toString();
+  var urls = url.replace(/\#/g, "&")
+    .replace(/\?/g, "&")
+    .split("&");
+  var l = urls.length;
   if (l > 1) {
     for (var n = 1; n < l; n++) {
       if (urls[n] != "action=login" && urls[n] != "action=logout") {

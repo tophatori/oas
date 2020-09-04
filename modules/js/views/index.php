@@ -30,9 +30,9 @@ class View extends \Kotchasan\KBase
         $js = array();
         $js[] = file_get_contents(ROOT_PATH.'js/gajax.js');
         $js[] = file_get_contents(ROOT_PATH.'js/autocomplete.js');
+        $js[] = file_get_contents(ROOT_PATH.'js/datalist.js');
         $js[] = file_get_contents(ROOT_PATH.'js/calendar.js');
         $js[] = file_get_contents(ROOT_PATH.'js/clock.js');
-        $js[] = file_get_contents(ROOT_PATH.'js/datalist.js');
         $js[] = file_get_contents(ROOT_PATH.'js/ddmenu.js');
         $js[] = file_get_contents(ROOT_PATH.'js/ddpanel.js');
         $js[] = file_get_contents(ROOT_PATH.'js/dragdrop.js');

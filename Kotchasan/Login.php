@@ -95,61 +95,65 @@ class Login extends \Kotchasan\KBase
         $login = new static();
         // ชื่อฟิลด์สำหรับการรับค่าเป็นรายการแรกของ login_fields
         $field_name = reset(self::$cfg->login_fields);
-        // อ่านข้อมูลจากฟอร์ม login ฟิลด์ login_username
-        self::$login_params['username'] = self::$request->post('login_username')->username();
-        if (empty(self::$login_params['username'])) {
-            if (isset($_SESSION['login']) && isset($_SESSION['login'][$field_name])) {
-                // session
-                self::$login_params['username'] = Text::username($_SESSION['login'][$field_name]);
-                if (isset($_SESSION['login']['token'])) {
-                    self::$login_params['token'] = $_SESSION['login']['token'];
-                }
-            } else {
-                self::$login_params['username'] = null;
-            }
-            self::$from_submit = self::$request->post('login_username')->exists();
-        } elseif (self::$request->post('login_password')->exists()) {
-            self::$login_params['password'] = self::$request->post('login_password')->password();
-            self::$from_submit = true;
-        }
-        $action = self::$request->request('action')->toString();
-        // ตรวจสอบการ login
-        if ($action === 'logout' && !self::$from_submit) {
-            // logout ลบ session และ cookie
-            unset($_SESSION['login']);
-            self::$login_message = Language::get('Logout successful');
-        } elseif ($action === 'forgot') {
-            // ขอรหัสผ่านใหม่
-            return $login->forgot(self::$request);
-        } else {
-            // ตรวจสอบค่าที่ส่งมา
+        try {
+            // อ่านข้อมูลจากฟอร์ม login ฟิลด์ login_username
+            self::$login_params['username'] = self::$request->post('login_username')->username();
             if (empty(self::$login_params['username'])) {
-                if (self::$from_submit) {
-                    self::$login_message = 'Please fill in';
-                    self::$login_input = 'login_username';
-                }
-            } elseif (empty(self::$login_params['password']) && self::$from_submit) {
-                self::$login_message = 'Please fill in';
-                self::$login_input = 'login_password';
-            } elseif (!self::$from_submit || (self::$from_submit && self::$request->isReferer())) {
-                // ตรวจสอบการ login กับฐานข้อมูล
-                $login_result = $login->checkLogin(self::$login_params);
-                if (is_array($login_result)) {
-                    // save login session
-                    $_SESSION['login'] = $login_result;
-                } else {
-                    if (is_string($login_result)) {
-                        // ข้อความผิดพลาด
-                        self::$login_input = self::$login_input == 'password' ? 'login_password' : 'login_username';
-                        self::$login_message = $login_result;
+                if (isset($_SESSION['login']) && isset($_SESSION['login'][$field_name])) {
+                    // session
+                    self::$login_params['username'] = Text::username($_SESSION['login'][$field_name]);
+                    if (isset($_SESSION['login']['token'])) {
+                        self::$login_params['token'] = $_SESSION['login']['token'];
                     }
-                    // logout ลบ session และ cookie
-                    unset($_SESSION['login']);
+                } else {
+                    self::$login_params['username'] = null;
+                }
+                self::$from_submit = self::$request->post('login_username')->exists();
+            } elseif (self::$request->post('login_password')->exists()) {
+                self::$login_params['password'] = self::$request->post('login_password')->password();
+                self::$from_submit = true;
+            }
+            $action = self::$request->request('action')->toString();
+            // ตรวจสอบการ login
+            if ($action === 'logout' && !self::$from_submit) {
+                // logout ลบ session และ cookie
+                unset($_SESSION['login']);
+                self::$login_message = Language::get('Logout successful');
+            } elseif ($action === 'forgot') {
+                // ขอรหัสผ่านใหม่
+                $login = $login->forgot(self::$request);
+            } else {
+                // ตรวจสอบค่าที่ส่งมา
+                if (empty(self::$login_params['username'])) {
+                    if (self::$from_submit) {
+                        self::$login_message = 'Please fill in';
+                        self::$login_input = 'login_username';
+                    }
+                } elseif (empty(self::$login_params['password']) && self::$from_submit) {
+                    self::$login_message = 'Please fill in';
+                    self::$login_input = 'login_password';
+                } elseif (!self::$from_submit || (self::$from_submit && self::$request->isReferer())) {
+                    // ตรวจสอบการ login กับฐานข้อมูล
+                    $login_result = $login->checkLogin(self::$login_params);
+                    if (is_array($login_result)) {
+                        // save login session
+                        $_SESSION['login'] = $login_result;
+                    } else {
+                        if (is_string($login_result)) {
+                            // ข้อความผิดพลาด
+                            self::$login_input = self::$login_input == 'password' ? 'login_password' : 'login_username';
+                            self::$login_message = $login_result;
+                        }
+                        // logout ลบ session และ cookie
+                        unset($_SESSION['login']);
+                    }
                 }
             }
-
-            return $login;
+        } catch (InputItemException $e) {
+            self::$login_message = $e->getMessage();
         }
+
+        return $login;
     }
 
     /**

@@ -11,7 +11,7 @@
   "use strict";
   window.GInputGroup = GClass.create();
   GInputGroup.prototype = {
-    initialize: function(id, o) {
+    initialize: function(id) {
       this.input = $G(id);
       this.id = this.input.id;
       this.ul = this.input.parentNode.parentNode;
@@ -40,15 +40,23 @@
       $G(this.ul).addEvent("click", function() {
         self.input.focus();
       });
+      if ($E(this.input.list)) {
+        new GDatalist(this.input.id, function() {
+          if (this.value != '' && this.selectedIndex !== null) {
+            self.addItem(this.value, this.selectedIndex);
+          }
+          this.reset();
+        });
+      }
       this.input.inputGroup = this;
     },
-    addItem: function(text, value) {
+    addItem: function(title, value) {
       var li = document.createElement("li"),
         span = document.createElement("span"),
         button = document.createElement("button"),
         hidden = document.createElement("input"),
         self = this;
-      span.appendChild(document.createTextNode(text));
+      span.appendChild(document.createTextNode(title));
       li.appendChild(span);
       button.type = "button";
       button.innerHTML = "x";

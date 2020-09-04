@@ -141,8 +141,8 @@ abstract class Query extends \Kotchasan\Database\Db
             $sql = ' '.$type.' JOIN ('.$table[0]->text().') AS '.$table[1].' ON '.$sql;
         } elseif (preg_match('/^([a-zA-Z0-9_]+)([\s]+(as|AS))?[\s]+([A-Z0-9]{1,2})$/', $table, $match)) {
             $sql = ' '.$type.' JOIN '.$this->getFullTableName($match[1]).' AS '.$match[4].' ON '.$sql;
-        } elseif (preg_match('/^([a-z0-9_]+)([\s]+as)?[\s]+([a-z0-9_]+)$/i', $table, $match)) {
-            $sql = ' '.$type.' JOIN '.$this->getFullTableName($match[1]).' AS `'.$match[3].'` ON '.$sql;
+        } elseif (preg_match('/^([a-z0-9_]+)([\s]+(as|AS))?[\s]+([a-z0-9_]+)$/', $table, $match)) {
+            $sql = ' '.$type.' JOIN '.$this->getFullTableName($match[1]).' AS `'.$match[4].'` ON '.$sql;
         } else {
             $sql = ' '.$type.' JOIN '.$table.' ON '.$sql;
         }
@@ -154,7 +154,7 @@ abstract class Query extends \Kotchasan\Database\Db
     }
 
     /**
-     * สร้าง query เรียงลำดับ.
+     * สร้าง query เรียงลำดับ
      *
      * @param array|string $fields array('field ASC','field DESC') หรือ 'field ASC', 'field DESC', ....
      *
@@ -164,10 +164,10 @@ abstract class Query extends \Kotchasan\Database\Db
     {
         $sqls = array();
         foreach ((array) $fields as $item) {
-            if (preg_match('/^([A-Z0-9]{1,2}\.)([a-z0-9_]+)([\s]{1,}(ASC|DESC))?$/i', $item, $match)) {
+            if (preg_match('/^([A-Z]{1,1}[0-9]{0,1}\.)([a-z0-9_]+)([\s]{1,}(ASC|DESC|asc|desc))?$/', $item, $match)) {
                 // U.id DESC
                 $sqls[] = $match[1].'`'.$match[2].'`'.(isset($match[4]) ? " $match[4]" : '');
-            } elseif (preg_match('/^([a-z0-9_]+)(\.([a-z0-9_]+))?(([\s]+)?(ASC|DESC))?$/i', $item, $match)) {
+            } elseif (preg_match('/^([a-zA-Z0-9_]+)(\.([a-z0-9_]+))?(([\s]+)?(ASC|DESC|asc|desc))?$/', $item, $match)) {
                 // field.id DESC
                 $sqls[] = '`'.$match[1].'`'.(empty($match[3]) ? '' : '.`'.$match[3].'`').(isset($match[6]) ? " $match[6]" : '');
             } elseif (strtoupper($item) === 'RAND()') {
@@ -217,9 +217,9 @@ abstract class Query extends \Kotchasan\Database\Db
         } elseif (preg_match('/^([\'"])(.*)\\1([\s]+as)?[\s]+`?([^`]+)`?$/i', $fields, $match)) {
             // 'string' as alias
             $ret = "'$match[2]' AS `$match[4]`";
-        } elseif (preg_match('/^([A-Z0-9]{1,2})\.`?([\*a-z0-9_]+)`?(([\s]+as)?[\s]+`?([^`]+)`?)?$/i', $fields, $match)) {
-            // U.id alias
-            $ret = $match[1].'.'.($match[2] == '*' ? '*' : '`'.$match[2].'`').(isset($match[5]) ? ' AS `'.$match[5].'`' : '');
+        } elseif (preg_match('/^([A-Z]{1,1}[0-9]{0,1})\.`?([\*a-z0-9_]+)`?(([\s]+(as|AS))?[\s]+`?([^`]+)`?)?$/', $fields, $match)) {
+            // U.id alias U.* AS alias
+            $ret = $match[1].'.'.($match[2] == '*' ? '*' : '`'.$match[2].'`').(isset($match[6]) ? ' AS `'.$match[6].'`' : '');
         } elseif (preg_match('/^`?([a-z0-9_]+)`?\.`?([\*a-z0-9_]+)`?(([\s]+as)?[\s]+`?([^`]+)`?)?$/i', $fields, $match)) {
             // table.field alias
             $ret = '`'.$match[1].'`.'.($match[2] == '*' ? '*' : '`'.$match[2].'`').(isset($match[5]) ? ' AS `'.$match[5].'`' : '');
@@ -272,7 +272,7 @@ abstract class Query extends \Kotchasan\Database\Db
             } elseif (preg_match('/^\((.*)\)([\s]+as)?[\s]+([a-z0-9_]+)$/i', $params[2], $match)) {
                 // value เป็น query string
                 $value = "($match[1]) AS `$match[3]`";
-            } elseif (preg_match('/^([A-Z0-9]{1,2})\.([a-zA-Z0-9_]+)$/', $params[2], $match)) {
+            } elseif (preg_match('/^([A-Z]{1,1}[0-9]{0,1})\.([a-z0-9_]+)$/', $params[2], $match)) {
                 // U.id
                 $value = $match[1].'.`'.$match[2].'`';
             } elseif (preg_match('/^([a-z0-9_]+)\.([a-z0-9_]+)$/i', $params[2], $match)) {
@@ -429,8 +429,8 @@ abstract class Query extends \Kotchasan\Database\Db
             if (strpos($name, '(') !== false && preg_match('/^(.*?)(\s{0,}(as)?\s{0,}`?([a-z0-9_]+)`?)?$/i', $name, $match)) {
                 // (...) as pos
                 $ret = $match[1].(isset($match[4]) ? " AS `$match[4]`" : '');
-            } elseif (preg_match('/^([A-Z0-9]{1,2})\.([\*a-zA-Z0-9_]+)((\s+(as|AS))?\s+([a-zA-Z0-9_]+))?$/', $name, $match)) {
-                // U.id as user_id
+            } elseif (preg_match('/^([A-Z]{1,1}[0-9]{0,1})\.([\*a-z0-9_]+)((\s+(as|AS))?\s+([a-zA-Z0-9_]+))?$/', $name, $match)) {
+                // U.id as user_id U.*
                 $ret = $match[1].'.'.($match[2] == '*' ? '*' : '`'.$match[2].'`').(isset($match[6]) ? ' AS `'.$match[6].'`' : '');
             } elseif (preg_match('/^`?([a-z0-9_]+)`?\.([\*a-z0-9_]+)(([\s]+as)?[\s]+([a-z0-9_]+))?$/i', $name, $match)) {
                 // `user`.id, user.id as user_id
@@ -590,7 +590,7 @@ abstract class Query extends \Kotchasan\Database\Db
                     if (empty($item)) {
                         $qs[] = is_string($item) ? "'$item'" : $item;
                     } elseif (is_string($item)) {
-                        if (preg_match('/^([a-zA-Z0-9]{1,2})\.`?([a-zA-Z0-9_\-]+)`?$/', $item, $match)) {
+                        if (preg_match('/^([A-Z]{1,1}[0-9]{0,1})\.`?([a-z0-9_\-]+)`?$/', $item, $match)) {
                             $qs[] = "$match[1].`$match[2]`";
                         } elseif (preg_match('/^`([a-zA-Z0-9_\-]+)`$/', $item, $match)) {
                             $qs[] = "`$match[1]`";
@@ -616,7 +616,7 @@ abstract class Query extends \Kotchasan\Database\Db
             } elseif (preg_match('/^[0-9\s\-:]+$/', $value)) {
                 // วันที่
                 $result = "$key $operator '$value'";
-            } elseif (preg_match('/^([A-Z0-9]{1,2})\.([a-zA-Z0-9_\-]+)$/', $value, $match)) {
+            } elseif (preg_match('/^([A-Z]{1,1}[0-9]{0,1})\.([a-z0-9_\-]+)$/', $value, $match)) {
                 // U.id
                 if ($operator == 'IN' || $operator == 'NOT IN') {
                     $result = "$key $operator ($match[1].`$match[2]`)";

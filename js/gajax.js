@@ -301,24 +301,15 @@ window.$K = (function() {
     }
   };
   window.copyToClipboard = function(text) {
-    function selectElementText(element) {
-      if (document.selection) {
-        var range = document.body.createTextRange();
-        range.moveToElementText(element);
-        range.select();
-      } else if (window.getSelection) {
-        var range = document.createRange();
-        range.selectNode(element);
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
-      }
-    }
-    var element = document.createElement("div");
-    element.textContent = text;
-    document.body.appendChild(element);
-    selectElementText(element);
+    var el = document.createElement("textarea");
+    el.value = text;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.top = '-1000px';
+    document.body.appendChild(el);
+    el.select();
     document.execCommand("copy");
-    element.remove();
+    document.body.removeChild(el);
   };
   window.trans = function(val) {
     try {
@@ -2687,34 +2678,11 @@ window.$K = (function() {
       this.highlight = "";
       this.mouse_click = false;
       if ($K.isMobile()) {
+        this.panel = new GDropdown(this.input);
         this.input.readOnly = true;
-        this.keyboard = new Array(
-          "1",
-          "2",
-          "3",
-          "4",
-          "5",
-          "6",
-          "7",
-          "8",
-          "9",
-          "0",
-          "&crarr;",
-          "&lArr;"
-        );
-        if (!$E("ginput_div")) {
-          var div = document.createElement("div");
-          document.body.appendChild(div);
-          div.id = "ginput_div";
-          div.className = "ginput";
-        }
-        this.panel = $G("ginput_div");
-        this.panel.style.position = "absolute";
-        this.panel.style.display = "none";
-        this.panel.style.zIndex = 1001;
         $G(document.body).addEvent("click", function(e) {
           if (!$G(GEvent.element(e)).hasClass("ginput")) {
-            self.panel.style.display = "none";
+            self.panel.hide();
           }
         });
       }
@@ -2878,10 +2846,13 @@ window.$K = (function() {
       }
     },
     _draw: function() {
-      var panel = this.panel,
-        self = this;
-      panel.innerHTML = "";
-      forEach(this.keyboard, function() {
+      var dropdown = this.panel.getDropdown(),
+        panel = document.createElement('div');
+      self = this;
+      dropdown.innerHTML = "";
+      panel.className = 'ginput';
+      dropdown.appendChild(panel);
+      forEach(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "&crarr;", "&lArr;"], function() {
         var a = document.createElement("a");
         a.innerHTML = this;
         if (this == "&crarr;") {
@@ -2893,7 +2864,7 @@ window.$K = (function() {
         $G(a).addEvent("click", function(e) {
           var elem = GEvent.element(e);
           if (elem.className == "enter") {
-            self.panel.style.display = "none";
+            self.panel.hide();
           } else if (elem.className == "backspace") {
             self.input.value = "--:--";
             self._setCaret(0);
@@ -2907,25 +2878,7 @@ window.$K = (function() {
           return false;
         });
       });
-      var vpo = this.input.viewportOffset(),
-        t = vpo.top + this.input.getHeight() + 5,
-        dm = this.panel.getDimensions();
-      if (
-        t + dm.height + 5 >=
-        document.viewport.getHeight() + document.viewport.getscrollTop()
-      ) {
-        this.panel.style.top = vpo.top - dm.height - 5 + "px";
-      } else {
-        this.panel.style.top = t + "px";
-      }
-      var l = Math.max(
-        vpo.left + dm.width > document.viewport.getWidth() ?
-        vpo.left + this.input.getWidth() - dm.width :
-        vpo.left,
-        document.viewport.getscrollLeft() + 5
-      );
-      this.panel.style.left = l + "px";
-      this.panel.style.display = "block";
+      this.panel.show();
     }
   };
   window.GMask = GClass.create();
@@ -3028,16 +2981,7 @@ window.$K = (function() {
       this.maxlength = floatval(this.input.maxlength);
       var self = this;
       if ($K.isMobile()) {
-        if (!$E("ginput_div")) {
-          var div = document.createElement("div");
-          document.body.appendChild(div);
-          div.id = "ginput_div";
-          div.className = "ginput";
-        }
-        this.panel = $G("ginput_div");
-        this.panel.style.position = "absolute";
-        this.panel.style.display = "none";
-        this.panel.style.zIndex = 1001;
+        this.panel = new GDropdown(this.input);
         this.input.readOnly = true;
         this.input.addEvent("click", function(e) {
           self.input.setCaretPosition(self.input.value.length, 1);
@@ -3047,7 +2991,7 @@ window.$K = (function() {
         });
         $G(document.body).addEvent("click", function(e) {
           if (!$G(GEvent.element(e)).hasClass("ginput")) {
-            self.panel.style.display = "none";
+            self.panel.hide();
             self._dochanged();
             if (self.panel.input) {
               if (self.panel.input_value != self.panel.input.value) {
@@ -3074,9 +3018,12 @@ window.$K = (function() {
       this.onchanged.call(this.input);
     },
     _draw: function() {
-      var panel = this.panel,
-        self = this;
-      panel.innerHTML = "";
+      var dropdown = this.panel.getDropdown(),
+        self = this,
+        panel = document.createElement('div');
+      dropdown.innerHTML = "";
+      panel.className = 'ginput';
+      dropdown.appendChild(panel);
       forEach(this.keyboard, function() {
         var a = document.createElement("a");
         a.innerHTML = this;
@@ -3139,29 +3086,76 @@ window.$K = (function() {
           }
         });
       });
-      var vpo = this.input.viewportOffset(),
-        t = vpo.top + this.input.getHeight() + 5,
-        dm = this.panel.getDimensions();
-      if (
-        t + dm.height + 5 >=
-        document.viewport.getHeight() + document.viewport.getscrollTop()
-      ) {
-        this.panel.style.top = vpo.top - dm.height - 5 + "px";
-      } else {
-        this.panel.style.top = t + "px";
-      }
-      var l = Math.max(
-        vpo.left + dm.width > document.viewport.getWidth() ?
-        vpo.left + this.input.getWidth() - dm.width :
-        vpo.left,
-        document.viewport.getscrollLeft() + 5
-      );
-      this.panel.style.left = l + "px";
-      this.panel.style.display = "block";
+      this.panel.show();
       this.panel.input = this.input;
       this.panel.input_value = this.input.value;
     }
   };
+
+  window.GDropdown = GClass.create();
+  GDropdown.prototype = {
+    initialize: function(src, o) {
+      this.src = src;
+      this.options = {
+        autoHeight: false,
+        id: 'gdropdown',
+        className: 'gdropdown'
+      };
+      for (var prop in o) {
+        this.options[prop] = o[prop];
+      }
+      if (!$E(this.options.id)) {
+        var div = document.createElement("div");
+        document.body.appendChild(div);
+        div.id = this.options.id;
+      }
+      this.dropdown = $G(this.options.id);
+      this.dropdown.style.position = "absolute";
+      this.dropdown.style.display = "none";
+      this.dropdown.style.zIndex = 1001;
+    },
+    getDropdown: function() {
+      return this.dropdown;
+    },
+    show: function() {
+      var vpo = this.src.viewportOffset(),
+        input_height = this.src.getHeight(),
+        dm = this.dropdown.getDimensions(),
+        scrolltop = document.viewport.getscrollTop(),
+        doc_height = document.viewport.getHeight(),
+        top_space = vpo.top - scrolltop,
+        bottom_space = doc_height - top_space - input_height;
+      this.dropdown.className = this.options.className;
+      if (this.options.autoHeight) {
+        var space = Math.max(top_space, bottom_space);
+        if (dm.height > space) {
+          this.dropdown.style.height = (space - 10) + 'px';
+          dm = this.dropdown.getDimensions();
+        }
+      }
+      if (top_space >= bottom_space) {
+        this.dropdown.style.top = Math.max(vpo.top - dm.height - 5, 0) + "px";
+      } else {
+        this.dropdown.style.top = (vpo.top + input_height + 5) + "px";
+      }
+      var l = Math.max(
+        vpo.left + dm.width > document.viewport.getWidth() ?
+        vpo.left + this.src.getWidth() - dm.width :
+        vpo.left, document.viewport.getscrollLeft() + 5
+      );
+      this.dropdown.style.left = l + "px";
+      this.dropdown.style.display = "block";
+    },
+    hide: function() {
+      this.dropdown.className = null;
+      this.dropdown.style.display = "none";
+      this.dropdown.style.height = 'auto';
+    },
+    showing: function() {
+      return this.dropdown.style.display == "block";
+    }
+  };
+
   window.GCalendar = GClass.create();
   GCalendar.prototype = {
     initialize: function(id) {
@@ -3184,15 +3178,7 @@ window.$K = (function() {
       this.format = "d M Y";
       this.date = null;
       this.cdate = new Date();
-      if (!$E("gcalendar_div")) {
-        var div = document.createElement("div");
-        document.body.appendChild(div);
-        div.id = "gcalendar_div";
-      }
-      this.calendar = $G("gcalendar_div");
-      this.calendar.style.position = "absolute";
-      this.calendar.style.display = "none";
-      this.calendar.style.zIndex = 1001;
+      this.calendar = new GDropdown(this.input);
       var self = this;
       this.input.addEvent("click", function(e) {
         self.mode = 0;
@@ -3204,7 +3190,7 @@ window.$K = (function() {
       this.input.addEvent("keydown", function(e) {
         var key = GEvent.keyCode(e);
         if (key == 9) {
-          self.calendar.style.display = "none";
+          self.calendar.hide();
         } else if (key == 32) {
           self._toogle(e);
         } else if (key == 37 || key == 39) {
@@ -3233,7 +3219,7 @@ window.$K = (function() {
             $G(GEvent.element(e)).hasClass("input-gcalendar") ||
             $G(GEvent.element(e).parentNode).hasClass("input-gcalendar")
           )) {
-          self.calendar.style.display = "none";
+          self.calendar.hide();
         }
       });
       this.hidden.calendar = this;
@@ -3295,8 +3281,8 @@ window.$K = (function() {
       }
     },
     _toogle: function(e) {
-      if (this.calendar.style.display == "block") {
-        this.calendar.style.display = "none";
+      if (this.calendar.showing()) {
+        this.calendar.hide();
       } else {
         this.mode = 0;
         if (this.date) {
@@ -3310,10 +3296,11 @@ window.$K = (function() {
     },
     _draw: function() {
       if (this.hidden.readOnly == false && this.hidden.disabled == false) {
-        var self = this;
-        this.calendar.innerHTML = "";
+        var self = this,
+          calendar = this.calendar.getDropdown();
+        calendar.innerHTML = "";
         var div = document.createElement("div");
-        this.calendar.appendChild(div);
+        calendar.appendChild(div);
         div.className = "gcalendar";
         var p = document.createElement("p");
         div.appendChild(p);
@@ -3505,8 +3492,7 @@ window.$K = (function() {
               cls = "ex";
             }
             $G(cell).addEvent("click", function(e) {
-              var c = this.hasClass('curr ex'),
-                input = $E(self.input);
+              var c = this.hasClass('curr ex');
               if (c == 'curr') {
                 if (self.date === null) {
                   self.date = new Date();
@@ -3516,7 +3502,7 @@ window.$K = (function() {
                 self.date = null;
               }
               self._dochanged();
-              input.focus();
+              $E(self.input).focus();
             });
             if (tmp_year == sel_year && tmp_month == sel_month && pointer == sel_date) {
               cls = cls + " select";
@@ -3528,17 +3514,7 @@ window.$K = (function() {
             pointer++;
           }
         }
-        var vpo = this.input.viewportOffset(),
-          t = vpo.top + this.input.getHeight() + 5,
-          dm = this.calendar.getDimensions();
-        if (t + dm.height + 5 >= document.viewport.getHeight() + document.viewport.getscrollTop()) {
-          this.calendar.style.top = Math.max(vpo.top - dm.height - 5, 0) + "px";
-        } else {
-          this.calendar.style.top = t + "px";
-        }
-        var l = Math.max(vpo.left + dm.width > document.viewport.getWidth() ? vpo.left + this.input.getWidth() - dm.width : vpo.left, document.viewport.getscrollLeft() + 5);
-        this.calendar.style.left = l + "px";
-        this.calendar.style.display = "block";
+        this.calendar.show();
       }
     },
     _move: function(e, value) {
@@ -3662,8 +3638,7 @@ window.$K = (function() {
       for (var property in options) {
         this.options[property] = options[property];
       }
-      this.options.duration =
-        this.options.duration > 8 ? 8 : this.options.duration;
+      this.options.duration = this.options.duration > 8 ? 8 : this.options.duration;
       this.options.duration -= this.options.duration % 2 == 0 ? 0 : 1;
       this.Player = $G(elem);
       this.Player.style.zIndex = 9999999;
@@ -3857,20 +3832,11 @@ window.$K = (function() {
       this.onchanged = onchanged || $K.emptyFunction;
       this.color = "";
       this.color_format = /^((transparent)|(\#[0-9a-fA-F]{6,6}))$/i;
-      if (!$E("gddcolor_div")) {
-        var div = document.createElement("div");
-        document.body.appendChild(div);
-        div.id = "gddcolor_div";
-      }
-      this.ddcolor = $G("gddcolor_div");
-      this.ddcolor.style.position = "absolute";
-      this.ddcolor.style.display = "none";
-      this.ddcolor.style.zIndex = 1001;
-      this.ddcolor.className = "gddcolor";
+      this.ddcolor = new GDropdown(this.input);
       var self = this;
       this.input.addEvent("click", function(e) {
         self.createColors();
-        self._draw();
+        self.ddcolor.show();
         self.showDemo(self.color);
         self.pickColor(self.color);
         GEvent.stop(e);
@@ -3881,10 +3847,10 @@ window.$K = (function() {
       });
       this.input.addEvent("keydown", function(e) {
         var key = GEvent.keyCode(e);
-        if (key == 38 || key == 40 || /^(Arrow)?(Up|Down)$/.test(e.key)) {
+        if (key == 38 || key == 39 || key == 40 || /^(Arrow)?(Up|Down|Right)$/.test(e.key)) {
           self.createColors();
-          self._draw();
-          self.ddcolor.firstChild.firstChild.focus();
+          self.ddcolor.show();
+          $E('gddcolor_div').firstChild.firstChild.focus();
           GEvent.stop(e);
           return false;
         }
@@ -3905,7 +3871,7 @@ window.$K = (function() {
       }
       $G(document.body).addEvent("click", function(e) {
         if (!$G(GEvent.element(e)).hasClass("gddcolor")) {
-          self.ddcolor.style.display = "none";
+          self.ddcolor.hide();
         }
       });
       if (self.input.value) {
@@ -3931,33 +3897,17 @@ window.$K = (function() {
         }, 50);
       }
     },
-    _draw: function() {
-      var vpo = this.input.viewportOffset(),
-        t = vpo.top + this.input.getHeight() + 5,
-        dm = this.ddcolor.getDimensions();
-      if (
-        t + dm.height + 5 >=
-        document.viewport.getHeight() + document.viewport.getscrollTop()
-      ) {
-        this.ddcolor.style.top = vpo.top - dm.height - 5 + "px";
-      } else {
-        this.ddcolor.style.top = t + "px";
-      }
-      var l = Math.max(
-        vpo.left + dm.width > document.viewport.getWidth() ?
-        vpo.left + this.input.getWidth() - dm.width :
-        vpo.left,
-        document.viewport.getscrollLeft() + 5
-      );
-      this.ddcolor.style.left = l + "px";
-      this.ddcolor.style.display = "block";
-    },
     createColors: function() {
       var r = this.Colors.length / this.cols,
         t = this.input.tabIndex + 1,
+        dropdown = this.ddcolor.getDropdown(),
+        ddcolor = document.createElement('div'),
         self = this,
         patt = /((color_)([0-9]+)_)([0-9]+)/;
-      this.ddcolor.innerHTML = "";
+      dropdown.innerHTML = "";
+      ddcolor.className = 'gddcolor';
+      ddcolor.id = 'gddcolor_div';
+      dropdown.appendChild(ddcolor);
       var _dokeydown = function(e) {
         var key = GEvent.keyCode(e),
           hs = patt.exec(this.id),
@@ -3994,7 +3944,7 @@ window.$K = (function() {
           }
           GEvent.stop(e);
         } else if (key == 27 || key == 9) {
-          self.ddcolor.style.display = "none";
+          self.ddcolor.hide();
           self.input.focus();
           GEvent.stop(e);
         }
@@ -4006,7 +3956,7 @@ window.$K = (function() {
       forEach(this.Colors, function(color, n) {
         if (n % self.cols == 0) {
           p = document.createElement("p");
-          self.ddcolor.appendChild(p);
+          ddcolor.appendChild(p);
           c++;
         }
         a = $G(document.createElement("a"));
@@ -4047,8 +3997,10 @@ window.$K = (function() {
         });
         a.addEvent("keydown", _dokeydown);
       });
-      this.demoColor = this.ddcolor.create("p");
-      this.customColor = this.ddcolor.create("p");
+      this.demoColor = $G(document.createElement("p"));
+      ddcolor.appendChild(this.demoColor);
+      this.customColor = $G(document.createElement("p"));
+      ddcolor.appendChild(this.customColor);
       t++;
       c++;
       for (r = 0; r < self.cols; r++) {
@@ -4067,7 +4019,7 @@ window.$K = (function() {
       }
     },
     doClick: function(c) {
-      this.ddcolor.style.display = "none";
+      this.ddcolor.hide();
       if (c == "Clear") {
         c = "";
       }
@@ -4117,7 +4069,7 @@ window.$K = (function() {
     },
     invertColor: function(c) {
       if (c.toLowerCase() == "transparent") {
-        return this.ddcolor.style.color;
+        return this.ddcolor.getDropdown().style.color;
       } else {
         return new Color(c).invert().toString();
       }

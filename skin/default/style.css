@@ -199,6 +199,11 @@ header.header a {
   display: block;
   height: 68px;
 }
+.content_bg {
+  background-color: rgba(255, 255, 255, 0.9);
+  display: inline-block;
+  width: 100%;
+}
 fieldset.search input[type="submit"],
 .editinplace:hover:after,
 .ban:after {

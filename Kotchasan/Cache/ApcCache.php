@@ -23,12 +23,14 @@ use Psr\Cache\CacheItemInterface;
 class ApcCache extends Cache
 {
     /**
-     * Class constructor.
+     * Class constructor
+     *
+     * @throws Exception ถ้า Server ไม่รองรับ APC
      */
     public function __construct()
     {
         if (!extension_loaded('apc') || !is_callable('apc_fetch')) {
-            throw new Exception('APC not supported.');
+            throw new \Exception('APC not supported.');
         }
     }
 

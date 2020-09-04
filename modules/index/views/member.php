@@ -15,7 +15,7 @@ use Kotchasan\Date;
 use Kotchasan\Http\Request;
 
 /**
- * module=member.
+ * module=member
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *

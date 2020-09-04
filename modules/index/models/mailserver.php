@@ -26,7 +26,7 @@ use Kotchasan\Validator;
 class Model extends \Kotchasan\KBase
 {
     /**
-     * บันทึกการตั้งค่าระบบอีเมล (mailserver.php).
+     * บันทึกการตั้งค่าระบบอีเมล (mailserver.php)
      *
      * @param Request $request
      */

@@ -146,10 +146,6 @@ return array(
   'Image' => 'ຮູບພາບ',
   'Image size is in pixels' => 'ຂະໜາດຂອງຮູບພາບເປັນພິກເຊວ',
   'Import' => 'ນຳເຂົ້າ',
-  'IMPORT_TYPE' => array(
-    'stock' => 'ອັບເດດຮຸ້ນ',
-    'price' => 'ລາຄາປັບປຸງ'
-  ),
   'Invalid :name' => ':name ບໍ່ຖືກຕ້ອງ',
   'Inventory' => 'ສາງ',
   'INVENTORY_CATEGORIES' => array(

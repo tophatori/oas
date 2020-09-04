@@ -12,9 +12,10 @@ namespace Index\Fblogin;
 
 use Kotchasan\Http\Request;
 use Kotchasan\Language;
+use Kotchasan\Validator;
 
 /**
- * Facebook Login.
+ * Facebook Login
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -23,7 +24,7 @@ use Kotchasan\Language;
 class Model extends \Kotchasan\Model
 {
     /**
-     * รับข้อมูลที่ส่งมาจากการเข้าระบบด้วยบัญชี FB.
+     * รับข้อมูลที่ส่งมาจากการเข้าระบบด้วยบัญชี FB
      *
      * @param Request $request
      */
@@ -31,81 +32,87 @@ class Model extends \Kotchasan\Model
     {
         // session, token
         if ($request->initSession() && $request->isSafe()) {
-            // สุ่มรหัสผ่านใหม่
-            $password = uniqid();
-            // db
-            $db = $this->db();
-            // table
-            $user_table = $this->getTableName('user');
-            // ตรวจสอบสมาชิกกับ db
-            $username = $request->post('email')->url();
-            if ($username == '') {
-                $username = $request->post('id')->number();
-            }
-            $search = $db->createQuery()
-                ->from('user')
-                ->where(array('username', $username))
-                ->toArray()
-                ->first();
-            if ($search === false) {
-                // ยังไม่เคยลงทะเบียน, ลงทะเบียนใหม่
-                if (self::$cfg->demo_mode) {
-                    $permissions = array_keys(\Gcms\Controller::getPermissions());
-                    unset($permissions['can_config']);
-                } else {
-                    $permissions = array();
+            $ret = array();
+            try {
+                // สุ่มรหัสผ่านใหม่
+                $password = uniqid();
+                // db
+                $db = $this->db();
+                // table
+                $user_table = $this->getTableName('user');
+                // ตรวจสอบสมาชิกกับ db
+                $fb_id = $request->post('id')->number();
+                $username = $request->post('email')->url();
+                if (!Validator::email($username)) {
+                    $username = $fb_id;
                 }
-                $name = trim($request->post('first_name')->topic().' '.$request->post('last_name')->topic());
-                $save = \Index\Register\Model::execute($this, array(
-                    'username' => $username,
-                    'password' => $password,
-                    'name' => $name,
-                    // Facebook
-                    'social' => 1,
-                    'visited' => 1,
-                    'lastvisited' => time(),
-                    // โหมดตัวอย่างเป็นแอดมิน, ไม่ใช่เป็นสมาชิกทั่วไป
-                    'status' => self::$cfg->demo_mode ? 1 : 0,
-                    'token' => sha1(self::$cfg->password_key.$password.uniqid()),
-                    'active' => 1,
-                ), $permissions);
-                if ($save === null) {
-                    // ไม่สามารถบันทึก owner ได้
-                    $ret['alert'] = Language::get('Unable to complete the transaction');
+                $search = $db->createQuery()
+                    ->from('user')
+                    ->where(array('username', $username))
+                    ->toArray()
+                    ->first();
+                if ($search === false) {
+                    // ยังไม่เคยลงทะเบียน, ลงทะเบียนใหม่
+                    if (self::$cfg->demo_mode) {
+                        $permissions = array_keys(\Gcms\Controller::getPermissions());
+                        unset($permissions['can_config']);
+                    } else {
+                        $permissions = array();
+                    }
+                    $name = trim($request->post('first_name')->topic().' '.$request->post('last_name')->topic());
+                    $save = \Index\Register\Model::execute($this, array(
+                        'username' => $username,
+                        'password' => $password,
+                        'name' => $name,
+                        // Facebook
+                        'social' => 1,
+                        'visited' => 1,
+                        'lastvisited' => time(),
+                        // โหมดตัวอย่างเป็นแอดมิน, ไม่ใช่เป็นสมาชิกทั่วไป
+                        'status' => self::$cfg->demo_mode ? 1 : 0,
+                        'token' => sha1(self::$cfg->password_key.$password.uniqid()),
+                        'active' => 1,
+                    ), $permissions);
+                    if ($save === null) {
+                        // ไม่สามารถบันทึก owner ได้
+                        $ret['alert'] = Language::get('Unable to complete the transaction');
+                        $ret['isMember'] = 0;
+                    }
+                } elseif ($search['social'] == 1) {
+                    if ($search['active'] == 1) {
+                        // facebook เคยเยี่ยมชมแล้ว อัพเดตการเยี่ยมชม
+                        $save = $search;
+                        ++$save['visited'];
+                        $save['lastvisited'] = time();
+                        $save['ip'] = $request->getClientIp();
+                        $save['salt'] = uniqid();
+                        $save['token'] = sha1(self::$cfg->password_key.$password.$save['salt']);
+                        // อัพเดต
+                        $db->update($user_table, $search['id'], $save);
+                        $save['permission'] = explode(',', trim($save['permission'], " \t\n\r\0\x0B,"));
+                    } else {
+                        // ไม่ใช่สมาชิกปัจจุบัน ไม่สามารถเข้าระบบได้
+                        $ret['alert'] = Language::get('Unable to complete the transaction');
+                        $ret['isMember'] = 0;
+                    }
+                } else {
+                    // ไม่สามารถ login ได้ เนื่องจากมี email อยู่ก่อนแล้ว
+                    $save = false;
+                    $ret['alert'] = Language::replace('This :name already exist', array(':name' => Language::get('Username')));
                     $ret['isMember'] = 0;
                 }
-            } elseif ($search['social'] == 1) {
-                if ($search['active'] == 1) {
-                    // facebook เคยเยี่ยมชมแล้ว อัปเดตการเยี่ยมชม
-                    $save = $search;
-                    ++$save['visited'];
-                    $save['lastvisited'] = time();
-                    $save['ip'] = $request->getClientIp();
-                    $save['salt'] = uniqid();
-                    $save['token'] = sha1(self::$cfg->password_key.$password.$save['salt']);
-                    // อัปเดต
-                    $db->update($user_table, $search['id'], $save);
-                    $save['permission'] = explode(',', trim($save['permission'], " \t\n\r\0\x0B,"));
-                } else {
-                    // ไม่ใช่สมาชิกปัจจุบัน ไม่สามารถเข้าระบบได้
-                    $ret['alert'] = Language::get('Unable to complete the transaction');
-                    $ret['isMember'] = 0;
+                if (is_array($save)) {
+                    // login
+                    unset($save['password']);
+                    $_SESSION['login'] = $save;
+                    // คืนค่า
+                    $ret['isMember'] = 1;
+                    $ret['alert'] = Language::replace('Welcome %s, login complete', array('%s' => $save['name']));
+                    // เคลียร์
+                    $request->removeToken();
                 }
-            } else {
-                // ไม่สามารถ login ได้ เนื่องจากมี email อยู่ก่อนแล้ว
-                $save = false;
-                $ret['alert'] = Language::replace('This :name already exist', array(':name' => Language::get('Username')));
-                $ret['isMember'] = 0;
-            }
-            if (is_array($save)) {
-                // login
-                unset($save['password']);
-                $_SESSION['login'] = $save;
-                // คืนค่า
-                $ret['isMember'] = 1;
-                $ret['alert'] = Language::replace('Welcome %s, login complete', array('%s' => $save['name']));
-                // เคลียร์
-                $request->removeToken();
+            } catch (\Kotchasan\InputItemException $e) {
+                $ret['alert'] = $e->getMessage();
             }
             // คืนค่าเป็น json
             echo json_encode($ret);

@@ -1,5 +1,6 @@
 /**
- * Datalist
+ * Datalist (component)
+ * GDatalist (base class)
  *
  * @filesource js/datalist.js
  * @link http://www.kotchasan.com/
@@ -8,11 +9,11 @@
  */
 (function() {
   "use strict";
-  window.Datalist = GClass.create();
-  Datalist.prototype = {
-    initialize: function(text) {
+  window.GDatalist = GClass.create();
+  GDatalist.prototype = {
+    initialize: function(text, onChanged) {
       if (!$E(text)) {
-        console.log("[Datalist] Cannot find target element " + text);
+        console.log('[Datalist] Cannot find target element ' + text);
         return;
       }
       this.input = $G(text);
@@ -20,14 +21,11 @@
         return;
       }
       this.input.setAttribute('Datalist', true);
-      this.hidden = document.createElement("input");
-      this.hidden.type = 'hidden';
-      this.hidden.name = this.input.id || this.input.name;
-      if (this.hidden.name == this.input.name) {
-        this.input.removeAttribute('name');
-      }
-      this.hidden.value = this.input.value;
-      this.value = null;
+      this.datalist = {};
+      this.onChanged = onChanged || $K.returnFuntion;
+      this.input.selectedIndex = this.input.value;
+      this.selectedIndex = null;
+      this.changedTimeout = 0;
       this.nameValue = this.input.get('nameValue');
       if (this.nameValue === null) {
         this.nameValue = '';
@@ -36,44 +34,49 @@
         this.customText = true;
       }
       this.input.removeAttribute('nameValue');
-      this.input.parentNode.appendChild(this.hidden);
+
       this.input.getValue = function() {
-        return self.hidden.value;
+        return self.input.selectedIndex;
       };
+
+      this.input.reset = function() {
+        self.input.selectedIndex = null;
+        self.selectedIndex = null;
+        self.input.value = null;
+      };
+
+      var cancelEvent = false,
+        showing = false,
+        listindex = 0,
+        list = [],
+        self = this;
+
       this.input.setDatalist = function(datas) {
-        var old_value = self.hidden.value;
         self.datalist = {};
         for (var key in datas) {
           self.datalist[key] = datas[key];
         }
         listindex = 0;
-        self.input.value = self.datalist[old_value] || self.nameValue;
-        self.hidden.value = old_value;
+        self.input.value = self.datalist[self.input.selectedIndex] || self.nameValue;
       };
+
+      this.input.datalist = function(index) {
+        return self.datalist[index];
+      };
+
       this.value_change = false;
-      var cancelEvent = false,
-        showing = false,
-        listindex = 0,
-        list = [],
-        _list = this.input.get("list"),
-        self = this;
-      this.datalist = {};
-      if (_list) {
-        _list = $G(_list);
-        forEach(_list.elems('option'), function() {
-          self.datalist[this.value] = this.innerHTML;
-        });
-        this.input.removeAttribute('list');
-        _list.remove();
-      }
-      this.input.value = this.datalist[this.hidden.value] || this.nameValue;
-      var display = document.createElement("div");
-      document.body.appendChild(display);
-      $G(display).className = "gautocomplete";
-      display.style.left = "-100000px";
-      display.style.position = "absolute";
-      display.style.display = "block";
-      display.style.zIndex = 9999;
+      forEach($G(this.input.list).elems('option'), function() {
+        self.datalist[this.value] = this.innerHTML;
+      });
+      this.input.list.remove();
+      this.input.removeAttribute('list');
+      this.input.value = this.datalist[this.input.selectedIndex] || this.nameValue;
+      this.dropdown = new GDropdown(this.input, {
+        autoHeight: true,
+        id: this.input.id + '_gautocomplete',
+        className: 'gautocomplete'
+      });
+      var display = this.dropdown.getDropdown();
 
       function _movehighlight(id) {
         listindex = Math.max(0, id);
@@ -93,16 +96,19 @@
       function _onSelect() {
         if (showing) {
           _hide();
-          var value = self.datalist[this.key];
-          self.input.value = value;
-          self.hidden.value = this.key;
+          self.input.value = self.datalist[this.key];
+          self.input.selectedIndex = this.key;
           self.value_change = false;
           _doChange();
         }
       }
-      var _mouseclick = function(evt) {
+      var _mouseclick = function() {
         _onSelect.call(this);
+        window.setTimeout(function() {
+          self.input.focus();
+        }, 1);
       };
+
       var _mousemove = function() {
         _movehighlight(this.itemindex);
       };
@@ -119,20 +125,20 @@
       }
 
       function _hide() {
-        display.style.left = "-100000px";
+        self.dropdown.hide();
         showing = false;
       }
+
       var _search = function() {
         if (!cancelEvent) {
           display.innerHTML = "";
           var value,
             text = self.input.value,
-            _changed = false,
             filter = new RegExp("(" + text.preg_quote() + ")", "gi");
           listindex = 0;
           list = [];
-          if (self.datalist[self.hidden.value] != text) {
-            self.hidden.value = '';
+          if (self.datalist[self.input.selectedIndex] != text) {
+            self.input.selectedIndex = null;
             self.value_change = true;
           }
           for (var key in self.datalist) {
@@ -147,22 +153,7 @@
           }
           _movehighlight(0);
           if (list.length > 0) {
-            var vp = self.input.viewportOffset(),
-              dm = self.input.getDimensions(),
-              dd = display.getDimensions(),
-              cw = document.viewport.getWidth();
-            if (vp.left + dd.width > cw) {
-              vp.left = Math.max(5, vp.left + dm.width - dd.width);
-            }
-            display.style.left = vp.left + "px";
-            if (vp.left + dd.width > cw) {
-              display.style.width = cw - vp.left - 5 + "px";
-            }
-            if (vp.top + dm.height + 5 + dd.height >= document.viewport.getHeight() + document.viewport.getscrollTop()) {
-              display.style.top = vp.top - dd.height - 5 + "px";
-            } else {
-              display.style.top = vp.top + dm.height + 5 + "px";
-            }
+            self.dropdown.show();
             showing = true;
           } else {
             _hide();
@@ -210,30 +201,45 @@
       }
 
       function _doChange() {
-        var value = self.input.getValue();
-        if (self.value != value) {
-          self.value = value;
-          window.setTimeout(function() {
-            self.input.callEvent('change');
-          }, 1);
+        if (self.selectedIndex != self.input.selectedIndex) {
+          self.selectedIndex = self.input.selectedIndex;
+          try {
+            if (self.onChanged.call(self.input)) {
+              if (self.changedTimeout == 0) {
+                self.changedTimeout = window.setTimeout(function() {
+                  self.changedTimeout = 0;
+                  self.input.callEvent('change');
+                }, 1);
+              }
+            }
+          } catch (error) {
+            console.log(error);
+          }
         }
       }
+
       this.input.addEvent("click", _search);
       this.input.addEvent("keyup", _search);
       this.input.addEvent("keydown", _dokeydown);
-      this.input.addEvent("change", _doChange);
+      this.input.addEvent("change", function(evt) {
+        window.clearTimeout(self.changedTimeout);
+        self.changedTimeout = 0;
+        GEvent.stop(evt);
+        _doChange();
+      });
       this.input.addEvent("focus", function() {
         this.select();
       });
       this.input.addEvent("blur", function() {
         if (self.value_change) {
           if (!self.customText) {
-            self.input.value = '';
+            self.input.value = null;
           } else {
             self.nameValue = self.input.value;
-            self.hidden.value = '';
+            self.input.selectedIndex = null;
           }
           self.value_change = false;
+          _doChange();
         }
         _hide();
       });
@@ -243,6 +249,26 @@
         }
       });
       _doChange();
+    }
+  };
+
+  window.Datalist = GClass.create();
+  Datalist.prototype = {
+    initialize: function(text) {
+      this.input = $G(text);
+      this.hidden = document.createElement("input");
+      this.hidden.type = 'hidden';
+      this.hidden.name = this.input.id || this.input.name;
+      if (this.hidden.name == this.input.name) {
+        this.input.removeAttribute('name');
+      }
+      this.hidden.value = this.input.value;
+      this.input.parentNode.appendChild(this.hidden);
+      var self = this;
+      new GDatalist(text, function() {
+        self.hidden.value = this.selectedIndex;
+        return true;
+      });
     }
   };
 })();

@@ -70,9 +70,9 @@ if (defined('ROOT_PATH')) {
             $salt2 = uniqid();
             $username = $_SESSION['username'];
             $password = $_SESSION['password'];
-            $sql = "INSERT INTO `".$_SESSION['prefix']."_user` (`id`, `username`, `salt`, `password`, `token`, `status`, `permission`, `name`, `create_date`) VALUES";
-            $sql .= "(1, '".$username."', '".$salt1."', '".sha1($password_key.$password.$salt1)."', NULL, 1, '', 'แอดมิน', NOW()),";
-            $sql .= "(2, 'demo@localhost', '".$salt2."', '".sha1($password_key.'demo'.$salt2)."', NULL, 0, '', 'ตัวอย่าง', NOW());";
+            $sql = "DELETE FROM `".$_SESSION['prefix']."_user` WHERE `id`=1;";
+            $sql .= "INSERT INTO `".$_SESSION['prefix']."_user` (`id`, `username`, `salt`, `password`, `token`, `status`, `permission`, `name`, `create_date`) VALUES";
+            $sql .= "(1, '".$username."', '".$salt1."', '".sha1($password_key.$password.$salt1)."', NULL, 1, '', 'แอดมิน', NOW());";
             $conn->query($sql);
             // บันทึก settings/database.php
             $database_cfg = include 'settings/database.php';

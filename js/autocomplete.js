@@ -31,17 +31,12 @@
         self = this;
       this.input = $G(id);
       this.text = this.input.value;
-      if (!$E("gautocomplete_div")) {
-        var div = document.createElement("div");
-        document.body.appendChild(div);
-        div.id = "gautocomplete_div";
-      }
-      var display = $G("gautocomplete_div");
-      display.className = "gautocomplete";
-      display.style.left = "0px";
-      display.style.position = "absolute";
-      display.style.display = "none";
-      display.style.zIndex = 9999;
+      this.dropdown = new GDropdown(this.input, {
+        autoHeight: true,
+        id: 'gautocomplete_div',
+        className: 'gautocomplete'
+      });
+      var display = this.dropdown.getDropdown();
 
       function _movehighlight(id) {
         listindex = Math.max(0, id);
@@ -100,7 +95,7 @@
 
       function _hide() {
         self.input.removeClass("wait");
-        display.style.display = 'none';
+        self.dropdown.hide();
         showing = false;
       }
       var _search = function() {
@@ -124,23 +119,7 @@
                   } else {
                     display.setValue(xhr.responseText);
                   }
-                  var vp = self.input.viewportOffset(),
-                    dm = self.input.getDimensions(),
-                    dd = display.getDimensions(),
-                    cw = document.viewport.getWidth();
-                  if (vp.left + dd.width > cw) {
-                    vp.left = Math.max(5, vp.left + dm.width - dd.width);
-                  }
-                  display.style.display = "block";
-                  display.style.left = vp.left + "px";
-                  if (vp.left + dd.width > cw) {
-                    display.style.width = cw - vp.left - 5 + "px";
-                  }
-                  if (vp.top + dm.height + 5 + dd.height >= document.viewport.getHeight() + document.viewport.getscrollTop()) {
-                    display.style.top = vp.top - dd.height - 5 + "px";
-                  } else {
-                    display.style.top = vp.top + dm.height + 5 + "px";
-                  }
+                  self.dropdown.show();
                   showing = true;
                 } else {
                   _hide();

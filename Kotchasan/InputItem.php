@@ -11,7 +11,7 @@
 namespace Kotchasan;
 
 /**
- * Input Object.
+ * Input Object
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -26,14 +26,14 @@ class InputItem
      */
     protected $type;
     /**
-     * ตัวแปรเก็บค่าของ Object.
+     * ตัวแปรเก็บค่าของ Object
      *
      * @var mixed
      */
     protected $value;
 
     /**
-     * Class Constructer.
+     * Class Constructer
      *
      * @param mixed       $value null (default)
      * @param string|null $type  ประเภท Input เช่น GET POST SESSION COOKIE หรือ null ถ้าไม่ได้มาจากรายการข้างต้น
@@ -45,7 +45,7 @@ class InputItem
     }
 
     /**
-     * คืนค่าตามข้อมูลที่ส่งมา.
+     * คืนค่าตามข้อมูลที่ส่งมา
      *
      * @return mixed
      */
@@ -68,7 +68,7 @@ class InputItem
     }
 
     /**
-     * สร้าง Object.
+     * สร้าง Object
      *
      * @param mixed       $value
      * @param string|null $type  ประเภท Input เช่น GET POST SESSION COOKIE หรือ null ถ้าไม่ได้มาจากรายการข้างต้น
@@ -96,7 +96,7 @@ class InputItem
      *
      * @param bool $strict true ตรวจสอบความถูกต้องของวันที่ด้วย, false (default) ไม่ต้องตรวจสอบ
      *
-     * @return string|array
+     * @return string|array|null
      */
     public function date($strict = false)
     {
@@ -128,7 +128,7 @@ class InputItem
      *
      * @param bool $strict true ตรวจสอบความถูกต้องของวันที่ด้วย, false (default) ไม่ต้องตรวจสอบ
      *
-     * @return string|array
+     * @return string|array|null
      */
     public function time($strict = false)
     {
@@ -160,6 +160,7 @@ class InputItem
      * @assert create('ทดสอบ<!--WIDGET_XXX-->')->description() [==] 'ทดสอบ'
      * @assert create('ท&amp;ด&quot;\&nbsp;/__ส-อ+บ')->description() [==] 'ท ด \ /__ส-อ+บ'
      * @assert create('ภาคภูมิ')->description(2) [==] 'ภา'
+     * @assert create('U1.username ทดสอบภาษาไทย')->description(5) [throws] \Kotchasan\InputItemException
      *
      * @param int $len ความยาวของ description หมายถึงคืนค่าทั้งหมด
      *
@@ -183,7 +184,7 @@ class InputItem
         );
         $text = trim(preg_replace(array_keys($patt), array_values($patt), $this->value));
 
-        return $this->cut($text, $len);
+        return $this->checkValue($this->cut($text, $len));
     }
 
     /**
@@ -191,12 +192,17 @@ class InputItem
      * เช่นเนื้อหาของบทความ
      *
      * @assert create('{ทด\/สอบ<?php echo "555"?>}')->detail() [==] '&#x007B;ทด&#92;/สอบ&#x007D;'
+     * @assert create('<?=555?>U1.username')->detail() [throws] \Kotchasan\InputItemException
      *
      * @return string|array
      */
     public function detail()
     {
-        return preg_replace(array('/<\?(.*?)\?>/su', '/\{/', '/\}/', '/\\\/'), array('', '&#x007B;', '&#x007D;', '&#92;'), $this->value);
+        return $this->checkValue(preg_replace(
+            array('/<\?(.*?)\?>/su', '/\{/', '/\}/', '/\\\/'),
+            array('', '&#x007B;', '&#x007D;', '&#92;'),
+            $this->value
+        ));
     }
 
     /**
@@ -211,10 +217,11 @@ class InputItem
     }
 
     /**
-     * ฟังก์ชั่นแทนที่อักขระที่ไม่ต้องการ.
+     * ฟังก์ชั่นแทนที่อักขระที่ไม่ต้องการ
      *
      * @assert create('admin,1234')->filter('0-9a-zA-Z,') [==] 'admin,1234'
      * @assert create('adminกข,12ฟ34')->filter('0-9a-zA-Z,') [==] 'admin,1234'
+     * @assert create('U1.username')->filter('a-zA-Z0-9\.') [throws] \Kotchasan\InputItemException
      *
      * @param string $format  Regular Expression อักขระที่ยอมรับ เช่น \d\s\-:
      * @param string $replace ข้อความแทนที่
@@ -223,7 +230,7 @@ class InputItem
      */
     public function filter($format, $replace = '')
     {
-        return trim(preg_replace('/[^'.$format.']/', $replace, $this->value));
+        return $this->checkValue(trim(preg_replace('/[^'.$format.']/', $replace, $this->value)));
     }
 
     /**
@@ -276,6 +283,7 @@ class InputItem
      * ใช้เป็น tags หรือ keywords.
      *
      * @assert create("<b>ทด</b>   \r\nสอบ")->keywords() [==] 'ทด สอบ'
+     * @assert create('<b>U1.username</b> ทดสอบ')->keywords(5) [throws] \Kotchasan\InputItemException
      *
      * @param int $len ความยาวของ keywords หมายถึงคืนค่าทั้งหมด
      *
@@ -285,7 +293,7 @@ class InputItem
     {
         $text = trim(preg_replace('/[\r\n\s\t\"\'<>]{1,}/isu', ' ', strip_tags($this->value)));
 
-        return $this->cut($text, $len);
+        return $this->checkValue($this->cut($text, $len));
     }
 
     /**
@@ -303,13 +311,13 @@ class InputItem
     }
 
     /**
-     * รับค่าสำหรับ password อักขระทุกตัวไม่มีช่องว่าง.
+     * รับค่าสำหรับ password อักขระทุกตัวไม่มีช่องว่าง
      *
      * @return string|array
      */
     public function password()
     {
-        return Text::password($this->value);
+        return $this->checkValue(Text::password($this->value));
     }
 
     /**
@@ -318,12 +326,13 @@ class InputItem
      * และลบช่องว่างหัวท้าย.
      *
      * @assert create("ทด'สอบ")->quote() [==] "ทด&#39;สอบ"
+     * @assert create(' U1.username ')->quote() [throws] \Kotchasan\InputItemException
      *
      * @return string|array
      */
     public function quote()
     {
-        return str_replace("'", '&#39;', trim($this->value));
+        return $this->checkValue(str_replace("'", '&#39;', trim($this->value)));
     }
 
     /**
@@ -332,12 +341,13 @@ class InputItem
      * ใช้แปลงค่าที่รับจาก input ที่ไม่ยอมรับ tag.
      *
      * @assert create(" ทด\/สอบ<?php echo '555'?> ")->text() [==] 'ทด&#92;/สอบ&lt;?php echo &#039;555&#039;?&gt;'
+     * @assert create('U1.username')->text() [throws] \Kotchasan\InputItemException
      *
      * @return string|array
      */
     public function text()
     {
-        return trim(Text::htmlspecialchars($this->value));
+        return $this->checkValue(trim(Text::htmlspecialchars($this->value)));
     }
 
     /**
@@ -346,12 +356,17 @@ class InputItem
      * ใช้รับข้อมูลที่มาจาก textarea.
      *
      * @assert create("ทด\/สอบ\n<?php echo '$555'?>")->textarea() [==] "ทด&#92;/สอบ\n&lt;?php echo '&#36;555'?&gt;"
+     * @assert create('U1.username')->textarea() [throws] \Kotchasan\InputItemException
      *
      * @return string|array
      */
     public function textarea()
     {
-        return trim(preg_replace(array('/</s', '/>/s', '/\\\/s', '/\{/', '/\}/', '/\$/'), array('&lt;', '&gt;', '&#92;', '&#x007B;', '&#x007D;', '&#36;'), $this->value));
+        return $this->checkValue(trim(preg_replace(
+            array('/</s', '/>/s', '/\\\/s', '/\{/', '/\}/', '/\$/'),
+            array('&lt;', '&gt;', '&#92;', '&#x007B;', '&#x007D;', '&#36;'),
+            $this->value
+        )));
     }
 
     /**
@@ -371,11 +386,11 @@ class InputItem
     }
 
     /**
-     * คืนค่าเป็น double.
+     * คืนค่าเป็น double
      *
      * @assert create(0.454)->toDouble() [==] 0.454
      * @assert create(0.545)->toDouble() [==] 0.545
-     * @assert create(15,362.454)->toDouble() [==] 15362.454
+     * @assert create('15,362.454')->toDouble() [==] 15362.454
      *
      * @return float|array
      */
@@ -385,7 +400,7 @@ class InputItem
     }
 
     /**
-     * คืนค่าเป็น float หรือ แอเรย์ของ float.
+     * คืนค่าเป็น float หรือ แอเรย์ของ float
      *
      * @assert create(0.454)->toFloat() [==] 0.454
      * @assert create(0.545)->toFloat() [==] 0.545
@@ -398,7 +413,7 @@ class InputItem
     }
 
     /**
-     * คืนค่าเป็น integer หรือ แอเรย์ของ integer.
+     * คืนค่าเป็น integer หรือ แอเรย์ของ integer
      *
      * @assert create(0.454)->toInt() [==] 0
      * @assert create(2.945)->toInt() [==] 2
@@ -411,7 +426,7 @@ class InputItem
     }
 
     /**
-     * คืนค่าเป็น Object หรือ แอเรย์ของ Object.
+     * คืนค่าเป็น Object หรือ แอเรย์ของ Object
      *
      * @assert create('test')->toObject() [==] (object)'test'
      *
@@ -423,18 +438,19 @@ class InputItem
     }
 
     /**
-     * คืนค่าเป็น string หรือ แอเรย์ของ string หรือ null.
+     * คืนค่าเป็น string หรือ แอเรย์ของ string หรือ null
      *
      * @assert create('ทดสอบ')->toString() [==] 'ทดสอบ'
      * @assert create('1')->toString() [==] '1'
      * @assert create(1)->toString() [==] '1'
      * @assert create(null)->toString() [==] null
+     * @assert create('U1.username')->toString() [throws] \Kotchasan\InputItemException
      *
      * @return string|array|null
      */
     public function toString()
     {
-        return $this->value === null ? null : (string) $this->value;
+        return $this->value === null ? null : $this->checkValue((string) $this->value);
     }
 
     /**
@@ -444,12 +460,13 @@ class InputItem
      * @param bool $double_encode true (default) แปลง รหัส HTML เช่น &amp; เป็น &amp;amp;, false ไม่แปลง
      *
      * @assert create(' ทด\/สอบ'."\r\n\t".'<?php echo \'555\'?> ')->topic() [==] 'ทด&#92;/สอบ &lt;?php echo &#039;555&#039;?&gt;'
+     * @assert create('U1.username')->topic() [throws] \Kotchasan\InputItemException
      *
      * @return string|array
      */
     public function topic($double_encode = true)
     {
-        return Text::topic($this->value, $double_encode);
+        return $this->checkValue(Text::topic($this->value, $double_encode));
     }
 
     /**
@@ -460,25 +477,27 @@ class InputItem
      * @assert create(" http://www.kotchasan.com?a=1&b=2&amp;c=3 ")->url() [==] 'http://www.kotchasan.com?a=1&amp;b=2&amp;c=3'
      * @assert create("javascript:alert('xxx')")->url() [==] 'alertxxx'
      * @assert create("http://www.xxx.com/javascript/")->url() [==] 'http://www.xxx.com/javascript/'
+     * @assert create('U1.username')->url() [throws] \Kotchasan\InputItemException
      *
      * @return string|array
      */
     public function url()
     {
-        return Text::url($this->value);
+        return $this->checkValue(Text::url($this->value));
     }
 
     /**
-     * รับค่าอีเมลและหมายเลขโทรศัพท์เท่านั้น.
+     * รับค่าอีเมลและหมายเลขโทรศัพท์เท่านั้น
      *
      * @assert create(' admin@demo.com')->username() [==] 'admin@demo.com'
      * @assert create('012 3465')->username() [==] '0123465'
+     * @assert create('U1.username')->username() [throws] \Kotchasan\InputItemException
      *
      * @return string|array
      */
     public function username()
     {
-        return Text::username($this->value);
+        return $this->checkValue(Text::username($this->value));
     }
 
     /**
@@ -496,5 +515,24 @@ class InputItem
         }
 
         return $str;
+    }
+
+    /**
+     * ตรวจสอบว่าเป็นชื่อคอลัมน์หรือไม่
+     * เช่น U.user_id U1.user_id
+     *
+     * @param string $value
+     *
+     * @return string
+     *
+     * @throws \Kotchasan\InputItemException ถ้า $value เป็นชื่อคอลัมน์
+     */
+    private function checkValue($value)
+    {
+        if (preg_match('/^[A-Z]{1,1}[0-9]{0,1}\.[a-z0-9_]+$/', $value)) {
+            throw new \Kotchasan\InputItemException('Cannot use "'.$value.'"');
+        }
+
+        return $value;
     }
 }

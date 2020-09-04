@@ -444,17 +444,28 @@ class Html extends \Kotchasan\KBase
                     $js[] = '"'.self::$form->attributes['id'].'"';
                 }
                 self::$form->javascript[] = 'new GValidator('.implode(', ', $js).');';
+            } elseif ($key == 'options') {
+                $options = $value;
+                $datalist = $id.'_'.uniqid();
+                $prop['list'] = 'list="'.$datalist.'"';
             } elseif ($key == 'comment') {
                 $comment = $value;
-            } elseif (!in_array($key, array('id', 'type', 'itemId', 'itemClass', 'labelClass', 'label', 'value', 'options'))) {
+            } elseif (!in_array($key, array('id', 'type', 'itemId', 'itemClass', 'labelClass', 'label', 'value'))) {
                 $prop[$key] = $key.'="'.$value.'"';
             }
         }
-
         $prop['id'] = 'id="'.$id.'"';
         $prop['type'] = 'type="text"';
         $prop['class'] = 'class="inputgroup"';
-        $li .= '<li><input '.implode(' ', $prop).'></li>';
+        $li .= '<li><input '.implode(' ', $prop).'>';
+        if (isset($options) && is_array($options)) {
+            $li .= '<datalist id="'.$datalist.'">';
+            foreach ($options as $k => $v) {
+                $li .= '<option value="'.$k.'">'.$v.'</option>';
+            }
+            $li .= '</datalist>';
+        }
+        $li .= '</li>';
         $obj->add('ul', array(
             'class' => implode(' ', $c),
             'innerHTML' => $li,

@@ -50,18 +50,6 @@ class Model
                 'text' => '{LNG_Language}',
                 'url' => 'index.php?module=language',
             );
-            $settings['company'] = array(
-                'text' => '{LNG_Company profile}',
-                'url' => 'index.php?module=company',
-            );
-            $settings['image'] = array(
-                'text' => '{LNG_Image}',
-                'url' => 'index.php?module=image',
-            );
-            $settings['accsettings'] = array(
-                'text' => '{LNG_Accounting settings}',
-                'url' => 'index.php?module=accsettings',
-            );
         }
         $members = array(
             array(

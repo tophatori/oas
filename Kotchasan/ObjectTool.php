@@ -1,6 +1,6 @@
 <?php
 /**
- * @filesource Kotchasan/Object.php
+ * @filesource Kotchasan/ObjectTool.php
  *
  * @copyright 2016 Goragod.com
  * @license http://www.kotchasan.com/license/
@@ -11,13 +11,13 @@
 namespace Kotchasan;
 
 /**
- * Object tools.
+ * Object tools
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
  * @since 1.0
  */
-class Object
+class ObjectTool
 {
     /**
      * คืนค่ารายการที่มีคอลัมน์ตามที่กำหนด.

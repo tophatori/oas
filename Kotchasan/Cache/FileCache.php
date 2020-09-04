@@ -39,7 +39,7 @@ class FileCache extends Cache
     /**
      * class constructor.
      *
-     * @throws Exception
+     * @throws Exception ถ้าไม่สามารถสร้างแคชได้
      */
     public function __construct()
     {
@@ -48,7 +48,7 @@ class FileCache extends Cache
             //  cache directory
             $this->cache_dir = ROOT_PATH.'datas/cache/';
             if (!File::makeDirectory($this->cache_dir)) {
-                throw new Exception('Folder '.str_replace(ROOT_PATH, '', $this->cache_dir).' cannot be created.');
+                throw new \Exception('Folder '.str_replace(ROOT_PATH, '', $this->cache_dir).' cannot be created.');
             }
             // clear old cache every day
             $d = is_file($this->cache_dir.'index.php') ? (int) file_get_contents($this->cache_dir.'index.php') : 0;
@@ -56,7 +56,7 @@ class FileCache extends Cache
                 $this->clear();
                 $f = @fopen($this->cache_dir.'index.php', 'wb');
                 if ($f === false) {
-                    throw new Exception('File '.str_replace(ROOT_PATH, '', $this->cache_dir).'index.php cannot be written.');
+                    throw new \Exception('File '.str_replace(ROOT_PATH, '', $this->cache_dir).'index.php cannot be written.');
                 } else {
                     fwrite($f, date('d-m-Y H:i:s'));
                     fclose($f);
@@ -140,7 +140,7 @@ class FileCache extends Cache
      *
      * @param CacheItemInterface $item
      *
-     * @throws CacheException
+     * @throws Exception ถ้าไม่สามารถสร้างแคชได้
      *
      * @return bool
      */
@@ -149,7 +149,7 @@ class FileCache extends Cache
         if ($this->cache_dir && !empty($this->cache_expire)) {
             $f = @fopen($this->fetchStreamUri($item->getKey()), 'wb');
             if (!$f) {
-                throw new Exception('resource cache file cannot be created.');
+                throw new \Exception('resource cache file cannot be created.');
             } else {
                 fwrite($f, '<?php exit?>'.serialize($item->get()));
                 fclose($f);

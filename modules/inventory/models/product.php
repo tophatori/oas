@@ -81,7 +81,7 @@ class Model extends \Kotchasan\KBase
     }
 
     /**
-     * อัปเดทข้อมูลสินค้าเท่านั้น
+     * อัพเดตข้อมูลสินค้าเท่านั้น
      *
      * @param array $save
      *
@@ -113,7 +113,7 @@ class Model extends \Kotchasan\KBase
     }
 
     /**
-     * อัปเดทข้อมูลสินค้าและ Stock
+     * อัพเดตข้อมูลสินค้าและ Stock
      *
      * @param array $save
      *
@@ -149,7 +149,7 @@ class Model extends \Kotchasan\KBase
         $model = new \Kotchasan\Model;
         // save product
         $model->db()->update($model->getTableName('product'), $src->id, $product);
-        // อัปเดท Stock
+        // อัพเดต Stock
         if (isset($save['quantity']) && $src->stock != $save['quantity']) {
             $inventory = array(
                 'order_id' => 0,

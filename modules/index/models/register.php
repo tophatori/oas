@@ -15,7 +15,7 @@ use Kotchasan\Http\Request;
 use Kotchasan\Language;
 
 /**
- * module=register.
+ * module=register
  *
  * @author Goragod Wiriya <admin@goragod.com>
  *
@@ -24,7 +24,7 @@ use Kotchasan\Language;
 class Model extends \Kotchasan\Model
 {
     /**
-     * บันทึกข้อมูล (register.php).
+     * บันทึกข้อมูล (register.php)
      *
      * @param Request $request
      */
@@ -37,77 +37,81 @@ class Model extends \Kotchasan\Model
             $isAdmin = Login::isAdmin();
             // บุคคลทั่วไป สมัครสมาชิกได้ และ ไม่ใช่โหมดตัวอย่าง หรือ แอดมิน
             if ((!empty(self::$cfg->user_register) && self::$cfg->demo_mode == false) || $isAdmin) {
-                // รับค่าจากการ POST
-                $save = array(
-                    'username' => $request->post('register_username')->username(),
-                    'name' => $request->post('register_name')->topic(),
-                    'status' => $isAdmin ? $request->post('register_status')->toInt() : 0,
-                    'active' => 1,
-                );
-                $permission = $isAdmin ? $request->post('register_permission', array())->topic() : array();
-                // table
-                $table_user = $this->getTableName('user');
-                // Database
-                $db = $this->db();
-                if (empty($save['username'])) {
-                    $ret['ret_register_username'] = 'Please fill in';
-                } else {
-                    // ตรวจสอบ username ซ้ำ
-                    $search = $db->first($table_user, array('username', $save['username']));
-                    if ($search) {
-                        $ret['ret_register_username'] = Language::replace('This :name already exist', array(':name' => Language::get('Email')));
+                try {
+                    // รับค่าจากการ POST
+                    $save = array(
+                        'username' => $request->post('register_username')->username(),
+                        'name' => $request->post('register_name')->topic(),
+                        'status' => $isAdmin ? $request->post('register_status')->toInt() : 0,
+                        'active' => 1,
+                    );
+                    $permission = $isAdmin ? $request->post('register_permission', array())->topic() : array();
+                    // table
+                    $table_user = $this->getTableName('user');
+                    // Database
+                    $db = $this->db();
+                    if (empty($save['username'])) {
+                        $ret['ret_register_username'] = 'Please fill in';
+                    } else {
+                        // ตรวจสอบ username ซ้ำ
+                        $search = $db->first($table_user, array('username', $save['username']));
+                        if ($search) {
+                            $ret['ret_register_username'] = Language::replace('This :name already exist', array(':name' => Language::get('Email')));
+                        }
                     }
-                }
-                // password
-                $password = $request->post('register_password')->password();
-                $repassword = $request->post('register_repassword')->password();
-                if (mb_strlen($password) < 4) {
-                    // รหัสผ่านต้องไม่น้อยกว่า 4 ตัวอักษร
-                    $ret['ret_register_password'] = 'this';
-                } elseif ($repassword != $password) {
-                    // กรอกรหัสผ่านสองช่องให้ตรงกัน
-                    $ret['ret_register_repassword'] = 'this';
-                } else {
-                    $save['password'] = $password;
-                }
-                // name
-                if (empty($save['name'])) {
-                    $ret['ret_register_name'] = 'Please fill in';
-                }
-                if (empty($ret)) {
-                    // ลงทะเบียนสมาชิกใหม่
-                    $save = self::execute($this, $save, $permission);
-                    if ($isAdmin) {
-                        // คืนค่า
-                        $ret['alert'] = Language::get('Saved successfully');
-                        // ไปหน้าสมาชิก
-                        $ret['location'] = 'index.php?module=member';
-                    } elseif (!empty(self::$cfg->welcome_email)) {
-                        // ส่งอีเมล แจ้งลงทะเบียนสมาชิกใหม่
-                        $subject = '['.self::$cfg->web_title.'] '.Language::get('Welcome new members');
-                        $msg = "{LNG_Your registration information}<br>\n<br>\n";
-                        $msg .= '{LNG_Username} : '.$save['username']."<br>\n";
-                        $msg .= '{LNG_Password} : '.$password."<br>\n";
-                        $msg .= '{LNG_Name} : '.$save['name'];
-                        $msg = Language::trans($msg);
-                        $err = \Kotchasan\Email::send($save['username'], self::$cfg->noreply_email, $subject, $msg);
-                        if ($err->error()) {
-                            // คืนค่า error
-                            $ret['alert'] = strip_tags($err->getErrorMessage());
+                    // password
+                    $password = $request->post('register_password')->password();
+                    $repassword = $request->post('register_repassword')->password();
+                    if (mb_strlen($password) < 4) {
+                        // รหัสผ่านต้องไม่น้อยกว่า 4 ตัวอักษร
+                        $ret['ret_register_password'] = 'this';
+                    } elseif ($repassword != $password) {
+                        // กรอกรหัสผ่านสองช่องให้ตรงกัน
+                        $ret['ret_register_repassword'] = 'this';
+                    } else {
+                        $save['password'] = $password;
+                    }
+                    // name
+                    if (empty($save['name'])) {
+                        $ret['ret_register_name'] = 'Please fill in';
+                    }
+                    if (empty($ret)) {
+                        // ลงทะเบียนสมาชิกใหม่
+                        $save = self::execute($this, $save, $permission);
+                        if ($isAdmin) {
+                            // คืนค่า
+                            $ret['alert'] = Language::get('Saved successfully');
+                            // ไปหน้าสมาชิก
+                            $ret['location'] = 'index.php?module=member';
+                        } elseif (!empty(self::$cfg->welcome_email)) {
+                            // ส่งอีเมล แจ้งลงทะเบียนสมาชิกใหม่
+                            $subject = '['.self::$cfg->web_title.'] '.Language::get('Welcome new members');
+                            $msg = "{LNG_Your registration information}<br>\n<br>\n";
+                            $msg .= '{LNG_Username} : '.$save['username']."<br>\n";
+                            $msg .= '{LNG_Password} : '.$password."<br>\n";
+                            $msg .= '{LNG_Name} : '.$save['name'];
+                            $msg = Language::trans($msg);
+                            $err = \Kotchasan\Email::send($save['username'], self::$cfg->noreply_email, $subject, $msg);
+                            if ($err->error()) {
+                                // คืนค่า error
+                                $ret['alert'] = strip_tags($err->getErrorMessage());
+                            } else {
+                                // คืนค่า
+                                $ret['alert'] = Language::replace('Register successfully, We have sent complete registration information to :email', array(':email' => $save['username']));
+                            }
+                            // ไปหน้าเข้าระบบ
+                            $ret['location'] = 'index.php?action=login';
                         } else {
                             // คืนค่า
-                            $ret['alert'] = Language::replace('Register successfully, We have sent complete registration information to :email', array(':email' => $save['username']));
+                            $ret['alert'] = Language::get('Register successfully Please log in');
+                            // ไปหน้าเข้าระบบ
+                            $ret['location'] = 'index.php?action=login';
                         }
-                        // ไปหน้าเข้าระบบ
-                        $ret['location'] = 'index.php?action=login';
-                    } else {
-                        // คืนค่า
-                        $ret['alert'] = Language::get('Register successfully Please log in');
-                        // ไปหน้าเข้าระบบ
-                        $ret['location'] = 'index.php?action=login';
+                        // เคลียร์
+                        $request->removeToken();
                     }
-                    // เคลียร์
-                    $request->removeToken();
+                } catch (\Kotchasan\InputItemException $e) {
+                    $ret['alert'] = $e->getMessage();
                 }
             }
         }
@@ -120,7 +124,7 @@ class Model extends \Kotchasan\Model
 
     /**
      * ลงทะเบียนสมาชิกใหม่
-     * คืนค่าแอเรย์ของข้อมูลสมาชิกใหม่.
+     * คืนค่าแอเรย์ของข้อมูลสมาชิกใหม่
      *
      * @param Model $model
      * @param array $save       ข้อมูลสมาชิก

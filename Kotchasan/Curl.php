@@ -47,14 +47,14 @@ class Curl
     protected $options = array();
 
     /**
-     * Construct.
+     * Construct
      *
-     * @throws \ErrorException ถ้าไม่รองรับ cURL
+     * @throws \Exception ถ้าไม่รองรับ cURL
      */
     public function __construct()
     {
         if (!extension_loaded('curl')) {
-            throw new \ErrorException('cURL library is not loaded');
+            throw new \Exception('cURL library is not loaded');
         }
         // default parameter
         $this->headers = array(

@@ -631,7 +631,7 @@ class Sql
             // QueryBuilder
             return '('.$column_name->text().')';
         } elseif (is_string($column_name)) {
-            if (preg_match('/^(([A-Z0-9]{1,2})\.)?`?([a-zA-Z0-9_]+)`?(\s(ASC|DESC|asc|desc))?$/', $column_name, $match)) {
+            if (preg_match('/^(([A-Z]{1,1}[0-9]{0,1})\.)?`?([a-z0-9_]+)`?(\s(ASC|DESC|asc|desc))?$/', $column_name, $match)) {
                 // U.id, U.`id`, U1.id, U1.`id`, field_name, `field_name`
                 return ($match[2] == '' ? "`$match[3]`" : "$match[2].`$match[3]`").(empty($match[5]) ? '' : $match[4]);
             } elseif (preg_match('/^`?([a-zA-Z0-9_]+)`?\.`?([a-zA-Z0-9_]+)`?(\s(ASC|DESC|asc|desc))?$/', $column_name, $match)) {
@@ -718,7 +718,7 @@ class Sql
                 $sql = ':'.strtolower(preg_replace('/[`\.\s\-_]+/', '', $column_name)).count($values);
                 $values[$sql] = $value;
             } else {
-                if (preg_match('/^(([A-Z0-9]{1,2})|`([a-zA-Z0-9_]+)`)\.`?([a-zA-Z0-9_]+)`?$/', $value, $match)) {
+                if (preg_match('/^(([A-Z]{1,1}[0-9]{0,1})|`([a-z0-9_]+)`)\.`?([a-z0-9_]+)`?$/', $value, $match)) {
                     // U.id U.`id` U1.id U1.`id`  `table_name`.`module_id`
                     $sql = $match[3] == '' ? "$match[2].`$match[4]`" : "`$match[3]`.`$match[4]`";
                 } elseif (preg_match('/^([a-zA-Z0-9_]+)\.`([a-zA-Z0-9_]+)`$/', $value, $match)) {

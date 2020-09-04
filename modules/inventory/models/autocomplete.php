@@ -31,54 +31,57 @@ class Model extends \Kotchasan\Model
     public function findCustomer(Request $request)
     {
         if ($request->initSession() && $request->isReferer() && Login::isMember()) {
-            $search = $request->post('name')->topic();
-            $where = array();
-            $select = array('id', 'name', 'email');
-            $order = array();
-            foreach (explode(',', $request->post('from', 'name,email')->filter('a-z,')) as $item) {
-                if ($item == 'name') {
-                    if ($search != '') {
-                        $where[] = array('name', 'LIKE', "%$search%");
+            try {
+                $search = $request->post('name')->topic();
+                $where = array();
+                $select = array('id', 'name', 'email');
+                $order = array();
+                foreach (explode(',', $request->post('from', 'name,email')->filter('a-z,')) as $item) {
+                    if ($item == 'name') {
+                        if ($search != '') {
+                            $where[] = array('name', 'LIKE', "%$search%");
+                        }
+                        $order[] = 'name';
                     }
-                    $order[] = 'name';
-                }
-                if ($item == 'email') {
-                    if ($search != '') {
-                        $where[] = array('email', 'LIKE', "%$search%");
+                    if ($item == 'email') {
+                        if ($search != '') {
+                            $where[] = array('email', 'LIKE', "%$search%");
+                        }
+                        $order[] = 'email';
                     }
-                    $order[] = 'email';
-                }
-                if ($item == 'phone') {
-                    if ($search != '') {
-                        $where[] = array('phone', 'LIKE', "$search%");
+                    if ($item == 'phone') {
+                        if ($search != '') {
+                            $where[] = array('phone', 'LIKE', "$search%");
+                        }
+                        $select[] = 'phone';
+                        $order[] = 'phone';
                     }
-                    $select[] = 'phone';
-                    $order[] = 'phone';
-                }
-                if ($item == 'company') {
-                    if ($search != '') {
-                        $where[] = array('company', 'LIKE', "$search%");
+                    if ($item == 'company') {
+                        if ($search != '') {
+                            $where[] = array('company', 'LIKE', "$search%");
+                        }
+                        $select[] = 'company';
+                        $order[] = 'company';
                     }
-                    $select[] = 'company';
-                    $order[] = 'company';
+                    if ($item == 'discount') {
+                        $select[] = 'discount';
+                    }
                 }
-                if ($item == 'discount') {
-                    $select[] = 'discount';
+                $query = $this->db()->createQuery()
+                    ->select($select)
+                    ->from('customer')
+                    ->order($order)
+                    ->limit($request->post('count')->toInt())
+                    ->toArray();
+                if (!empty($where)) {
+                    $query->andWhere($where, 'OR');
                 }
-            }
-            $query = $this->db()->createQuery()
-                ->select($select)
-                ->from('customer')
-                ->order($order)
-                ->limit($request->post('count')->toInt())
-                ->toArray();
-            if (!empty($where)) {
-                $query->andWhere($where, 'OR');
-            }
-            $result = $query->execute();
-            // คืนค่า JSON
-            if (!empty($result)) {
-                echo json_encode($query->execute());
+                $result = $query->execute();
+                // คืนค่า JSON
+                if (!empty($result)) {
+                    echo json_encode($query->execute());
+                }
+            } catch (\Kotchasan\InputItemException $e) {
             }
         }
     }
@@ -92,39 +95,42 @@ class Model extends \Kotchasan\Model
     public function findProduct(Request $request)
     {
         if ($request->initSession() && $request->isReferer() && Login::isMember()) {
-            $search = $request->post('name')->topic();
-            $where = array();
-            $order = array();
-            foreach (explode(',', $request->post('from', 'product_no,topic')->filter('a-z_,')) as $item) {
-                if ($item == 'product_no') {
-                    if ($search != '') {
-                        $where[] = array('product_no', 'LIKE', "%$search%");
+            try {
+                $search = $request->post('name')->topic();
+                $where = array();
+                $order = array();
+                foreach (explode(',', $request->post('from', 'product_no,topic')->filter('a-z_,')) as $item) {
+                    if ($item == 'product_no') {
+                        if ($search != '') {
+                            $where[] = array('product_no', 'LIKE', "%$search%");
+                        }
+                        $order[] = 'product_no';
                     }
-                    $order[] = 'product_no';
-                }
-                if ($item == 'topic') {
-                    if ($search != '') {
-                        $where[] = array('topic', 'LIKE', "%$search%");
+                    if ($item == 'topic') {
+                        if ($search != '') {
+                            $where[] = array('topic', 'LIKE', "%$search%");
+                        }
+                        $order[] = 'topic';
                     }
-                    $order[] = 'topic';
                 }
-            }
-            $query = $this->db()->createQuery()
-                ->select('id', 'product_no', 'topic')
-                ->from('product')
-                ->order($order)
-                ->limit($request->post('count')->toInt())
-                ->toArray();
-            if (!empty($where)) {
-                $query->andWhere($where, 'OR');
-            }
-            $result = array();
-            foreach ($query->execute() as $item) {
-                $result[$item['id']] = $item;
-            }
-            // คืนค่า JSON
-            if (!empty($result)) {
-                echo json_encode($result);
+                $query = $this->db()->createQuery()
+                    ->select('id', 'product_no', 'topic')
+                    ->from('product')
+                    ->order($order)
+                    ->limit($request->post('count')->toInt())
+                    ->toArray();
+                if (!empty($where)) {
+                    $query->andWhere($where, 'OR');
+                }
+                $result = array();
+                foreach ($query->execute() as $item) {
+                    $result[$item['id']] = $item;
+                }
+                // คืนค่า JSON
+                if (!empty($result)) {
+                    echo json_encode($result);
+                }
+            } catch (\Kotchasan\InputItemException $e) {
             }
         }
     }
